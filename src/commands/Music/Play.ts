@@ -1,8 +1,7 @@
 import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
 import { ArgumentParseType, CommandType, PlayMusicResultType } from "../../utils/enums";
-import { ApplicationCommandOptionType, ChannelType, PermissionFlagsBits, PermissionsBitField } from "discord.js";
-import { GuildMusicManager } from "../../features/music/Model/GuildMusicManager";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 
 export default class MusicPlay extends Command<[string]> {
   constructor() {
@@ -33,27 +32,31 @@ export default class MusicPlay extends Command<[string]> {
       if (!source.guild.members.me?.voice.channel) return;
     }
 
-    if (!source.deferred) await source.defer();
-
-    const manager = source.client.music.get(source.guild.id) as GuildMusicManager;
-    if (manager.voiceChannel.type === ChannelType.GuildStageVoice && manager.voiceState.suppress
-        && !manager.guild.members.me?.permissions.has(PermissionsBitField.StageModerator)) {
-      await source.temp('我沒有辦法在這舞台頻道上發言！請你給我發言權或是讓我成為舞台版主');
+    if (!source.member.voice.channelId) {
+      await source.defer({ ephemeral: true });
+      await source.update('請先加入一個語音頻道');
       return;
     }
+    if (source.member.voice.channelId !== source.guild.members.me?.voice.channelId) {
+      await source.defer({ ephemeral: true });
+      await source.update('你必須跟我在同一個語音頻道裡面才可以點歌');
+      return;
+    }
+
+    if (!source.deferred) await source.defer();
 
     const result = await source.client.music.play(source.guild.id, source.member, keywordOrUrl);
     switch (result.type) {
       case PlayMusicResultType.StartPlaying:
-        await source.temp(`已開始播放 ${result.track.title}`);
+        await source.temp(`歌曲載入成功，即將開始播放 ${result.track.title}`);
         return;
       
       case PlayMusicResultType.AddedToQueue:
-        await source.temp(`已將 ${result.track.title} 加入待播清單`);
+        await source.temp(`歌曲載入成功，已將 ${result.track.title} 加入待播清單`);
         return;
       
       case PlayMusicResultType.NotInVoiceChannel:
-        await source.temp(`我並不在任何語音頻道中`);
+        await source.temp(`我並不在任何語音頻道中，請問這樣我是要怎麼播歌`);
         return;
       
       case PlayMusicResultType.ResourceNotFound:

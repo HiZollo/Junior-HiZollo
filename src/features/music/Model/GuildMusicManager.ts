@@ -8,10 +8,12 @@ import { Track } from "./Track";
 import { PlayMusicResultType } from "../../../utils/enums";
 import { PlayMusicResult } from "../../../utils/types";
 import { GuildMusicController } from "../Controller/GuildMusicController";
+import { MusicViewRenderer } from "../View/MusicViewRenderer";
 
 export class GuildMusicManager {
   public client: HZClient;
   public guild: Guild;
+  public view: MusicViewRenderer;
   public voiceChannel: VoiceBasedChannel;
   public textChannel: GuildTextBasedChannel;
   public voiceState: VoiceState;
@@ -26,9 +28,10 @@ export class GuildMusicManager {
 
   public controller: GuildMusicController;
 
-  constructor({ client, voiceChannel, textChannel, connection, autoSuppress }: GuildMusicManagerOptions) {
+  constructor({ client, view, voiceChannel, textChannel, connection, autoSuppress }: GuildMusicManagerOptions) {
     this.client = client;
     this.guild = voiceChannel.guild;
+    this.view = view;
     this.voiceChannel = voiceChannel;
     this.textChannel = textChannel;
     this.voiceState = voiceChannel.guild.members.me?.voice as VoiceState;
@@ -46,6 +49,7 @@ export class GuildMusicManager {
     this.controller = new GuildMusicController({
       client: this.client, 
       channel: this.textChannel, 
+      view: this.view, 
       manager: this
     });
   }
@@ -93,7 +97,8 @@ export class GuildMusicManager {
   private async _play(track: Track): Promise<void> {
     if (this.voiceChannel.type === ChannelType.GuildStageVoice && this.voiceState.suppress) {
       if (!this.guild.members.me?.permissions.has(PermissionsBitField.StageModerator)) {
-        return /* no permission on stage */;
+        await this.view.noPermOnStage(this.textChannel);
+        return;
       }
       this.voiceState.setSuppressed(false);
     }
@@ -103,12 +108,11 @@ export class GuildMusicManager {
     this.working = true;
     await this.controller.resend();
 
-    const result: string = await new Promise((resolve) => {
+    await new Promise(() => {
       this.player.once(AudioPlayerStatus.Idle, async () => {
         if (this.nowPlaying?.looping) {
           await this.nowPlaying.renewResource();
           this._play(this.nowPlaying);
-          resolve('played looped');
           return;
         }
         const next = this.queue.shift();
@@ -120,16 +124,13 @@ export class GuildMusicManager {
 
           this.nowPlaying = null;
           this.working = false;
-          resolve('emptied');
+          await this.view.endOfTheQueue(this.textChannel);
           return;
         }
         this._play(next);
-        resolve('played next');
+        await this.view.endOfTheTrack(this.textChannel, track);
       });
     });
-
-    if (result === 'emptied') return /* emptied */;
-    if (result === 'played next') return /* played next */;
   }
 
   private async parseVideoUrl(url: string): Promise<{ stream: YouTubeStream, info: InfoData } | void> {

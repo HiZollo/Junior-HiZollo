@@ -5,6 +5,7 @@ import { InfoData, YouTubeStream } from "play-dl";
 import { HZClient } from "../classes/HZClient";
 import { Source } from "../classes/Source";
 import { GuildMusicManager } from "../features/music/Model/GuildMusicManager";
+import { MusicViewRenderer } from "../features/music/View/MusicViewRenderer";
 import { CommandParserOptionResultStatus, CommandType, PageSystemMode } from "./enums";
 import { ArgumentParseMethod, HZCommandOptionData } from "./types";
 
@@ -132,6 +133,7 @@ export interface YesNoSystemOptions {
 
 export interface GuildMusicManagerOptions {
   client: HZClient;
+  view: MusicViewRenderer;
   voiceChannel: VoiceBasedChannel;
   textChannel: GuildTextBasedChannel
   connection: VoiceConnection;
@@ -147,5 +149,6 @@ export interface TrackOptions {
 export interface GuildMusicControllerOptions {
   client: HZClient;
   channel: GuildTextBasedChannel;
+  view: MusicViewRenderer;
   manager: GuildMusicManager;
 }

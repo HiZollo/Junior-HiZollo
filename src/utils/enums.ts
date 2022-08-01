@@ -59,3 +59,7 @@ export enum PageSystemMode {
 export enum PlayMusicResultType {
   StartPlaying, AddedToQueue, NotInVoiceChannel, ResourceNotFound
 }
+
+export enum MusicControllerActions {
+  Pause, Resume, Repeat, NoRepeat, Skip, Info
+}

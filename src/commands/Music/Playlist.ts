@@ -20,7 +20,7 @@ export default class MusicPlaylist extends Command<[]> {
     }
 
     const queue = source.client.music.getQueue(source.guild.id);
-    if (!queue || !queue.length) {
+    if (!queue.length) {
       await source.defer({ ephemeral: true });
       await source.update('待播清單中目前沒有任何歌曲');
       return;

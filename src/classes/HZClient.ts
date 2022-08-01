@@ -13,7 +13,6 @@ import { AutocompleteReturnType } from "../utils/types";
 import { ClientMusicManager } from "../features/music/Model/ClientMusicManager";
 
 dotenv.config({ path: path.join(__dirname, '../../src/.env') });
-console.log(path.join(__dirname, '../../src/.env'));
 
 export class HZClient extends Client {
   public devMode: boolean;

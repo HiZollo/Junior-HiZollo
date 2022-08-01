@@ -3,15 +3,18 @@ import { GuildMember, GuildTextBasedChannel, VoiceBasedChannel } from "discord.j
 import { HZClient } from "../../../classes/HZClient";
 import { PlayMusicResultType } from "../../../utils/enums";
 import { PlayMusicResult } from "../../../utils/types";
+import { MusicViewRenderer } from "../View/MusicViewRenderer";
 import { GuildMusicManager } from "./GuildMusicManager";
 import { Track } from "./Track";
 
 export class ClientMusicManager {
   public client: HZClient;
+  public view: MusicViewRenderer;
   private guilds: Map<string, GuildMusicManager>;
 
   constructor(client: HZClient) {
     this.client = client;
+    this.view = new MusicViewRenderer(client);
     this.guilds = new Map();
   }
 
@@ -35,6 +38,7 @@ export class ClientMusicManager {
     this.guilds.set(voiceChannel.guild.id, new GuildMusicManager({
       connection: connection, 
       client: this.client, 
+      view: this.view, 
       voiceChannel: voiceChannel, 
       textChannel: textChannel, 
       autoSuppress: autoSuppress
@@ -52,21 +56,20 @@ export class ClientMusicManager {
     });
   }
 
-  public getQueue(guildId: string): Track[] | void {
+  public getQueue(guildId: string): Track[] {
     const manager = this.guilds.get(guildId);
-    if (!manager) return /* falied */;
+    if (!manager) throw new Error('Guild not found');
     return manager.queue;
   }
 
   public spliceQueue(guildId: string, start: number, length: number): void {
     const queue = this.getQueue(guildId);
-    if (!queue) return /* falied */;
     queue.splice(start, length);
   }
 
   public async resend(guildId: string): Promise<void> {
     const manager = this.guilds.get(guildId);
-    if (!manager) return /* falied */;
+    if (!manager) throw new Error('Guild not found');
     await manager.resend();
   }
 

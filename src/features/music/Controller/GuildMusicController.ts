@@ -1,14 +1,14 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, EmbedBuilder, GuildMember, GuildTextBasedChannel, InteractionCollector, Message, MessageOptions } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, GuildMember, GuildTextBasedChannel, InteractionCollector, Message, MessageOptions } from "discord.js";
 import { HZClient } from "../../../classes/HZClient";
+import { MusicControllerActions } from "../../../utils/enums";
 import { GuildMusicControllerOptions } from "../../../utils/interfaces";
-import fixedDigits from "../../utils/fixedDigits";
-import tempMessage from "../../utils/tempMessage";
 import { GuildMusicManager } from "../Model/GuildMusicManager";
-import { Track } from "../Model/Track";
+import { MusicViewRenderer } from "../View/MusicViewRenderer";
 
 export class GuildMusicController {
   public client: HZClient;
   public channel: GuildTextBasedChannel;
+  public view: MusicViewRenderer;
   public manager: GuildMusicManager;
   public message: Message | null;
   public collector: InteractionCollector<ButtonInteraction> | null;
@@ -19,9 +19,10 @@ export class GuildMusicController {
   private controllerButtons: ButtonBuilder[];
   private dataButtons: ButtonBuilder[];
 
-  constructor({ client, channel, manager }: GuildMusicControllerOptions) {
+  constructor({ client, channel, view, manager }: GuildMusicControllerOptions) {
     this.client = client;
     this.channel = channel;
+    this.view = view;
     this.manager = manager;
     this.message = null;
     this.collector = null;
@@ -63,7 +64,7 @@ export class GuildMusicController {
   private get newMessage(): MessageOptions {
     return {
       components: this.newComponents, 
-      embeds: this.newEmbeds
+      embeds: this.view.getcontrollerEmbeds(this.manager)
     }
   }
 
@@ -71,17 +72,6 @@ export class GuildMusicController {
     return [
       new ActionRowBuilder<ButtonBuilder>().addComponents(...this.controllerButtons), 
       new ActionRowBuilder<ButtonBuilder>().addComponents(...this.dataButtons), 
-    ];
-  }
-
-  private get newEmbeds(): EmbedBuilder[] {
-    return [
-      new EmbedBuilder()
-        .setAuthor({ name: 'HiZollo 的音樂中心', iconURL: this.client.user?.displayAvatarURL() })
-        .setDescription(`目前正在播放：${this.manager.nowPlaying?.videoLink}`)
-        .setThumbnail(this.manager.nowPlaying?.thumbnailUrl ?? null)
-        .setFooter({ text: `由 ${this.manager.nowPlaying?.requester.displayName} 指定的歌曲`, iconURL: this.manager.nowPlaying?.requester.displayAvatarURL() })
-        .setHiZolloColor()
     ];
   }
 
@@ -96,7 +86,7 @@ export class GuildMusicController {
         if (!(interaction.member instanceof GuildMember)) return false;
 
         if (interaction.member.voice.channelId !== this.manager.voiceChannel.id && interaction.customId !== 'music_ctrl_info') {
-          await interaction.followUp({ content: '你必須在語音頻道內才能操控這個按鈕', ephemeral: true });
+          await this.view.controllerError(interaction);
           return false;
         }
         return true;
@@ -110,43 +100,34 @@ export class GuildMusicController {
       if (!nowPlaying) return;
 
       const args = interaction.customId.split('_');
-      const embed = new EmbedBuilder()
-        .setAuthor({ name: 'HiZollo 的音樂中心', iconURL: interaction.client.user?.displayAvatarURL() })
-        .setHiZolloColor()
-        .setThumbnail(nowPlaying.thumbnailUrl);
-      
       switch (args[2]) {
         case 'play':
           this.controllerButtons[0] = this.playButtonsItr.next().value;
           this.manager.togglePlay();
-          embed.setDescription(this.controllerButtons[0].data.emoji?.id === this.emojis.play[0] ? `${interaction.member}，已繼續播放` : `${interaction.member}，已暫停播放`)
+          this.controllerButtons[0].data.emoji?.id === this.emojis.play[0] ?
+            await this.view.controllerAction(MusicControllerActions.Resume, interaction, nowPlaying) : 
+            await this.view.controllerAction(MusicControllerActions.Pause, interaction, nowPlaying);
           break;
         
         case 'repeat':
           this.controllerButtons[1] = this.repeatButtonsItr.next().value;
           this.manager.toggleLoop();
-          embed.setDescription(`${interaction.member}，已將重複狀態設為` + (this.controllerButtons[1].data.emoji?.name === this.emojis.repeat[0] ? '正常播放' : '單曲循環'));
+          this.controllerButtons[1].data.emoji?.name === this.emojis.repeat[0] ?
+            await this.view.controllerAction(MusicControllerActions.NoRepeat, interaction, nowPlaying) :
+            await this.view.controllerAction(MusicControllerActions.Repeat, interaction, nowPlaying);
           break;
         
         case 'skip':
           this.manager.skip();
-          embed.setDescription(`${interaction.member}，已跳過當前歌曲`);
+          await this.view.controllerAction(MusicControllerActions.Skip, interaction, nowPlaying);
           break;
         
         case 'info':
-          embed.setDescription(this.getDescription(nowPlaying))
-            .setFooter({
-              text: `由 ${nowPlaying.requester.displayName} 指定的歌曲｜${nowPlaying.looping ? '🔁 循環播放中' : '➡️ 無重複播放'}`,
-              iconURL: nowPlaying.requester.displayAvatarURL()
-            });
-          await interaction.reply({ embeds: [embed], ephemeral: true });
-          return; // 這邊傳完 ephemeral message 就結束了
+          await this.view.controllerAction(MusicControllerActions.Info, interaction, nowPlaying);
+          return; // 這邊 render 的時候會 reply，所以直接結束
       }
 
       await interaction.update({ components: this.newComponents });
-      if (interaction.channel) {
-        await tempMessage(interaction.channel, { embeds: [embed] }, 5);
-      }
     });
 
     return collector;
@@ -178,38 +159,4 @@ export class GuildMusicController {
     skip: '880450475156176906', 
     info: '🎵'
   });
-
-  private getDescription(track: Track): string {
-    return `
-目前正在播放：${track.videoLink}
-
-播放時間：${this.msFormat(track.resource.playbackDuration)}／${this.msFormat(track.length * 1000)}
-
-上傳頻道：${track.channelLink}
-
-上傳日期：${track.uploadedAt}
-
-觀看次數：${this.viewsFormat(track.views)}
-\u200b
-`;
-  }
-
-  private msFormat(time: number): string {
-    time = Math.round(time / 1000);
-    const [h, m, s] = [~~(time / 3600), ~~(time % 3600 / 60), time % 60];
-    return `${h ? `${h}:${fixedDigits(m, 2)}` : `${m}`}:${fixedDigits(s, 2)}`;
-  }
-
-  private viewsFormat(views: number) {
-    const bases = [10000, 10000, 10000];
-    const baseNames = ['', '萬', '億', '兆'];
-
-    let index = 0;
-    while (bases[index] < views && index < 3) {
-      views = views / bases[index];
-      index++;
-    }
-
-    return `${views < 10 ? views.toFixed(1) : ~~views} ${baseNames[index]}次`
-  }
 }
