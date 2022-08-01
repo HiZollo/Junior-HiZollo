@@ -1,6 +1,7 @@
+dist
 node_modules
 *.bat
 *.txt
 .DS_Store
-.dist
 .env
+.vscode
