@@ -1,14 +1,13 @@
-/*********************************************************************
-******************* Project     : HiZollo          *******************
-******************* Author      : HiZollo Dev Team *******************
-******************* Version     : beta 0.11.3      *******************
-******************* Release Date: 2022/04/05       *******************
-*********************************************************************/
+/*************************************************************************
+******************* Project     : Junior HiZollo       *******************
+******************* Author      : HiZollo Organization *******************
+******************* Version     : TS rewrite           *******************
+******************* Release Date: ????/??/??           *******************
+*************************************************************************/
 
 /******************* 系統變數設置 *******************/
 import { EmbedBuilder, GatewayIntentBits, InteractionType } from 'discord.js';
-// import fs from 'node:fs';
-// import path from 'node:path';
+import './djsAddon';
 import config from './config';
 import constant from './constant.json';
 import { HZClient } from './classes/HZClient';
@@ -24,26 +23,8 @@ const client = new HZClient({
   devMode: process.argv[2]?.toLowerCase() === 'dev'
 });
 
-// require('events').EventEmitter.defaultMaxListeners = Infinity;
-
-// const REACTION_CONSTANT = 0.987 * 7421;
-
 /******************* Features *******************/
-// import errorHandle from './features/appUtil/errorHandle.js';
-// import { sendHook, WebhookLoggingMode } from './features/appUtil/sendHook.js';
-import './djsAddon';
-
 import permissionTable from './features/utils/permissionTable';
-// import Zcommands from './features/util/zcommands.js';
-// const Z = new Zcommands([
-//   { key: 'f', value: 'diep_fact' },
-//   { key: 'rt', value: 'diep_random' },
-//   { key: 's', value: 'diep_server' },
-//   { key: 't', value: 'diep_tank' },
-//   { key: 'w', value: 'diep_wiki' },
-//   { key: 'b', value: 'osu_best' },
-//   { key: 'u', value: 'osu_user' }
-// ]);
 /**/
 
 /******************* 指令相關 *******************/
@@ -138,12 +119,7 @@ client.commands.on('unavailable', async source => {
 /******************* 上線確認 *******************/
 client.on('ready', async () => {
   console.log('Ready');
-  // sendHook(client, WebhookLoggingMode.LOGIN);
-
   await client.initialize();
-
-  // await client.guilds.cache.get('784971366234587137')?.commands.set(client.devCommands);
-  // console.log('私人指令已佈署完畢，請使用 /deploy 確認全域指令是否有任何異動。');
 });
 /**/
 
@@ -159,7 +135,7 @@ client.on('messageCreate', async message => {
 });
 /**/
 
-/******************* 斜線指令 *******************/
+/******************* 指令互動 *******************/
 client.on('interactionCreate', async interaction => {
   client.commands.interactionRun(interaction);
   /********* 篩選 *********/
