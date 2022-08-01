@@ -1,0 +1,227 @@
+/*********************************************************************
+******************* Project     : HiZollo          *******************
+******************* Author      : HiZollo Dev Team *******************
+******************* Version     : beta 0.11.3      *******************
+******************* Release Date: 2022/04/05       *******************
+*********************************************************************/
+
+/******************* 系統變數設置 *******************/
+import { EmbedBuilder, GatewayIntentBits, InteractionType } from 'discord.js';
+// import fs from 'node:fs';
+// import path from 'node:path';
+import config from './config';
+import constant from './constant.json';
+import { HZClient } from './classes/HZClient';
+import { CommandManagerRejectReason, CommandParserOptionResultStatus } from './utils/enums';
+const client = new HZClient({
+  intents: [
+    GatewayIntentBits.Guilds, 
+    GatewayIntentBits.GuildMessages, 
+    GatewayIntentBits.GuildMessageReactions, 
+    GatewayIntentBits.GuildVoiceStates, 
+    GatewayIntentBits.MessageContent
+  ], 
+  devMode: process.argv[2]?.toLowerCase() === 'dev'
+});
+
+// require('events').EventEmitter.defaultMaxListeners = Infinity;
+
+// const REACTION_CONSTANT = 0.987 * 7421;
+
+/******************* Features *******************/
+// import errorHandle from './features/appUtil/errorHandle.js';
+// import { sendHook, WebhookLoggingMode } from './features/appUtil/sendHook.js';
+import './djsAddon';
+
+import permissionTable from './features/utils/permissionTable';
+// import Zcommands from './features/util/zcommands.js';
+// const Z = new Zcommands([
+//   { key: 'f', value: 'diep_fact' },
+//   { key: 'rt', value: 'diep_random' },
+//   { key: 's', value: 'diep_server' },
+//   { key: 't', value: 'diep_tank' },
+//   { key: 'w', value: 'diep_wiki' },
+//   { key: 'b', value: 'osu_best' },
+//   { key: 'u', value: 'osu_user' }
+// ]);
+/**/
+
+/******************* 指令相關 *******************/
+client.commands.once('load', () => {
+  console.log('所有指令皆已載入完畢');
+});
+
+client.commands.on('reject', async (source, info) => {
+  await source.defer({ ephemeral: true });
+  const helper = new EmbedBuilder()
+    .setAuthor({ name: 'HiZollo 的幫助中心', iconURL: client.user?.displayAvatarURL() })
+    .setHiZolloColor();
+
+  switch (info.reason) {
+    case CommandManagerRejectReason.Angry:
+      helper.setTitle('(ﾒﾟДﾟ)ﾒ')
+        .setDescription(`你就是剛剛丟我的那個人！我才不想理你勒，你 ${~~(info.args[0] / 1000)} 秒之後再來跟我談！`);
+      break;
+    
+    case CommandManagerRejectReason.TwoFactorRequird:
+      helper.setTitle('2FA 不讓我執行這個指令')
+        .setDescription(`因為這個伺服器開啟了 2FA 驗證，所以我無法執行這個指令`);
+      break;
+    
+    case CommandManagerRejectReason.UserMissingPermission:
+      helper.setTitle('你被權限之神禁錮了')
+        .setDescription(`以下是你缺少的權限\n\n${info.args[0].map(perm => `- ${permissionTable[perm]}`).join('\n')}`);
+      break;
+    
+    case CommandManagerRejectReason.BotMissingPermission:
+      helper.setTitle('給我這麼點權限怎麼夠我用')
+        .setDescription(`我把我要的權限都列出來了，快點給我不然我沒辦法幫你執行這個指令\n\n${info.args[0].map(perm => `- ${permissionTable[perm]}`).join('\n')}`);
+      break;
+    
+    case CommandManagerRejectReason.InCooldown:
+      helper.setTitle('你太快了')
+        .setDescription(`你必須在 ${~~(info.args[0] / 1000)} 秒後才能再使用此指令。`);
+      break;
+    
+    case CommandManagerRejectReason.IllegalArgument:
+      const [_commandOptions, { index, status }] = info.args;
+      switch (status) {
+        case CommandParserOptionResultStatus.Required:
+          helper.setTitle('必填')
+            .setDescription(`第 ${index + 1} 個參數是必填的`);
+          break;
+        
+        case CommandParserOptionResultStatus.WrongFormat:
+          helper.setTitle('格式錯誤')
+            .setDescription(`第 ${index + 1} 個參數的格式錯誤`);
+          break;
+      
+        case CommandParserOptionResultStatus.NotInChoices:
+          if (!('choices' in info.args[1])) break;
+          const { choices } = info.args[1];
+          const choicesString = choices.map(({ name: n, value: v }) => n === v.toString() ? `\`${n}\`` : `\`${n}\`/\`${v}\``).flat().join('．');
+          helper.setTitle('不在選項內')
+            .setDescription('選項：\n' + choicesString);
+          break;
+              
+        case CommandParserOptionResultStatus.ValueTooSmall:
+          helper.setTitle('太小了')
+            .setDescription(`第 ${index + 1} 個參數太小了`);
+          break;
+              
+        case CommandParserOptionResultStatus.ValueTooLarge:
+          helper.setTitle('太大了')
+            .setDescription(`第 ${index + 1} 個參數太大了`);
+          break;
+        
+        case CommandParserOptionResultStatus.LengthTooShort:
+          helper.setTitle('太短了')
+            .setDescription(`第 ${index + 1} 個參數太短了`);
+          break;
+      
+        case CommandParserOptionResultStatus.LengthTooLong:
+          helper.setTitle('太長了')
+            .setDescription(`第 ${index + 1} 個參數太長了`);
+          break;
+      }
+  }
+
+  await source.update({ embeds: [helper] });
+});
+
+client.commands.on('unavailable', async source => {
+  await source.defer({ ephemeral: true });
+  await source.temp('這個指令目前無法使用，這通常是因為這個指令正在更新，稍待片刻後就能正常使用了');
+});
+
+
+/******************* 上線確認 *******************/
+client.on('ready', async () => {
+  console.log('Ready');
+  // sendHook(client, WebhookLoggingMode.LOGIN);
+
+  await client.initialize();
+
+  // await client.guilds.cache.get('784971366234587137')?.commands.set(client.devCommands);
+  // console.log('私人指令已佈署完畢，請使用 /deploy 確認全域指令是否有任何異動。');
+});
+/**/
+
+/******************* 如果出錯 *******************/
+client.on('error', console.error);
+client.commands.on('error', console.error);
+process.on('uncaughtException', console.error);
+/**/
+
+/******************* 訊息創建 *******************/
+client.on('messageCreate', async message => {
+  client.commands.messageRun(message);
+});
+/**/
+
+/******************* 斜線指令 *******************/
+client.on('interactionCreate', async interaction => {
+  client.commands.interactionRun(interaction);
+  /********* 篩選 *********/
+  if (![InteractionType.ApplicationCommand, InteractionType.ApplicationCommandAutocomplete, InteractionType.MessageComponent].includes(interaction.type)) return;
+  if (!interaction.inCachedGuild() || !interaction.channel) return;
+  if (interaction.user.blocked) return;
+  if (client.devMode && interaction.guild.id !== constant.mainGuild.id) return;
+  /**/
+
+
+  /********* 自動匹配 *********/
+  if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
+    let commandName = interaction.commandName;
+    if (interaction.options.getSubcommand(false)) commandName += '_' + interaction.options.getSubcommand(false)
+
+    const option = interaction.options.getFocused(true);
+    const regExp = new RegExp(option.value.toLowerCase().split('').join('.*?'));
+
+    const result = interaction.client.autocomplete.get(commandName)?.[option.name]?.filter(({ name, devOnly }) => {
+      if (!regExp.test(name.toLowerCase())) return false;
+      if (devOnly && interaction.guild.id !== constant.devGuild.id) return false;
+      return true;
+    });
+    if (!result) return interaction.respond([]);
+
+    result.sort((a, b) => {
+      const aMatch = regExp.exec(a.name.toLowerCase());
+      const bMatch = regExp.exec(b.name.toLowerCase());
+
+      if (!aMatch && !bMatch) return 0;
+      if (!aMatch) return 1;
+      if (!bMatch) return -1;
+  
+      // 符合 regExp 的字串長度越長，代表越不符合
+      if (aMatch[0].length > bMatch[0].length) return 1;
+      if (aMatch[0].length < bMatch[0].length) return -1;
+  
+      // 如果都一樣長就比誰最前面
+      if (aMatch.index > bMatch.index) return 1;
+      if (aMatch.index < bMatch.index) return -1;
+      return 0;
+    });
+  
+    return interaction.respond(result.slice(0, 10).map(({ name: n }) => ({ name: n, value: n })));
+  }
+
+  /********* 訊息配件 *********/
+  if (interaction.type === InteractionType.MessageComponent) {
+    /***** 按鈕互動 *****/
+    if (interaction.isButton()) {
+      const [commandName] = interaction.customId.split('_');
+      const action = client.buttons.get(commandName);
+      action?.(interaction);
+      return;
+    }
+    /**/
+    return;
+  }
+  /**/
+});
+/**/
+
+/******************* 登入機器人 *******************/
+client.login(config.bot.token);
+/**/
