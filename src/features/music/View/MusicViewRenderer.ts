@@ -18,15 +18,21 @@ export class MusicViewRenderer {
     this.client = client;
   }
 
-  public async invalidVideoUrl(source: Source): Promise<void> {
-    const embed = this.baseEmbed
-      .setDescription('我找不到這個影片連結的相關資訊，可能是因為它是私人影片，或是影片有年齡限制，或單純只是你亂打連結');
-    await source.update({ embeds: [embed] });
-  }
-
   public async invalidPlaylistUrl(source: Source): Promise<void> {
     const embed = this.baseEmbed
       .setDescription('我找不到這個播放清單連結的相關資訊，可能是因為這個清單是私人的，或單純只是你亂打連結');
+    await source.update({ embeds: [embed] });
+  }
+
+  public async emptyPlaylist(source: Source): Promise<void> {
+    const embed = this.baseEmbed
+      .setDescription('你給的播放清單似乎是空的，我在裡面找不到任何影片');
+    await source.update({ embeds: [embed] });
+  }
+
+  public async invalidVideoUrl(source: Source): Promise<void> {
+    const embed = this.baseEmbed
+      .setDescription('我找不到這個影片連結的相關資訊，可能是因為它是私人影片，或是影片有年齡限制，或單純只是你亂打連結');
     await source.update({ embeds: [embed] });
   }
 
@@ -45,6 +51,12 @@ export class MusicViewRenderer {
   public async addedToQueue(source: Source, track: Track): Promise<void> {
     const embed = this.baseEmbed
       .setDescription(`${track.videoLink} 歌曲載入成功，已加入待播清單中`);
+    await source.update({ embeds: [embed] });
+  }
+
+  public async bulkAddedToQueue(source: Source, trackCount: number): Promise<void> {
+    const embed = this.baseEmbed
+      .setDescription(`已將播放清單中的 ${trackCount} 首歌曲加入待播清單中`);
     await source.update({ embeds: [embed] });
   }
 

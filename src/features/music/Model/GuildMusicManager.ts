@@ -54,20 +54,33 @@ export class GuildMusicManager {
   }
 
   public async play(source: Source, keywordOrUrl: string): Promise<void> {
-    let resource: { stream: YouTubeStream, info: InfoData } | void;
+    let resources: { stream: YouTubeStream, info: InfoData }[] | { stream: YouTubeStream, info: InfoData } | void;
 
-    if (YoutubeUtil.isVideoUrl(keywordOrUrl)) {
-      resource = await this.parseVideoUrl(source, keywordOrUrl);
+    if (YoutubeUtil.isPlaylistUrl(keywordOrUrl)) {
+      resources = await this.parsePlaylistUrl(source, keywordOrUrl);
     }
-    else if (YoutubeUtil.isPlaylistUrl(keywordOrUrl)) {
-      resource = await this.parsePlaylistUrl(source, keywordOrUrl);
+    else if (YoutubeUtil.isVideoUrl(keywordOrUrl)) {
+      resources = await this.parseVideoUrl(source, keywordOrUrl);
     }
     else {
-      resource = await this.parseKeyword(source, keywordOrUrl);
+      resources = await this.parseKeyword(source, keywordOrUrl);
     }
-    if (!resource) return;
+    if (!resources) return;
 
-    const track = new Track({ requester: source.member, ...resource });
+    if (Array.isArray(resources)) {
+      await this.view.bulkAddedToQueue(source, resources.length);
+      const tracks = resources.map(r => new Track({ requester: source.member, ...r }));
+      
+      if (!this.working) {
+        const firstTrack = tracks.shift() as Track;
+        this._play(firstTrack);
+      }
+
+      this.queue = this.queue.concat(tracks);
+      return;
+    }
+
+    const track = new Track({ requester: source.member, ...resources });
 
     if (!this.working) {
       this._play(track);
@@ -135,18 +148,28 @@ export class GuildMusicManager {
     });
   }
 
-  private async parseVideoUrl(source: Source, url: string): Promise<{ stream: YouTubeStream, info: InfoData } | void> {
-    const info = await ytpl.video_basic_info(url).catch(() => {});
-    if (!info) return await this.view.invalidVideoUrl(source);
+  private async parsePlaylistUrl(source: Source, url: string): Promise<{ stream: YouTubeStream, info: InfoData }[] | void> {
+    const playlist = await ytpl.playlist_info(url, { incomplete: true }).catch(() => {});
+    if (!playlist) return await this.view.invalidPlaylistUrl(source);
 
-    const stream = await ytpl.stream(url).catch(() => {}) as YouTubeStream | void;
-    if (!stream) return await this.view.invalidVideoUrl(source);
+    const videos = playlist.page(1).slice(0, 50);
+    if (!videos) return await this.view.emptyPlaylist(source);
 
-    return { stream, info };
+    const result: { stream: YouTubeStream, info: InfoData }[] = [];
+    for (const video of videos) {
+      const r = await this.fetchVideo(video.url);
+      if (r) result.push(r);
+    }
+
+    if (!result.length) return await this.view.emptyPlaylist(source);
+
+    return result;
   }
 
-  private async parsePlaylistUrl(source: Source, url: string): Promise<{ stream: YouTubeStream, info: InfoData } | void> {
-    console.log(source, url);
+  private async parseVideoUrl(source: Source, url: string): Promise<{ stream: YouTubeStream, info: InfoData } | void> {
+    const result = await this.fetchVideo(url);
+    if (!result) return this.view.invalidVideoUrl(source);
+    return result;
   }
 
   private async parseKeyword(source: Source, keyword: string): Promise<{ stream: YouTubeStream, info: InfoData } | void> {
@@ -160,14 +183,21 @@ export class GuildMusicManager {
     if (!videos) return await this.view.noSearchResult(source);
 
     const url = await this.view.selectVideo(source, videos);
-    if (!url) return;
+    if (!url) return await this.view.noSearchResult(source);
 
+    const result = await this.fetchVideo(url);
+    if (!result) return await this.view.noSearchResult(source);
+
+    return result;
+  }
+
+  private async fetchVideo(url: string): Promise<{ stream: YouTubeStream, info: InfoData } | void> {
     const info = await ytpl.video_basic_info(url).catch(() => {});
     if (!info) return;
 
     const stream = await ytpl.stream(url).catch(() => {}) as YouTubeStream | void;
     if (!stream) return;
 
-    return { stream, info }
+    return { stream, info };
   }
 }

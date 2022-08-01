@@ -127,7 +127,8 @@ export class GuildMusicController {
           return; // 這邊 render 的時候會 reply，所以直接結束
       }
 
-      await interaction.update({ components: this.newComponents });
+      // 可能會因為跳過歌曲導致附著訊息被刪除
+      await interaction.update({ components: this.newComponents }).catch(() => {}); 
     });
 
     return collector;
