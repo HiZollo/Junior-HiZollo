@@ -25,6 +25,14 @@ export class ClientMusicManager {
     return this.guilds.get(gulidId);
   }
 
+  public map<T>(fn: (value: GuildMusicManager, key: string, map: Map<string, GuildMusicManager>) => T): T[] {
+    const iter = this.guilds.entries();
+		return Array.from({ length: this.guilds.size }, (): T => {
+			const [key, value] = iter.next().value;
+			return fn(value, key, this.guilds);
+		});
+  }
+
   public join(voiceChannel: VoiceBasedChannel, textChannel: GuildTextBasedChannel, autoSuppress: boolean): void {
     if (!voiceChannel.joinable) throw new Error('The voice channel is not joinable.');
 

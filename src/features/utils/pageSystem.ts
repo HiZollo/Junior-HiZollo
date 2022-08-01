@@ -152,7 +152,7 @@ function newSelectMenu(page: PageSystemPagesOptions[]): ActionRowBuilder<SelectM
   const selectOptions: APISelectMenuOption[] = [];
   for (let i = 0; i < page.length; i++) {
     selectOptions.push({
-      label: page[i].name.slice(0, 87), 
+      label: (i + 1).toString(), 
       value: i.toString()
     })
   }
