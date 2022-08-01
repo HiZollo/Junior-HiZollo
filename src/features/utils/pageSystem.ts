@@ -67,7 +67,7 @@ export default async function pageSystem(options: PageSystemOptions): Promise<Pa
 
     if (mode === PageSystemMode.Description) {
       let newDescription = description ? `${description}\n\n` : '';
-      newDescription += pages[index].map((a, i) => `\`${fixedDigits(i+1, 2)}.\` ${a.name}`).join('\n');
+      newDescription += pages[index].map((a, i) => `\`${fixedDigits(i+1, 2)}.\` ${a.name}`).join('\n\n');
       embed.setDescription(newDescription);
     }
     else {
@@ -152,7 +152,7 @@ function newSelectMenu(page: PageSystemPagesOptions[]): ActionRowBuilder<SelectM
   const selectOptions: APISelectMenuOption[] = [];
   for (let i = 0; i < page.length; i++) {
     selectOptions.push({
-      label: page[i].name, 
+      label: page[i].name.slice(0, 87), 
       value: i.toString()
     })
   }

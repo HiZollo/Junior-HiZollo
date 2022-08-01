@@ -53,6 +53,10 @@ export class GuildMusicManager {
     });
   }
 
+  public get totalLength(): number {
+    return this.queue.reduce((acc, cur) => acc + cur.length, 0);
+  }
+
   public async play(source: Source, keywordOrUrl: string): Promise<void> {
     let resources: { stream: YouTubeStream, info: InfoData }[] | { stream: YouTubeStream, info: InfoData } | void;
 
@@ -84,7 +88,8 @@ export class GuildMusicManager {
 
     if (!this.working) {
       this._play(track);
-      return await this.view.startPlaying(source, track);
+      await this.view.startPlaying(source, track);
+      return;
     }
 
     this.queue.push(track);
@@ -150,43 +155,55 @@ export class GuildMusicManager {
 
   private async parsePlaylistUrl(source: Source, url: string): Promise<{ stream: YouTubeStream, info: InfoData }[] | void> {
     const playlist = await ytpl.playlist_info(url, { incomplete: true }).catch(() => {});
-    if (!playlist) return await this.view.invalidPlaylistUrl(source);
+    if (!playlist) {
+      await this.view.invalidPlaylistUrl(source);
+      return;
+    }
 
-    const videos = playlist.page(1).slice(0, 50);
-    if (!videos) return await this.view.emptyPlaylist(source);
+    const videos = playlist.page(1).slice(0, 20) ?? [];
 
+    const message = await this.view.startParsingPlaylist(source);
     const result: { stream: YouTubeStream, info: InfoData }[] = [];
     for (const video of videos) {
       const r = await this.fetchVideo(video.url);
       if (r) result.push(r);
     }
 
-    if (!result.length) return await this.view.emptyPlaylist(source);
+    if (!result.length) {
+      await this.view.emptyPlaylist(message);
+      return;
+    }
 
     return result;
   }
 
   private async parseVideoUrl(source: Source, url: string): Promise<{ stream: YouTubeStream, info: InfoData } | void> {
     const result = await this.fetchVideo(url);
-    if (!result) return this.view.invalidVideoUrl(source);
+    if (!result) {
+      await this.view.invalidVideoUrl(source);
+      return;
+    }
     return result;
   }
 
   private async parseKeyword(source: Source, keyword: string): Promise<{ stream: YouTubeStream, info: InfoData } | void> {
-    const videos = await ytpl.search(keyword, {
-      source: {
-        youtube: 'video'
-      }, 
-      language: 'zh'
-    }).catch(() => {});
-
-    if (!videos) return await this.view.noSearchResult(source);
+    const videos = await ytpl.search(keyword, { source: { youtube: 'video' }, language: 'zh' }).catch(() => {});
+    if (!videos) {
+      await this.view.noSearchResult(source);
+      return;
+    }
 
     const url = await this.view.selectVideo(source, videos);
-    if (!url) return await this.view.noSearchResult(source);
+    if (!url) {
+      await this.view.noSearchResult(source);
+      return;
+    }
 
     const result = await this.fetchVideo(url);
-    if (!result) return await this.view.noSearchResult(source);
+    if (!result) {
+      await this.view.noSearchResult(source);
+      return;
+    }
 
     return result;
   }

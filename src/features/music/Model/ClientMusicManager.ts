@@ -55,6 +55,18 @@ export class ClientMusicManager {
     });
   }
 
+  public getNowPlaying(guildId: string): Track | null {
+    const manager = this.guilds.get(guildId);
+    if (!manager) throw new Error('Guild not found');
+    return manager.nowPlaying;
+  }
+
+  public getTotalLength(guildId: string): number {
+    const manager = this.guilds.get(guildId);
+    if (!manager) throw new Error('Guild not found');
+    return manager.totalLength;
+  }
+
   public getQueue(guildId: string): Track[] {
     const manager = this.guilds.get(guildId);
     if (!manager) throw new Error('Guild not found');

@@ -1,4 +1,4 @@
-import { EmbedBuilder, GuildTextBasedChannel } from "discord.js";
+import { EmbedBuilder, GuildTextBasedChannel, Message } from "discord.js";
 import { ButtonInteraction } from "discord.js";
 import { YouTubeVideo } from "play-dl";
 import { HZClient } from "../../../classes/HZClient";
@@ -18,46 +18,53 @@ export class MusicViewRenderer {
     this.client = client;
   }
 
-  public async invalidPlaylistUrl(source: Source): Promise<void> {
+  public async invalidPlaylistUrl(source: Source): Promise<Message> {
     const embed = this.baseEmbed
       .setDescription('我找不到這個播放清單連結的相關資訊，可能是因為這個清單是私人的，或單純只是你亂打連結');
-    await source.update({ embeds: [embed] });
+    return await source.update({ embeds: [embed] });
   }
 
-  public async emptyPlaylist(source: Source): Promise<void> {
+  public async emptyPlaylist(message: Message): Promise<Message> {
     const embed = this.baseEmbed
-      .setDescription('你給的播放清單似乎是空的，我在裡面找不到任何影片');
-    await source.update({ embeds: [embed] });
+      .setDescription('這個播放清單似乎是空的，我在裡面找不到任何影片');
+    return await message.edit({ embeds: [embed] });
   }
 
-  public async invalidVideoUrl(source: Source): Promise<void> {
+  public async invalidVideoUrl(source: Source): Promise<Message> {
     const embed = this.baseEmbed
       .setDescription('我找不到這個影片連結的相關資訊，可能是因為它是私人影片，或是影片有年齡限制，或單純只是你亂打連結');
-    await source.update({ embeds: [embed] });
+    return await source.update({ embeds: [embed] });
   }
 
-  public async noSearchResult(source: Source): Promise<void> {
+  public async noSearchResult(source: Source): Promise<Message> {
     const embed = this.baseEmbed
       .setDescription('我找不到任何與你的關鍵字相關的影片，請試試看其他關鍵字');
-    await source.update({ embeds: [embed] });
+    return await source.update({ embeds: [embed] });
   }
 
-  public async startPlaying(source: Source, track: Track): Promise<void> {
+  public async startParsingPlaylist(source: Source): Promise<Message> {
+    const embed = this.baseEmbed
+      .setDescription('已開始讀取播放清單，如果播放清單太長，可能需要等待個幾分鐘');
+    return await source.update({ embeds: [embed] });
+  }
+
+  public async startPlaying(source: Source, track: Track): Promise<Message> {
     const embed = this.baseEmbed
       .setDescription(`${track.videoLink} 載入成功，即將開始播放`);
-    await source.update({ embeds: [embed] });
+    return await source.update({ embeds: [embed] });
   }
 
-  public async addedToQueue(source: Source, track: Track): Promise<void> {
+
+  public async addedToQueue(source: Source, track: Track): Promise<Message> {
     const embed = this.baseEmbed
       .setDescription(`${track.videoLink} 歌曲載入成功，已加入待播清單中`);
-    await source.update({ embeds: [embed] });
+    return await source.update({ embeds: [embed] });
   }
 
-  public async bulkAddedToQueue(source: Source, trackCount: number): Promise<void> {
+  public async bulkAddedToQueue(source: Source, trackCount: number): Promise<Message> {
     const embed = this.baseEmbed
       .setDescription(`已將播放清單中的 ${trackCount} 首歌曲加入待播清單中`);
-    await source.update({ embeds: [embed] });
+    return await source.update({ embeds: [embed] });
   }
 
 
