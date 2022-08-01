@@ -1,9 +1,12 @@
 import { EmbedBuilder, GuildTextBasedChannel } from "discord.js";
 import { ButtonInteraction } from "discord.js";
+import { YouTubeVideo } from "play-dl";
 import { HZClient } from "../../../classes/HZClient";
 import { Source } from "../../../classes/Source";
-import { MusicControllerActions } from "../../../utils/enums";
+import { MusicControllerActions, PageSystemMode } from "../../../utils/enums";
+import { PageSystemPagesOptions } from "../../../utils/interfaces";
 import fixedDigits from "../../utils/fixedDigits";
+import pageSystem from "../../utils/pageSystem";
 import tempMessage from "../../utils/tempMessage";
 import { GuildMusicManager } from "../Model/GuildMusicManager";
 import { Track } from "../Model/Track";
@@ -16,25 +19,61 @@ export class MusicViewRenderer {
   }
 
   public async invalidVideoUrl(source: Source): Promise<void> {
-    await source.update('我找不到這個影片連結的相關資訊，可能是因為它是私人影片，或是影片有年齡限制，或單純只是你亂打連結');
+    const embed = this.baseEmbed
+      .setDescription('我找不到這個影片連結的相關資訊，可能是因為它是私人影片，或是影片有年齡限制，或單純只是你亂打連結');
+    await source.update({ embeds: [embed] });
   }
 
   public async invalidPlaylistUrl(source: Source): Promise<void> {
-    await source.update('我找不到這個播放清單連結的相關資訊，可能是因為這個清單是私人的，或單純只是你亂打連結');
+    const embed = this.baseEmbed
+      .setDescription('我找不到這個播放清單連結的相關資訊，可能是因為這個清單是私人的，或單純只是你亂打連結');
+    await source.update({ embeds: [embed] });
   }
 
   public async noSearchResult(source: Source): Promise<void> {
-    await source.update('我找不到任何與你的關鍵字相關的影片，請試試看其他關鍵字');
+    const embed = this.baseEmbed
+      .setDescription('我找不到任何與你的關鍵字相關的影片，請試試看其他關鍵字');
+    await source.update({ embeds: [embed] });
   }
 
   public async startPlaying(source: Source, track: Track): Promise<void> {
-    await source.update(`${track.videoLink} 載入成功，即將開始播放`);
+    const embed = this.baseEmbed
+      .setDescription(`${track.videoLink} 載入成功，即將開始播放`);
+    await source.update({ embeds: [embed] });
   }
 
   public async addedToQueue(source: Source, track: Track): Promise<void> {
-    await source.update(`${track.videoLink} 歌曲載入成功，已加入待播清單中`);
+    const embed = this.baseEmbed
+      .setDescription(`${track.videoLink} 歌曲載入成功，已加入待播清單中`);
+    await source.update({ embeds: [embed] });
   }
 
+
+  public async selectVideo(source: Source, videos: YouTubeVideo[]): Promise<string | void> {
+    // 只有單頁，最多十筆資料
+    const pages: PageSystemPagesOptions[][] = [[]];
+    for (let i = 0; i < Math.min(videos.length, 10); i++) {
+      pages[0].push({
+        name: videos[i].title ?? '[無法取得標題內容]', 
+        url: videos[i].url
+      });
+    }
+
+    const result = await pageSystem({
+      mode: PageSystemMode.Description, 
+      source: source, 
+      embed: this.baseEmbed, 
+      description: '以下是搜尋結果，請選擇一首你想播放的歌曲', 
+      pages: pages, 
+      allowSelect: true, 
+      contents: {
+        exit: '已結束搜尋', 
+        idle: '搜尋清單已因閒置過久而關閉'
+      }
+    });
+
+    return result?.url;
+  }
 
 
   public async noPermOnStage(channel: GuildTextBasedChannel): Promise<void> {

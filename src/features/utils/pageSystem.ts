@@ -18,7 +18,7 @@ export default async function pageSystem(options: PageSystemOptions): Promise<Pa
   // 根據模式設定 description
   if (mode === PageSystemMode.Description) {
     let newDescription = description ? `${description}\n\n` : '';
-    newDescription += pages[index].map((a, i) => `\`${fixedDigits(i+1, 2)}.\` ${a.name}`).join('\n');
+    newDescription += pages[index].map((a, i) => `\`${fixedDigits(i+1, 2)}.\` ${a.name}`).join('\n\n');
     embed.setDescription(newDescription);
   }
   else {

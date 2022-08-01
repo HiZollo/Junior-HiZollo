@@ -92,7 +92,7 @@ export interface ModelSystemOptions {
   time?: number;
 }
 
-export interface PageSystemBaseOptions {
+export interface BasePageSystemOptions {
   mode: PageSystemMode;
   source: Source;
   embed: EmbedBuilder;
@@ -111,13 +111,13 @@ export interface PageSystemPagesOptions {
   [key: string]: any;
 }
 
-export interface PageSystemDescriptionOptions extends PageSystemBaseOptions {
+export interface PageSystemDescriptionOptions extends BasePageSystemOptions {
   mode: PageSystemMode.Description;
   pages: PageSystemPagesOptions[][];
   allowSelect?: boolean;
 }
 
-export interface PageSystemEmbedFieldOptions extends PageSystemBaseOptions {
+export interface PageSystemEmbedFieldOptions extends BasePageSystemOptions {
   mode: PageSystemMode.EmbedField;
   pages: APIEmbedField[][];
 }
