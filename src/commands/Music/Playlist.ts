@@ -1,7 +1,7 @@
 import { EmbedBuilder } from "discord.js";
 import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
-import { Track } from "../../features/music/Model/Track";
+import { Track } from "../../classes/Music/Model/Track";
 import pageSystem from "../../features/utils/pageSystem";
 import { CommandType, PageSystemMode } from "../../utils/enums";
 import { PageSystemPagesOptions } from "../../utils/interfaces";

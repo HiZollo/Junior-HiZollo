@@ -4,8 +4,8 @@ import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, Embed
 import { InfoData, YouTubeStream } from "play-dl";
 import { HZClient } from "../classes/HZClient";
 import { Source } from "../classes/Source";
-import { GuildMusicManager } from "../features/music/Model/GuildMusicManager";
-import { MusicViewRenderer } from "../features/music/View/MusicViewRenderer";
+import { GuildMusicManager } from "../classes/Music/Model/GuildMusicManager";
+import { MusicViewRenderer } from "../classes/Music/View/MusicViewRenderer";
 import { CommandParserOptionResultStatus, CommandType, PageSystemMode } from "./enums";
 import { ArgumentParseMethod, HZCommandOptionData } from "./types";
 

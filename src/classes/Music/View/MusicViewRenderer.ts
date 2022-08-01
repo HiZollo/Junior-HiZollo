@@ -5,9 +5,9 @@ import { HZClient } from "../../../classes/HZClient";
 import { Source } from "../../../classes/Source";
 import { MusicControllerActions, PageSystemMode } from "../../../utils/enums";
 import { PageSystemPagesOptions } from "../../../utils/interfaces";
-import fixedDigits from "../../utils/fixedDigits";
-import pageSystem from "../../utils/pageSystem";
-import tempMessage from "../../utils/tempMessage";
+import fixedDigits from "../../../features/utils/fixedDigits";
+import pageSystem from "../../../features/utils/pageSystem";
+import tempMessage from "../../../features/utils/tempMessage";
 import { GuildMusicManager } from "../Model/GuildMusicManager";
 import { Track } from "../Model/Track";
 

@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, GuildMember, GuildTextBasedChannel, InteractionCollector, Message, MessageOptions } from "discord.js";
-import { HZClient } from "../../../classes/HZClient";
+import { HZClient } from "../../HZClient";
 import { MusicControllerActions } from "../../../utils/enums";
 import { GuildMusicControllerOptions } from "../../../utils/interfaces";
 import { GuildMusicManager } from "../Model/GuildMusicManager";

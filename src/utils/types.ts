@@ -2,7 +2,7 @@ import { ApplicationCommandOptionData, ApplicationCommandSubCommandData, Applica
 import osu from "node-osu";
 import { CommandManager } from "../classes/CommandManager";
 import CooldownManager from "../classes/CooldownManager";
-import { ClientMusicManager } from "../features/music/Model/ClientMusicManager";
+import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";
 import { ArgumentParseType, CommandManagerRejectReason, CommandOptionType } from "./enums";
 import { CommandParserOptionFailWithChoicesResult, CommandParserOptionFailWithLimitResult, CommandParserOptionFailWithPureStatusResult, CommandParserOptionPassResult, PageSystemDescriptionOptions, PageSystemEmbedFieldOptions } from "./interfaces";
 

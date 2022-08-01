@@ -10,7 +10,7 @@ import loadButtons from '../features/appUtils/loadButtons';
 import getActivity from "../features/utils/getActivity";
 import { HZClientOptions } from "../utils/interfaces";
 import { AutocompleteReturnType } from "../utils/types";
-import { ClientMusicManager } from "../features/music/Model/ClientMusicManager";
+import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";
 
 dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 
