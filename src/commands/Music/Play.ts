@@ -1,6 +1,6 @@
 import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
-import { ArgumentParseType, CommandType, PlayMusicResultType } from "../../utils/enums";
+import { ArgumentParseType, CommandType } from "../../utils/enums";
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 
 export default class MusicPlay extends Command<[string]> {
@@ -44,24 +44,6 @@ export default class MusicPlay extends Command<[string]> {
     }
 
     if (!source.deferred) await source.defer();
-
-    const result = await source.client.music.play(source.guild.id, source.member, keywordOrUrl);
-    switch (result.type) {
-      case PlayMusicResultType.StartPlaying:
-        await source.temp(`歌曲載入成功，即將開始播放 ${result.track.title}`);
-        return;
-      
-      case PlayMusicResultType.AddedToQueue:
-        await source.temp(`歌曲載入成功，已將 ${result.track.title} 加入待播清單`);
-        return;
-      
-      case PlayMusicResultType.NotInVoiceChannel:
-        await source.temp(`我並不在任何語音頻道中，請問這樣我是要怎麼播歌`);
-        return;
-      
-      case PlayMusicResultType.ResourceNotFound:
-        await source.temp(`我找不到這首歌曲，請確認網址或關鍵字有沒有輸入錯誤`);
-        return;
-    }
+    await source.client.music.play(source, keywordOrUrl);
   }
 }

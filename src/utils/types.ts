@@ -3,8 +3,7 @@ import osu from "node-osu";
 import { CommandManager } from "../classes/CommandManager";
 import CooldownManager from "../classes/CooldownManager";
 import { ClientMusicManager } from "../features/music/Model/ClientMusicManager";
-import { Track } from "../features/music/Model/Track";
-import { ArgumentParseType, CommandManagerRejectReason, CommandOptionType, PlayMusicResultType } from "./enums";
+import { ArgumentParseType, CommandManagerRejectReason, CommandOptionType } from "./enums";
 import { CommandParserOptionFailWithChoicesResult, CommandParserOptionFailWithLimitResult, CommandParserOptionFailWithPureStatusResult, CommandParserOptionPassResult, PageSystemDescriptionOptions, PageSystemEmbedFieldOptions } from "./interfaces";
 
 export type Intersect<T, U> = { [K in (keyof T & keyof U)]: T[K] | U[K] };
@@ -49,12 +48,6 @@ export type AutocompleteReturnType = { [key: string]: { name: string, devOnly?: 
 export type PageSystemOptions = PageSystemDescriptionOptions | PageSystemEmbedFieldOptions;
 
 export type ThrowBallType = "棒球" | "保齡球" | "乒乓球" | "巧克力球";
-
-export type PlayMusicResult = 
-  | { type: PlayMusicResultType.StartPlaying, track: Track }
-  | { type: PlayMusicResultType.AddedToQueue, track: Track }
-  | { type: PlayMusicResultType.NotInVoiceChannel }
-  | { type: PlayMusicResultType.ResourceNotFound };
 
 
 declare module "discord.js" {

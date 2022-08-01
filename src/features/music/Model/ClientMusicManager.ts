@@ -1,8 +1,7 @@
 import { entersState, joinVoiceChannel, VoiceConnectionStatus } from "@discordjs/voice";
-import { GuildMember, GuildTextBasedChannel, VoiceBasedChannel } from "discord.js";
+import { GuildTextBasedChannel, VoiceBasedChannel } from "discord.js";
 import { HZClient } from "../../../classes/HZClient";
-import { PlayMusicResultType } from "../../../utils/enums";
-import { PlayMusicResult } from "../../../utils/types";
+import { Source } from "../../../classes/Source";
 import { MusicViewRenderer } from "../View/MusicViewRenderer";
 import { GuildMusicManager } from "./GuildMusicManager";
 import { Track } from "./Track";
@@ -73,10 +72,10 @@ export class ClientMusicManager {
     await manager.resend();
   }
 
-  public async play(guildId: string, requester: GuildMember, keywordOrUrl: string): Promise<PlayMusicResult> {
-    const manager = this.guilds.get(guildId);
-    if (!manager) return { type: PlayMusicResultType.NotInVoiceChannel };
-    return await manager.play(requester, keywordOrUrl);
+  public async play(source: Source, keywordOrUrl: string): Promise<void> {
+    const manager = this.guilds.get(source.guild.id);
+    if (!manager) throw new Error('Guild not found');
+    return await manager.play(source, keywordOrUrl);
   }
 
   public leave(guildId: string): void {

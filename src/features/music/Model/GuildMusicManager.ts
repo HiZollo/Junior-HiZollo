@@ -1,14 +1,13 @@
-import { ChannelType, Guild, GuildMember, GuildTextBasedChannel, PermissionsBitField, VoiceBasedChannel, VoiceState } from "discord.js";
+import { ChannelType, Guild, GuildTextBasedChannel, PermissionsBitField, VoiceBasedChannel, VoiceState } from "discord.js";
 import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, VoiceConnection } from "@discordjs/voice";
 import { HZClient } from "../../../classes/HZClient";
 import { GuildMusicManagerOptions } from "../../../utils/interfaces";
 import { YoutubeUtil } from "./YoutubeUtil";
 import ytpl, { InfoData, YouTubeStream } from "play-dl";
 import { Track } from "./Track";
-import { PlayMusicResultType } from "../../../utils/enums";
-import { PlayMusicResult } from "../../../utils/types";
 import { GuildMusicController } from "../Controller/GuildMusicController";
 import { MusicViewRenderer } from "../View/MusicViewRenderer";
+import { Source } from "../../../classes/Source";
 
 export class GuildMusicManager {
   public client: HZClient;
@@ -54,26 +53,38 @@ export class GuildMusicManager {
     });
   }
 
-  public async play(requester: GuildMember, keywordOrUrl: string): Promise<PlayMusicResult> {
+  public async play(source: Source, keywordOrUrl: string): Promise<void> {
     let resource: { stream: YouTubeStream, info: InfoData } | void;
+
     if (YoutubeUtil.isVideoUrl(keywordOrUrl)) {
       resource = await this.parseVideoUrl(keywordOrUrl);
+      if (!resource) {
+        return await this.view.invalidVideoUrl(source);
+      }
     }
+
     else if (YoutubeUtil.isPlaylistUrl(keywordOrUrl)) {
       resource = await this.parsePlaylistUrl(keywordOrUrl);
+      if (!resource) {
+        return await this.view.invalidPlaylistUrl(source);
+      }
     }
     else {
       resource = await this.parseKeyword(keywordOrUrl);
+      if (!resource) {
+        return await this.view.noSearchResult(source);
+      }
     }
-    if (!resource) return { type: PlayMusicResultType.ResourceNotFound };
 
-    const track = new Track({ requester, ...resource });
+    const track = new Track({ requester: source.member, ...resource });
+
     if (!this.working) {
       this._play(track);
-      return { type: PlayMusicResultType.StartPlaying, track: track };
+      return await this.view.startPlaying(source, track);
     }
+
     this.queue.push(track);
-    return { type: PlayMusicResultType.AddedToQueue, track: track };
+    await this.view.addedToQueue(source, track);
   }
 
   public togglePlay(): void {
@@ -147,7 +158,7 @@ export class GuildMusicManager {
     console.log(url);
   }
 
-  private async parseKeyword(keywork: string): Promise<{ stream: YouTubeStream, info: InfoData } | void> {
-    console.log(keywork);
+  private async parseKeyword(keyword: string): Promise<{ stream: YouTubeStream, info: InfoData } | void> {
+    console.log(keyword);
   }
 }

@@ -1,6 +1,7 @@
 import { EmbedBuilder, GuildTextBasedChannel } from "discord.js";
 import { ButtonInteraction } from "discord.js";
 import { HZClient } from "../../../classes/HZClient";
+import { Source } from "../../../classes/Source";
 import { MusicControllerActions } from "../../../utils/enums";
 import fixedDigits from "../../utils/fixedDigits";
 import tempMessage from "../../utils/tempMessage";
@@ -13,6 +14,28 @@ export class MusicViewRenderer {
   constructor(client: HZClient) {
     this.client = client;
   }
+
+  public async invalidVideoUrl(source: Source): Promise<void> {
+    await source.update('我找不到這個影片連結的相關資訊，可能是因為它是私人影片，或是影片有年齡限制，或單純只是你亂打連結');
+  }
+
+  public async invalidPlaylistUrl(source: Source): Promise<void> {
+    await source.update('我找不到這個播放清單連結的相關資訊，可能是因為這個清單是私人的，或單純只是你亂打連結');
+  }
+
+  public async noSearchResult(source: Source): Promise<void> {
+    await source.update('我找不到任何與你的關鍵字相關的影片，請試試看其他關鍵字');
+  }
+
+  public async startPlaying(source: Source, track: Track): Promise<void> {
+    await source.update(`${track.videoLink} 載入成功，即將開始播放`);
+  }
+
+  public async addedToQueue(source: Source, track: Track): Promise<void> {
+    await source.update(`${track.videoLink} 歌曲載入成功，已加入待播清單中`);
+  }
+
+
 
   public async noPermOnStage(channel: GuildTextBasedChannel): Promise<void> {
     const embed = this.baseEmbed
