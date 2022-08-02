@@ -183,9 +183,6 @@ export class HZNetwork extends EventEmitter {
   }
 
   private registeredPorts = new Set([
-    '1', '10', '100', '1000',  // Main Port
-    '8', '27', '64', '125', '216', // Subport 1
-    '9', '99', '999', // Subport 2
-    '5001', '6023', '9973' // Test Port
+    '1', '8', '9', '27'
   ]);
 }
