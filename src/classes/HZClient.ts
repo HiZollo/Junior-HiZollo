@@ -12,6 +12,7 @@ import getActivity from "../features/utils/getActivity";
 import { HZClientOptions } from "../utils/interfaces";
 import { AutocompleteReturnType } from "../utils/types";
 import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";
+import { HZNetwork } from "./HZNetwork";
 
 dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 
@@ -23,8 +24,10 @@ export class HZClient extends Client {
   public autocomplete: Collection<string, AutocompleteReturnType>;
   public buttons: Collection<string, (interaction: ButtonInteraction<"cached">) => Promise<void>>;
   public selectmenus: Collection<string, (interaction: SelectMenuInteraction<"cached">) => Promise<void>>;
+
   public cooldown: CooldownManager;
   public music: ClientMusicManager;
+  public network: HZNetwork;
 
   public bugHook: WebhookClient;
   public suggestHook: WebhookClient;
@@ -42,8 +45,10 @@ export class HZClient extends Client {
     this.autocomplete = new Collection();
     this.buttons = new Collection();
     this.selectmenus = new Collection();
+
     this.cooldown = new CooldownManager(this);
     this.music = new ClientMusicManager(this);
+    this.network = new HZNetwork(this);
 
     this.angryList = new Collection();
 
@@ -59,6 +64,7 @@ export class HZClient extends Client {
 
   public async initialize(): Promise<void> {
     await this.commands.load(path.join(__dirname, '../commands/'));
+    await this.network.load();
     await loadAutocomplete(this);
     await loadButtons(this);
     await loadSelectMenus(this);
