@@ -132,6 +132,7 @@ process.on('uncaughtException', console.error);
 /******************* 訊息創建 *******************/
 client.on('messageCreate', async message => {
   client.commands.messageRun(message);
+  client.network.onMessageCreate(message);
 });
 /**/
 

@@ -1,7 +1,9 @@
-import { Channel, ChannelType, Guild, GuildMFALevel, PermissionFlagsBits, TextChannel, Webhook, WebhookMessageOptions } from "discord.js";
+import { Channel, ChannelType, EmbedBuilder, Guild, GuildMFALevel, Message, PermissionFlagsBits, TextChannel, Webhook, WebhookMessageOptions } from "discord.js";
 import { EventEmitter } from "events";
 import { HZClient } from "./HZClient";
 import config from "../config";
+import tempMessage from "../features/utils/tempMessage";
+import removeMd from "../features/utils/removeMd";
 
 export class HZNetwork extends EventEmitter {
   public client: HZClient;
@@ -46,6 +48,107 @@ export class HZNetwork extends EventEmitter {
     
     this.loaded = true;
     this.emit('loaded');
+  }
+
+  public async onMessageCreate(message: Message): Promise<void> {
+    if (message.author.blocked) return;
+    if (message.author.bot || message.webhookId) return;
+
+    const portNo = this.getPortNo(message.channel);
+    if (!portNo || message.channel.type !== ChannelType.GuildText) return;
+    if (!this.ports.get(portNo)?.has(message.channel.id)) return;
+
+    const helper = new EmbedBuilder()
+      .setAuthor({ name: 'HiZollo Network 中心', iconURL: this.client.user?.displayAvatarURL() })
+      .setHiZolloColor();
+
+    const content = message.cleanContent
+      .replace(/@everyone/g, `@\u200beveryone`)
+      .replace(/@here/g, `@\u200bhere`)
+      .replace(/\]\(/g, ']\u200b('); // 禁用 Markdown 語法
+
+    const verifiedString = content.replace(/\n| /g, '');
+    const inviteBlocker = /(https?:\/\/)?discord(app)?(.gg|.com\/invite)/gi;
+    if (inviteBlocker.test(verifiedString)) {
+      message.delete();
+      helper.setDescription('你的訊息中含有不合法的連結，因此我無法傳送');
+      tempMessage(message.channel, { embeds: [helper] }, 3);
+      return;
+    }
+
+    // 附加檔案
+    const attachments: ({ attachment: string, name: string })[] = [];
+    let totalSize = 0;
+    message.attachments.each(a => {
+      attachments.push({
+        attachment: a.url,
+        name: a.spoiler ? `SPOILER_${a.name ?? 'image'}` : a.name ?? 'image'
+      });
+      totalSize += a.size;
+    });
+
+    if (totalSize > 512 * 1024) {
+      message.delete();
+      helper.setDescription('訊息的總檔案大小已超過 512kb，請先將檔案壓縮再傳進 HiZollo Netwrok 中');
+      tempMessage(message.channel, { embeds: [helper] }, 3);
+      return;
+    }
+
+    // 貼圖
+    const stickers = [...message.stickers.keys()];
+
+    // 回覆
+    const reference: { content?: string, username?: string } = {};
+    if (message.reference?.messageId) {
+      const msg = await message.channel.messages.fetch(message.reference.messageId);
+      if (msg) {
+        const text = msg.cleanContent
+          .replace(/@everyone/g, `@\u200beveryone`)
+          .replace(/@here/g, `@\u200bhere`)
+          .replace(/\]\(/g, ']\u200b(')
+          .replace(/^> .+?\n/, ''); // 刪除回覆的回覆
+        reference.content = this.parseReply(text);
+        if (msg.attachments.size > 0) reference.content += ' <:attachment:875011591953874955>';
+        reference.username = removeMd(msg.author.username);
+      }
+    }
+
+    // 傳送訊息
+    try {
+      message.delete();
+
+      let finalMessage = '';
+      if (reference.content?.length) finalMessage += `> **${reference.username}**：${reference.content}\n`;
+      if (content.length) finalMessage += content;
+
+      if (finalMessage.length > 500) {
+        helper.setDescription('你的訊息已超過 500 字元的上限，請縮減訊息，避免洗版');
+        tempMessage(message.channel, { embeds: [helper] }, 3);
+        return;
+      }
+
+      if (stickers.length) {
+        helper.setDescription('HiZollo Network 並不支援貼圖');
+        tempMessage(message.channel, { embeds: [helper] }, 3);
+        return;
+      }
+
+      if (!finalMessage.length && !attachments.length) {
+        helper.setDescription('你的訊息似乎是空的');
+        tempMessage(message.channel, { embeds: [helper] }, 3);
+        return;
+      }
+
+      await this.broadcast(portNo, {
+        avatarURL: message.author.displayAvatarURL(),
+        content: finalMessage.length ? finalMessage : null,
+        files: attachments,
+        username: message.author.tag,
+      });
+    } catch (error) {
+      console.log(error);
+      message.channel.send(`HiZollo Network 出現傳輸問題……`);
+    }
   }
 
   public async onChannelCreate(channel: Channel): Promise<void> {
@@ -180,6 +283,13 @@ export class HZNetwork extends EventEmitter {
 
   private webhookFormat(portNo: string) {
     return `${this.hookPrefix}_NETWORK_PORT_${portNo}`;
+  }
+
+  private parseReply(reply: string): string {
+    reply = reply.replace(/\n/g, ' ');
+    const emojis = reply.match(/<(a)?:(\w{1,32}):(\d{17,19})>?/g) || [];
+    const emojiLength = emojis.join('').length - emojis.length;
+    return reply.length > 30 + emojiLength ? reply.substr(0, 30 + emojiLength) + '...' : reply;
   }
 
   private registeredPorts = new Set([
