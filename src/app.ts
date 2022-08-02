@@ -207,6 +207,24 @@ client.on('interactionCreate', async interaction => {
 });
 /**/
 
+/******************* 建立頻道 *******************/
+client.on('channelCreate', channel => {
+  client.network.onChannelCreate(channel);
+});
+/**/
+
+/******************* 更新頻道 *******************/
+client.on('channelUpdate', (oldChannel, newChannel) => {
+  client.network.onChannelUpdate(oldChannel, newChannel);
+});
+/**/
+
+/******************* 加入伺服器 *******************/
+client.on('guildCreate', guild => {
+  client.network.onGuildCreate(guild);
+});
+/**/
+
 /******************* 登入機器人 *******************/
 client.login(config.bot.token);
 /**/

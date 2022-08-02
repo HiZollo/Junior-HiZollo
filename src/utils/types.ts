@@ -2,6 +2,7 @@ import { ApplicationCommandOptionData, ApplicationCommandSubCommandData, Applica
 import osu from "node-osu";
 import { CommandManager } from "../classes/CommandManager";
 import CooldownManager from "../classes/CooldownManager";
+import { HZNetwork } from "../classes/HZNetwork";
 import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";
 import { ArgumentParseType, CommandManagerRejectReason, CommandOptionType } from "./enums";
 import { CommandParserOptionFailWithChoicesResult, CommandParserOptionFailWithLimitResult, CommandParserOptionFailWithPureStatusResult, CommandParserOptionPassResult, PageSystemDescriptionOptions, PageSystemEmbedFieldOptions } from "./interfaces";
@@ -62,6 +63,7 @@ declare module "discord.js" {
     commands: CommandManager;
     cooldown: CooldownManager;
     music: ClientMusicManager;
+    network: HZNetwork;
 
     devMode: boolean;
 
