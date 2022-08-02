@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, ButtonBuilder, Collection, EmbedBuilder, InteractionReplyOptions, MessageOptions, PermissionFlagsBits, SelectMenuBuilder, SelectMenuInteraction } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, ButtonBuilder, Client, Collection, EmbedBuilder, InteractionReplyOptions, MessageOptions, PermissionFlagsBits, SelectMenuBuilder, SelectMenuInteraction, User } from "discord.js";
 import config from "../config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
@@ -41,8 +41,8 @@ export default class Help extends Command<[string]> {
     }
 
     await source.defer();
-    const helper = command instanceof Command ? this.getHelperForCommand(source, command) : this.getHelperForSubcommandGroup(source, commandName, command);
-    await source.update({ embeds: [helper] });
+    const embed = command instanceof Command ? this.getEmbedForCommand(source, command) : this.getEmbedForSubcommandGroup(source, commandName, command);
+    await source.update({ embeds: [embed] });
   }
   
 
@@ -63,12 +63,12 @@ export default class Help extends Command<[string]> {
     
     for (const type of Object.keys(this.commandTypeName)) {
       if (type === `${CommandType.Developer}`) continue;
-      menu.addOptions([{
+      menu.addOptions({
         label: `${this.commandTypeName[type]}`, 
         description: this.commandTypeDescription[type], 
         emoji: '🔹', 
         value: type
-      }]);
+      });
     }
 
     this.componentsForAllTypes = [
@@ -110,9 +110,30 @@ export default class Help extends Command<[string]> {
   
   public getMessageForType(interaction: SelectMenuInteraction<"cached">, type: string): InteractionReplyOptions {
     return {
-      components: [], 
+      components: this.getComponentsForType(interaction, type), 
       embeds: this.getEmbedsForType(interaction, type)
     };
+  }
+
+  public getComponentsForType(interaction: SelectMenuInteraction<"cached">, type: string): ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[] {
+    const menu = new SelectMenuBuilder()
+      .setCustomId('help_menu_type')
+      .setPlaceholder('請選擇一個指令');
+    
+    interaction.client.commands.each(command => {
+      if (command.type.toString() === type) {
+        menu.addOptions({
+          label: command.name, 
+          description: command.description, 
+          emoji: '🔹', 
+          value: command.name
+        });
+      }
+    });
+
+    return [
+      new ActionRowBuilder<SelectMenuBuilder>().addComponents(menu)
+    ];
   }
 
   public getEmbedsForType(interaction: SelectMenuInteraction<"cached">, type: string): EmbedBuilder[] {
@@ -138,28 +159,28 @@ export default class Help extends Command<[string]> {
     ];
   }
 
-
-
-  private getHelperForCommand(source: Source, command: Command<unknown>): EmbedBuilder {
+  public getEmbedForCommand(source: { client: Client, user: User }, command: Command<unknown>): EmbedBuilder {
     return new EmbedBuilder()
       .setAuthor({ name: 'HiZollo 的幫助中心', iconURL: source.client.user?.displayAvatarURL() })
       .setDescription(this.getDescriptionForCommand(command))
       .setHiZolloColor()
+      .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null)
       .setFooter({ text: `${source.user.tag}．使用指令時不須連同 [] 或 <> 一起輸入`, iconURL: source.user.displayAvatarURL() });
   }
 
-  private getHelperForSubcommandGroup(source: Source, groupName: string, commands: Collection<string, Command<unknown>>): EmbedBuilder {
-    const helper = new EmbedBuilder()
+  public getEmbedForSubcommandGroup(source: { client: Client, user: User }, groupName: string, commands: Collection<string, Command<unknown>>): EmbedBuilder {
+    const embed = new EmbedBuilder()
       .setAuthor({ name: 'HiZollo 的幫助中心', iconURL: source.client.user?.displayAvatarURL() })
       .setDescription(`這是 HiZollo 的 ${groupName} 指令清單`)
       .setHiZolloColor()
+      .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null)
       .setFooter({ text: `${source.user.tag}．使用指令時不須連同 [] 或 <> 一起輸入`, iconURL: source.user.displayAvatarURL() });
 
     commands.each(command => {
       let description = `** - 指令功能：**${command.description}\n` + this.getDescriptionForCommand(command, true);
-      helper.addFields({ name: `${groupName} ${command.name}`, value: description });
+      embed.addFields({ name: `${groupName} ${command.name}`, value: description });
     });
-    return helper;
+    return embed;
   }
 
   private getDescriptionForCommand(command: Command<unknown>, isSubcommand?: boolean): string {
