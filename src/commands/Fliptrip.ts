@@ -10,7 +10,7 @@ export default class FlipTrip extends Command<[number]> {
     super({ 
       type: CommandType.SinglePlayerGame, 
       name: 'fliptrip', 
-      description: '開啟一場猜 Flip Trip', 
+      description: '開啟一場 Flip Trip', 
       extraDescription:
         `**遊戲規則：**\n`+
         `遊戲開始後，會有你指定數量的棋子排成一列，每顆棋子有兩面，一面白一面黑，白面朝上\n`+

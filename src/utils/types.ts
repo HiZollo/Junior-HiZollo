@@ -58,6 +58,7 @@ declare module "discord.js" {
   interface Client {
     autocomplete: Collection<string, AutocompleteReturnType>;
     buttons: Collection<string, (interaction: ButtonInteraction<"cached">) => Promise<void>>;
+    selectmenus: Collection<string, (interaction: SelectMenuInteraction<"cached">) => Promise<void>>;
     commands: CommandManager;
     cooldown: CooldownManager;
     music: ClientMusicManager;

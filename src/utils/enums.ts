@@ -19,11 +19,11 @@ export enum CommandManagerRejectReason {
 }
 
 export enum CommandType {
-  Information, 
   Fun, 
   Utility, 
   SinglePlayerGame, 
   MultiPlayerGame, 
+  Information, 
   SubcommandGroup, 
   Contact, 
   Network, 

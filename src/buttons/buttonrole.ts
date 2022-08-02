@@ -1,6 +1,6 @@
 import { ButtonInteraction, GuildMemberRoleManager } from "discord.js";
 
-export default async function buttonrole(interaction: ButtonInteraction): Promise<void> {
+export default async function buttonrole(interaction: ButtonInteraction<"cached">): Promise<void> {
   const roleId = interaction.customId.slice('buttonrole_'.length);
   const role = interaction.guild?.roles.resolve(roleId);
   if (!role?.editable) {

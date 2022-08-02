@@ -192,6 +192,15 @@ client.on('interactionCreate', async interaction => {
       return;
     }
     /**/
+
+    /***** 按鈕互動 *****/
+    if (interaction.isSelectMenu()) {
+      const [commandName] = interaction.customId.split('_');
+      const action = client.selectmenus.get(commandName);
+      action?.(interaction);
+      return;
+    }
+    /**/
     return;
   }
   /**/

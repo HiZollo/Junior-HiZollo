@@ -1,12 +1,13 @@
 import dotenv from "dotenv";
 import path from "path";
-import { ButtonInteraction, Client, Collection, WebhookClient } from "discord.js";
+import { ButtonInteraction, Client, Collection, SelectMenuInteraction, WebhookClient } from "discord.js";
 import osu from "node-osu";
 import { CommandManager } from "./CommandManager";
 import CooldownManager from "./CooldownManager";
 import config from "../config";
 import loadAutocomplete from "../features/appUtils/loadAutocomplete";
 import loadButtons from '../features/appUtils/loadButtons';
+import loadSelectMenus from '../features/appUtils/loadSelectMenus';
 import getActivity from "../features/utils/getActivity";
 import { HZClientOptions } from "../utils/interfaces";
 import { AutocompleteReturnType } from "../utils/types";
@@ -21,6 +22,7 @@ export class HZClient extends Client {
   public commands: CommandManager;
   public autocomplete: Collection<string, AutocompleteReturnType>;
   public buttons: Collection<string, (interaction: ButtonInteraction<"cached">) => Promise<void>>;
+  public selectmenus: Collection<string, (interaction: SelectMenuInteraction<"cached">) => Promise<void>>;
   public cooldown: CooldownManager;
   public music: ClientMusicManager;
 
@@ -39,6 +41,7 @@ export class HZClient extends Client {
     this.commands = new CommandManager(this);
     this.autocomplete = new Collection();
     this.buttons = new Collection();
+    this.selectmenus = new Collection();
     this.cooldown = new CooldownManager(this);
     this.music = new ClientMusicManager(this);
 
@@ -58,6 +61,7 @@ export class HZClient extends Client {
     await this.commands.load(path.join(__dirname, '../commands/'));
     await loadAutocomplete(this);
     await loadButtons(this);
+    await loadSelectMenus(this);
     this.user?.setActivity(await getActivity(this));
   }
 }

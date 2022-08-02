@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, Collection, EmbedBuilder, PermissionFlagsBits } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, ButtonBuilder, Collection, EmbedBuilder, InteractionReplyOptions, MessageOptions, PermissionFlagsBits, SelectMenuBuilder, SelectMenuInteraction } from "discord.js";
 import config from "../config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
@@ -27,8 +27,8 @@ export default class Help extends Command<[string]> {
     // 不給參數時就顯示所有指令
     if (!commandName) {
       await source.defer();
-      const helper = this.getHelperForAllCommands(source);
-      await source.update({ embeds: [helper] });
+      const message = this.getMessageForAllTypes(source);
+      await source.update(message);
       return;
     }
 
@@ -44,44 +44,101 @@ export default class Help extends Command<[string]> {
     const helper = command instanceof Command ? this.getHelperForCommand(source, command) : this.getHelperForSubcommandGroup(source, commandName, command);
     await source.update({ embeds: [helper] });
   }
+  
 
+  public getMessageForAllTypes(source: Source): MessageOptions {
+    return {
+      components: this.getComponentsForAllTypes(), 
+      embeds: this.getEmbedsForAllTypes(source)
+    };
+  }
 
-  private getHelperForAllCommands(source: Source): EmbedBuilder {
-    let commands: { [key in CommandType]?: Partial<Command<unknown>>[] } = {};
+  private componentsForAllTypes: ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[] | null = null;
+  public getComponentsForAllTypes(): ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[] {
+    if (this.componentsForAllTypes) return this.componentsForAllTypes;
 
-    // 加入一般指令
-    source.client.commands.each(command => {
-      if (!commands[command.type]) commands[command.type] = [];
-      commands[command.type]?.push(command);
-    });
-
-    // 加入群組指令
-    source.client.commands.subcommands.each((_command, groupName) => {
-      if (!commands[CommandType.SubcommandGroup]) commands[CommandType.SubcommandGroup] = [];
-      commands[CommandType.SubcommandGroup]?.push({ name: groupName });
-    });
-
-    // 加入開發指令
-    if (!source.channel?.isTestChannel()) {
-      commands[CommandType.Developer] = [];
+    const menu = new SelectMenuBuilder()
+      .setCustomId('help_menu_main')
+      .setPlaceholder('請選擇一個指令分類');
+    
+    for (const type of Object.keys(this.commandTypeName)) {
+      if (type === `${CommandType.Developer}`) continue;
+      menu.addOptions([{
+        label: `${this.commandTypeName[type]}`, 
+        description: this.commandTypeDescription[type], 
+        emoji: '🔹', 
+        value: type
+      }]);
     }
 
-    const helper = new EmbedBuilder()
+    this.componentsForAllTypes = [
+      new ActionRowBuilder<SelectMenuBuilder>().addComponents(menu)
+    ];
+    return this.componentsForAllTypes;
+  }
+
+  private embedForAllTypes: EmbedBuilder[] | null = null;
+  public getEmbedsForAllTypes(source: Source): EmbedBuilder[] {
+    if (this.embedForAllTypes) return this.embedForAllTypes;
+    
+    const embed = new EmbedBuilder()
       .setAuthor({ name: 'HiZollo 的幫助中心', iconURL: source.client.user?.displayAvatarURL() })
       .setDescription(`以下是我的指令列表，你可以使用 \`${config.bot.prefix}help 指令名稱\` 或 \`/help 指令名稱\` 來查看特定指令的使用方法`)
       .setHiZolloColor()
-      .setFooter({ text: `${source.user.tag}．使用指令時不須連同 [] 或 <> 一起輸入`, iconURL: source.user.displayAvatarURL() });
-    for (const [key, list] of Object.entries(commands)) {
-      if (!list.length) continue;
-      helper.addFields({
-        name: `🔹 **${this.commandTypeTable[key]}**`, 
-        value: list.map(c => `\`${c.name}\``).join(', '), 
+      .setFooter({ text: `${source.user.tag}．使用指令時不須連同 [] 或 <> 一起輸入`, iconURL: source.user.displayAvatarURL() })
+      .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null);
+
+    let counter = 0;
+    for (const type of Object.keys(this.commandTypeName)) {
+      if (type === `${CommandType.Developer}`) continue;
+
+      embed.addFields({
+        name: `🔹 **${this.commandTypeName[type]}**`, 
+        value: this.commandTypeDescription[type], 
         inline: true
       });
+      counter++;
+      if (counter % 2 === 1) {
+        embed.addFields({ name: '\u200b',  value: '\u200b', inline: true });
+      }
     }
-
-    return helper;
+    
+    this.embedForAllTypes = [embed];
+    return this.embedForAllTypes;
   }
+
+  
+  public getMessageForType(interaction: SelectMenuInteraction<"cached">, type: string): InteractionReplyOptions {
+    return {
+      components: [], 
+      embeds: this.getEmbedsForType(interaction, type)
+    };
+  }
+
+  public getEmbedsForType(interaction: SelectMenuInteraction<"cached">, type: string): EmbedBuilder[] {
+    let description =
+      `以下是所有**${this.commandTypeName[type]}**分類中的指令\n` +
+      `你可以使用 \`${config.bot.prefix}help 指令名稱\` 或 \`/help 指令名稱\` 來查看特定指令的使用方法\n\n`;
+
+    const commands: string[] = [];
+    interaction.client.commands.each(command => {
+      if (command.type.toString() === type) {
+        commands.push(`\`${command.name}\``);
+      }
+    });
+    description += commands.join('．');
+
+    return [
+      new EmbedBuilder()
+        .setAuthor({ name: 'HiZollo 的幫助中心', iconURL: interaction.client.user?.displayAvatarURL() })
+        .setDescription(description)
+        .setHiZolloColor()
+        .setFooter({ text: `${interaction.user.tag}．使用指令時不須連同 [] 或 <> 一起輸入`, iconURL: interaction.user.displayAvatarURL() })
+        .setThumbnail(interaction.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null)
+    ];
+  }
+
+
 
   private getHelperForCommand(source: Source, command: Command<unknown>): EmbedBuilder {
     return new EmbedBuilder()
@@ -110,7 +167,7 @@ export default class Help extends Command<[string]> {
     if (!isSubcommand && command.extraDescription) description += `${command.extraDescription}\n`;
     if (!isSubcommand) description += '\n';
     if (command.aliases) description += `** - 替代名稱：**${command.aliases.map(a => `\`${a}\``).join(', ')}\n`;
-    if (!isSubcommand && command.type) description += `** - 分類位置：**${this.commandTypeTable[`${command.type}`]}\n`;
+    if (!isSubcommand && command.type) description += `** - 分類位置：**${this.commandTypeName[`${command.type}`]}\n`;
     if (command.options) description += `** - 指令參數：**${this.optionsToString(command.options)}`;
     if (command.cooldown) description += `** - 冷卻時間：**${command.cooldown} 秒\n`;
     return description;
@@ -147,7 +204,8 @@ export default class Help extends Command<[string]> {
     return choice.name === choice.value.toString() ? `\`${choice.name}\`` : `\`${choice.name}\`/\`${choice.value}\``;
   }
 
-  private commandTypeTable = Object.freeze({
+
+  private commandTypeName = Object.freeze({
     [`${CommandType.Contact}`]: '聯繫', 
     [`${CommandType.Developer}`]: '開發者專用', 
     [`${CommandType.Fun}`]: '娛樂', 
@@ -158,6 +216,19 @@ export default class Help extends Command<[string]> {
     [`${CommandType.Network}`]: '聯絡網', 
     [`${CommandType.SubcommandGroup}`]: '指令群', 
     [`${CommandType.Utility}`]: '功能'
+  });
+
+  private commandTypeDescription = Object.freeze({
+    [`${CommandType.Contact}`]: '與 HiZollo 的開發者聯絡', 
+    [`${CommandType.Developer}`]: '開發者專用指令', 
+    [`${CommandType.Fun}`]: '適合在聊天室跟朋友玩樂', 
+    [`${CommandType.SinglePlayerGame}`]: '讓你在沒人的凌晨三點邊吃美味蟹堡邊玩遊戲', 
+    [`${CommandType.MultiPlayerGame}`]: '跟伺服器上的夥伴一起玩遊戲', 
+    [`${CommandType.Information}`]: '顯示 HiZollo 的相關資訊', 
+    [`${CommandType.Miscellaneous}`]: '開發者懶得分類的指令', 
+    [`${CommandType.Network}`]: '查看 HiZollo 聯絡網的相關功能', 
+    [`${CommandType.SubcommandGroup}`]: '集合很多指令的指令', 
+    [`${CommandType.Utility}`]: 'HiZollo 多少還是會一些有用的功能好嗎'
   });
 
   private applicationCommandOptionTypeTable: { [key in ApplicationCommandOptionType]: string } = Object.freeze({

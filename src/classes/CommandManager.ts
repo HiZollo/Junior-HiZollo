@@ -204,7 +204,7 @@ export class CommandManager extends EventEmitter {
 
   /**
    * 把第一線的訊息轉接給各指令類別執行
-   * @param interaction 從 client#on('messageCreate') 得到的訊息
+   * @param message 從 client#on('messageCreate') 得到的訊息
    */
   public async messageRun(message: Message): Promise<void> {
     if (!message.inGuild()) return;
@@ -226,16 +226,14 @@ export class CommandManager extends EventEmitter {
 
     let commandName: [string, string | undefined] = [firstArg, secondArg];
     let command = message.client.commands.search(commandName);
-    let rawArgs = content.slice(firstArg.length + (command instanceof Command && [command.name, ...(command.aliases ?? [])].includes(secondArg) ? (spaces + secondArg).length : 0)).trim();
+    let rawArgs = content.slice(firstArg.length + (command instanceof Command && ![command.name, ...(command.aliases ?? [])].includes(firstArg) && [command.name, ...(command.aliases ?? [])].includes(secondArg) ? (spaces + secondArg).length : 0)).trim();
     if (!command) return;
-
 
     // 只給群組名稱就當成使用 help firstArg
     if (command instanceof Collection) {
       commandName = ['help', firstArg];
-      command = message.client.commands.search(commandName);
+      command = message.client.commands.search(commandName) as Command<unknown>;
       rawArgs = `${firstArg} ${rawArgs}`;
-      if (!command || command instanceof Collection) return; // 在 help 存在的前提下，ts you can shut up
     }
 
     if (command.type === CommandType.Developer && !message.channel.isTestChannel()) return;
@@ -309,10 +307,13 @@ export class CommandManager extends EventEmitter {
 
   /**
    * 尋找指令
-   * @param commandNames first 是第一個參數，second 是第二個參數
+   * @param commandName first 是第一個參數，second 是第二個參數
    * @returns 
    */
-  public search([first, second]: [string, string | undefined]): Command<unknown> | Collection<string, Command<unknown>> | void {
+  public search(commandName: [string, string | undefined]): Command<unknown> | Collection<string, Command<unknown>> | void {
+    const first = commandName[0].toLowerCase();
+    const second = commandName[1]?.toLowerCase();
+
     // 先找 z 指令，這個只有斜線指令才會出現
     if (first === 'z') {
 
