@@ -219,9 +219,21 @@ client.on('channelUpdate', (oldChannel, newChannel) => {
 });
 /**/
 
+/******************* 刪除頻道 *******************/
+client.on('channelDelete', channel => {
+  client.network.onChannelDelete(channel);
+});
+/**/
+
 /******************* 加入伺服器 *******************/
 client.on('guildCreate', guild => {
   client.network.onGuildCreate(guild);
+});
+/**/
+
+/******************* 刪除伺服器 *******************/
+client.on('guildDelete', guild => {
+  client.network.onGuildDelete(guild);
 });
 /**/
 

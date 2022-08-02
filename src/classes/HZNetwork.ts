@@ -80,8 +80,15 @@ export class HZNetwork extends EventEmitter {
     }
   }
 
+  public async onChannelDelete(channel: Channel): Promise<void> {
+    const portNo = this.getPortNo(channel);
+    if (!portNo || channel.type !== ChannelType.GuildText) return;
+
+    this.unregisterChannel(portNo, channel);
+  }
+
   public async onGuildCreate(guild: Guild): Promise<void> {
-    await guild.fetch();
+    await guild.fetch().catch(() => {});
     guild.channels.cache.each(async channel => {
       const portNo = this.getPortNo(channel);
       if (channel.type === ChannelType.GuildText && portNo) {
@@ -91,6 +98,16 @@ export class HZNetwork extends EventEmitter {
           content: `歡迎 ${channel.guild.name} 加入 HiZollo 聯絡網！`,
           username: '[ HiZollo 全頻廣播 ]',
         });
+      }
+    });
+  }
+
+  public async onGuildDelete(guild: Guild): Promise<void> {
+    await guild.fetch().catch(() => {});
+    guild.channels.cache.each(async channel => {
+      const portNo = this.getPortNo(channel);
+      if (channel.type === ChannelType.GuildText && portNo) {
+        this.unregisterChannel(portNo, channel);
       }
     });
   }
