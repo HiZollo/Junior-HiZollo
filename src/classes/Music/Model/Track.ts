@@ -1,6 +1,6 @@
 import { AudioResource, createAudioResource } from "@discordjs/voice";
 import { GuildMember } from "discord.js";
-import { InfoData, stream_from_info } from "play-dl";
+import ytpl, { InfoData } from "play-dl";
 import { TrackOptions } from "../../../utils/interfaces";
 
 export class Track {
@@ -41,7 +41,7 @@ export class Track {
   }
 
   public async renewResource() {
-    const stream = await stream_from_info(this.info);
+    const stream = await ytpl.stream(this.info.video_details.url);
     this.resource = createAudioResource(stream.stream, { inputType: stream.type });
   }
 
