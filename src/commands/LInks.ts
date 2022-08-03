@@ -35,7 +35,7 @@ export default class Links extends Command<[]> {
              `● [DiscordTW](${websiteLinks.dtw} "前往 HiZollo 的 DiscordTW 頁面")`
     }, {
       name: '邀請連結',
-      value: // `如果你覺得 HiZollo 很不錯，可以[點此](https://discord.com/api/oauth2/authorize?client_id=584677291318312963&permissions=${source.client.invitePermissions.bitfield}&scope=bot%20applications.commands "邀請 HiZollo！")將他加入你的伺服器\n`+
+      value: `如果你覺得 HiZollo 很不錯，可以[點此](https://discord.com/api/oauth2/authorize?client_id=584677291318312963&permissions=${source.client.invitePermissions.bitfield}&scope=bot%20applications.commands "邀請 HiZollo！")將他加入你的伺服器\n`+
              `如果你習慣自己設定權限，可以使用[這個連結](${bot.inviteLink.customized} "邀請 HiZollo！")，`+
              `但使用此連結請不要忘記設定權限，否則將無法使用機器人的功能`
     }, {

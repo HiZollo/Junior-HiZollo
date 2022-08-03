@@ -81,6 +81,8 @@ declare module "discord.js" {
     replyHook: WebhookClient;
 
     osuApi: osu.Api;
+
+    invitePermissions: PermissionsBitField;
   }
 
   interface EmbedBuilder {

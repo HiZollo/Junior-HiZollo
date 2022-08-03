@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import path from "path";
-import { ButtonInteraction, Client, Collection, SelectMenuInteraction, WebhookClient } from "discord.js";
+import { ButtonInteraction, Client, Collection, PermissionsBitField, SelectMenuInteraction, WebhookClient } from "discord.js";
 import osu from "node-osu";
 import { CommandManager } from "./CommandManager";
 import CooldownManager from "./CooldownManager";
@@ -33,6 +33,8 @@ export class HZClient extends Client {
   public suggestHook: WebhookClient;
   public replyHook: WebhookClient;
 
+  private _invitePermissions: PermissionsBitField | null;
+
   constructor(options: HZClientOptions) {
     super(options);
     
@@ -60,6 +62,8 @@ export class HZClient extends Client {
       completeScores: true,
       parseNumeric: true
     });
+
+    this._invitePermissions = null;
   }
 
   public async initialize(): Promise<void> {
@@ -69,5 +73,22 @@ export class HZClient extends Client {
     await loadButtons(this);
     await loadSelectMenus(this);
     this.user?.setActivity(await getActivity(this));
+  }
+
+  public get invitePermissions(): PermissionsBitField {
+    if (this._invitePermissions) return this._invitePermissions;
+
+    const permissions = new PermissionsBitField();
+    this.commands.each(command => {
+      permissions.add(command.permissions?.bot ?? []);
+    });
+    this.commands.subcommands.each(group => {
+      group.each(command => {
+        permissions.add(command.permissions?.bot ?? []);
+      });
+    });
+    permissions.add(PermissionsBitField.StageModerator);
+
+    return this._invitePermissions = permissions;
   }
 }
