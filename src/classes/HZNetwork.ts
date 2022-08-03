@@ -84,7 +84,7 @@ export class HZNetwork extends EventEmitter {
     message.attachments.each(a => {
       attachments.push({
         attachment: a.url,
-        name: a.spoiler ? `SPOILER_${a.name ?? 'image'}` : a.name ?? 'image'
+        name: a.spoiler ? `SPOILER_${a.name ?? 'attachment'}` : a.name ?? 'attachment'
       });
       totalSize += a.size;
     });
