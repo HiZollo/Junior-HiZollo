@@ -31,6 +31,7 @@ export type CommandManagerRejectInfo =
   | { reason: CommandManagerRejectReason.BotMissingPermission, args: [missings: (keyof PermissionFlags)[]] }
   | { reason: CommandManagerRejectReason.UserMissingPermission, args: [missings: (keyof PermissionFlags)[]] }
   | { reason: CommandManagerRejectReason.InCooldown, args: [time: number] }
+  | { reason: CommandManagerRejectReason.InNetwork, args: [] }
   | { reason: CommandManagerRejectReason.IllegalArgument, args: [commandOptions: HZCommandOptionData[], result: CommandParserFailResult] };
 
 export type HZCommandOptionData = (Exclude<ApplicationCommandOptionData,
@@ -53,6 +54,7 @@ export type ThrowBallType = "棒球" | "保齡球" | "乒乓球" | "巧克力球
 
 declare module "discord.js" {
   interface BaseChannel {
+    isNetwork: () => boolean;
     isTestChannel: () => boolean;
   }
 

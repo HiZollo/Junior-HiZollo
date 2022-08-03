@@ -64,6 +64,11 @@ client.commands.on('reject', async (source, info) => {
         .setDescription(`你必須在 ${~~(info.args[0] / 1000)} 秒後才能再使用此指令。`);
       break;
     
+    case CommandManagerRejectReason.InNetwork:
+      helper.setTitle('這個地方不適合使用指令')
+        .setDescription('在 HiZollo Network 的領域裡使用指令會發生相當嚴重的時空錯亂，你不會希望這件事發生的');
+      break;
+    
     case CommandManagerRejectReason.IllegalArgument:
       const [_commandOptions, { index, status }] = info.args;
       switch (status) {

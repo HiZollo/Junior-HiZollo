@@ -132,13 +132,13 @@ export class CommandManager extends EventEmitter {
     if (command instanceof Collection) return;
 
     if (command.type === CommandType.Developer && !channel.isTestChannel()) return;
-    
-    // /***** 檢查是否在 HiZollo Network 中使用指令 *****/
-    // if (channel.isNetwork()) {
-    //   const content = `你不能在 HiZollo Network 頻道中使用我的指令`;
-    //   return interaction.reply({ content, ephemeral: true });
-    // }
-    // /**/
+
+    /***** 檢查是否在 HiZollo Network 中使用指令 *****/
+    if (interaction.channel.isNetwork()) {
+      this.emit('reject', new Source(interaction, channel, member), { reason: CommandManagerRejectReason.InNetwork, args: [] });
+      return;
+    }
+    /**/
 
     /***** 檢查 HiZollo 有沒有被該使用者丟到生氣 *****/
     const angryEndtime = await this.client.isAngryAt(interaction.user.id);
@@ -238,12 +238,12 @@ export class CommandManager extends EventEmitter {
 
     if (command.type === CommandType.Developer && !message.channel.isTestChannel()) return;
 
-    // /***** 檢查是否在 HiZollo Network 中使用指令 *****/
-    // if (interaction.channel.isNetwork()) {
-    //   const content = `你不能在 HiZollo Network 頻道中使用我的指令`;
-    //   return interaction.reply({ content, ephemeral: true });
-    // }
-    // /**/
+    /***** 檢查是否在 HiZollo Network 中使用指令 *****/
+    if (message.channel.isNetwork()) {
+      this.emit('reject', new Source(message, channel, member), { reason: CommandManagerRejectReason.InNetwork, args: [] });
+      return;
+    }
+    /**/
 
     /***** 檢查 HiZollo 有沒有被該使用者丟到生氣 *****/
     const angryEndtime = await message.client.isAngryAt(message.author.id);
