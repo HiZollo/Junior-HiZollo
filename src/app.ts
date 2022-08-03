@@ -34,9 +34,7 @@ client.commands.once('load', () => {
 
 client.commands.on('reject', async (source, info) => {
   await source.defer({ ephemeral: true });
-  const helper = new EmbedBuilder()
-    .setAuthor({ name: 'HiZollo 的幫助中心', iconURL: client.user?.displayAvatarURL() })
-    .setHiZolloColor();
+  const helper = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 的幫助中心');
 
   switch (info.reason) {
     case CommandManagerRejectReason.Angry:
