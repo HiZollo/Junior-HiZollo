@@ -66,9 +66,9 @@ export default class Hznetwork extends Command<[string]> {
     const counts = await source.client.shard?.broadcastEval((client, {portNo}) => {
       const port = client.network.ports.get(portNo) as Map<string, Webhook>;
       const channelCount = port.size ?? 0;
-      const userCount = client.guilds.cache
-        .filter(guild => [...port.values()].some(webhook => webhook.guildId === guild.id))
-        .reduce((acc, guild) => acc + guild.memberCount, 0);
+      const userCount = [...port.values()]
+        .map(webhook => client.guilds.resolve(webhook.guildId)?.memberCount ?? 0)
+        .reduce((acc, cur) => acc + cur, 0);
       return { channelCount, userCount }
     }, { context: { portNo } });
 
