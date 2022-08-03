@@ -32,8 +32,7 @@ export default class OsuUser extends Command<[string]> {
 
     const { id, name, counts: { SSH, SS, SH, S, A, plays: pc }, pp: { raw: pp, rank, countryRank }, country, level, accuracy } = user;
     const helper = new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo 的 osu! 中心', iconURL: source.client.user?.displayAvatarURL() })
-      .setHiZolloColor()
+      .applyHiZolloSettings(source.member, 'HiZollo 的 osu! 中心')
       .setThumbnail(`https://a.ppy.sh/${id}`)
       .addFields([
         { name: '玩家', value: `[${name}](https://osu.ppy.sh/u/${id})` },

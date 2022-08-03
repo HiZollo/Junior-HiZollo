@@ -55,9 +55,7 @@ export default class OsuBest extends Command<[string]> {
       thumbnails.push(`https://b.ppy.sh/thumb/${beatmap.beatmapSetId}l.jpg`);
     });
 
-    const helper = new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo 的 osu! 中心', iconURL: source.client.user?.displayAvatarURL() })
-      .setHiZolloColor();
+    const helper = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 的 osu! 中心');
 
     await message.delete().catch(() => {});
     await pageSystem({

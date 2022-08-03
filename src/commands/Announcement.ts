@@ -20,10 +20,7 @@ export default class Announcement extends Command<[]> {
 
   public async execute(source: Source): Promise<void> {
     await source.defer();
-    const announcement = new EmbedBuilder()
-      .setHiZolloColor()
-      .setFooter({ text: `${source.user.tag}`, iconURL: source.user.displayAvatarURL() })
-      .setTitle(`HiZollo 開發團隊公告`)
+    const announcement = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 開發團隊公告')
       .addFields({
         name: '📢 重要公告', 
         value: 

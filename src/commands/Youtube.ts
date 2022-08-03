@@ -43,8 +43,7 @@ export default class Youtube extends Command<[]> {
     });
 
     const helper = new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo 的幫助中心', iconURL: source.client.user?.displayAvatarURL() })
-      .setHiZolloColor()
+      .applyHiZolloSettings(source.member, 'HiZollo 的幫助中心')
       .setDescription('請點擊以下按鈕以開始在語音頻道中觀看 Youtube！');
 
     await source.update({

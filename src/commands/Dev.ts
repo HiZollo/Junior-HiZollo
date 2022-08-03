@@ -19,9 +19,7 @@ export default class Dev extends Command<[]> {
   public async execute(source: Source): Promise<void> {
     await source.defer();
     const devlist = new EmbedBuilder()
-      .setHiZolloColor()
-      .setTitle('HiZollo 開發團隊清單')
-      .setFooter({ text: `© HiZollo 2019-${new Date().getFullYear()}` })
+      .applyHiZolloSettings(source.member, 'HiZollo 開發團隊清單', `© HiZollo 2019-${new Date().getFullYear()}`)
       .addFields(
         { name: '專案領導團隊', value: this.members.leading.join('\n') }, 
         { name: '程式團隊', value: this.members.script.join('\n') }, 

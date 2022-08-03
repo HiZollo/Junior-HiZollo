@@ -34,8 +34,7 @@ export default class Server extends Command<[]> {
     };
 
     const info = new EmbedBuilder()
-      .setHiZolloColor()
-      .setTitle(`${guild.name} 的伺服器資訊`)
+      .applyHiZolloSettings(source.member, `${guild.name} 的伺服器資訊`)
       .setThumbnail(guild.iconURL({ extension: 'png', size: 4096, forceStatic: false }))
       .addFields(
         { name: '伺服器 ID', value: guild.id },

@@ -4,10 +4,10 @@ import randomElement from "../features/utils/randomElement";
 
 Object.defineProperties(EmbedBuilder.prototype, {
   applyHiZolloSettings: {
-    value: function(this: EmbedBuilder, member: GuildMember, authorText: string, footerText?: string): EmbedBuilder {
+    value: function(this: EmbedBuilder, member: GuildMember | null, authorText: string, footerText?: string): EmbedBuilder {
       return this
         .setHiZolloColor()
-        .setUserAuthor(member.client.user, authorText)
+        .setUserAuthor(member?.client.user ?? null, authorText)
         .setMemberFooter(member, footerText);
     }
   }, 
@@ -19,14 +19,14 @@ Object.defineProperties(EmbedBuilder.prototype, {
   }, 
 
   setMemberAuthor: {
-    value: function(this: EmbedBuilder, member: GuildMember, authorText: string): EmbedBuilder {
-      return this.setAuthor({ name: authorText, iconURL: member.displayAvatarURL() });
+    value: function(this: EmbedBuilder, member: GuildMember | null, authorText: string): EmbedBuilder {
+      return this.setAuthor({ name: authorText, iconURL: member?.displayAvatarURL() });
     }
   }, 
 
   setMemberFooter: {
-    value: function(this: EmbedBuilder, member: GuildMember, footerText?: string): EmbedBuilder {
-      return this.setFooter({ text: `${member.tag}．${footerText ?? randomFooter()}`, iconURL: member.displayAvatarURL() })
+    value: function(this: EmbedBuilder, member: GuildMember | null, footerText?: string): EmbedBuilder {
+      return this.setFooter({ text: (member?.tag ? `${member.tag}．` : '') + (footerText ?? randomFooter()), iconURL: member?.displayAvatarURL() })
     }
   }, 
 

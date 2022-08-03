@@ -37,10 +37,8 @@ export default class Leaveguild extends Command<[string]> {
 
     await source.defer();
     const helper = new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo 的伺服器中心', iconURL: source.client.user?.displayAvatarURL() })
-      .setHiZolloColor()
-      .setDescription(`你真的確定要退出 ${guild.name} 嗎？`)
-      .setFooter({ text: `${source.user.tag}`, iconURL: source.user.displayAvatarURL() });
+      .applyHiZolloSettings(source.member, 'HiZollo 的伺服器中心')
+      .setDescription(`你真的確定要退出 ${guild.name} 嗎？`);
     
     const answer = await yesNoSystem({
       source: source,

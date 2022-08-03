@@ -27,9 +27,7 @@ export default class Botinfo extends Command<[]> {
       ?.broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0))
       .then(results => results.reduce((acc, mc) => acc + mc, 0));
 
-    const info = new EmbedBuilder()
-      .setTitle(`我的基本資料`)
-      .setHiZolloColor()
+    const info = new EmbedBuilder().applyHiZolloSettings(source.member, '我的基本資料')
       .setThumbnail(client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null)
       .addFields(
         { name: '版本', value: bot.version },
@@ -39,8 +37,7 @@ export default class Botinfo extends Command<[]> {
         { name: '服務使用者數量', value: `${totalUserCount ?? '無法取得'}` },
         { name: '上線時間', value: `${this.millisecondToString(client.uptime) ?? '無法取得'}` },
         { name: `加入 ${guild?.name} 日期`, value: guild?.joinedTimestamp ? `<t:${~~(guild?.joinedTimestamp/1000)}:D>` : '無法取得' }
-      )
-      .setFooter({ text: source.user.tag, iconURL: source.user.displayAvatarURL() });
+      );
     await source.update({ embeds: [info] });
   }
 

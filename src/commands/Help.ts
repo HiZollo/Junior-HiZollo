@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, ButtonBuilder, Client, Collection, EmbedBuilder, InteractionReplyOptions, MessageOptions, PermissionFlagsBits, SelectMenuBuilder, SelectMenuInteraction, User } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, ButtonBuilder, Client, Collection, EmbedBuilder, GuildMember, InteractionReplyOptions, MessageOptions, PermissionFlagsBits, SelectMenuBuilder, SelectMenuInteraction } from "discord.js";
 import config from "../config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
@@ -82,10 +82,8 @@ export default class Help extends Command<[string]> {
     if (this.embedForAllTypes) return this.embedForAllTypes;
     
     const embed = new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo 的幫助中心', iconURL: source.client.user?.displayAvatarURL() })
+      .applyHiZolloSettings(source.member, 'HiZollo 的幫助中心', '使用指令時不須連同 [] 或 <> 一起輸入')
       .setDescription(`以下是我的指令列表，你可以使用 \`${config.bot.prefix}help 指令名稱\` 或 \`/help 指令名稱\` 來查看特定指令的使用方法`)
-      .setHiZolloColor()
-      .setFooter({ text: `${source.user.tag}．使用指令時不須連同 [] 或 <> 一起輸入`, iconURL: source.user.displayAvatarURL() })
       .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null);
 
     let counter = 0;
@@ -151,30 +149,24 @@ export default class Help extends Command<[string]> {
 
     return [
       new EmbedBuilder()
-        .setAuthor({ name: 'HiZollo 的幫助中心', iconURL: interaction.client.user?.displayAvatarURL() })
+        .applyHiZolloSettings(interaction.member, 'HiZollo 的幫助中心', '使用指令時不須連同 [] 或 <> 一起輸入')
         .setDescription(description)
-        .setHiZolloColor()
-        .setFooter({ text: `${interaction.user.tag}．使用指令時不須連同 [] 或 <> 一起輸入`, iconURL: interaction.user.displayAvatarURL() })
         .setThumbnail(interaction.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null)
     ];
   }
 
-  public getEmbedForCommand(source: { client: Client, user: User }, command: Command<unknown>): EmbedBuilder {
+  public getEmbedForCommand(source: { client: Client, member: GuildMember }, command: Command<unknown>): EmbedBuilder {
     return new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo 的幫助中心', iconURL: source.client.user?.displayAvatarURL() })
+      .applyHiZolloSettings(source.member, 'HiZollo 的幫助中心', '使用指令時不須連同 [] 或 <> 一起輸入')
       .setDescription(this.getDescriptionForCommand(command))
-      .setHiZolloColor()
-      .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null)
-      .setFooter({ text: `${source.user.tag}．使用指令時不須連同 [] 或 <> 一起輸入`, iconURL: source.user.displayAvatarURL() });
+      .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null);
   }
 
-  public getEmbedForSubcommandGroup(source: { client: Client, user: User }, groupName: string, commands: Collection<string, Command<unknown>>): EmbedBuilder {
+  public getEmbedForSubcommandGroup(source: { client: Client, member: GuildMember }, groupName: string, commands: Collection<string, Command<unknown>>): EmbedBuilder {
     const embed = new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo 的幫助中心', iconURL: source.client.user?.displayAvatarURL() })
+      .applyHiZolloSettings(source.member, 'HiZollo 的幫助中心', '使用指令時不須連同 [] 或 <> 一起輸入')
       .setDescription(`這是 HiZollo 的 ${groupName} 指令清單`)
-      .setHiZolloColor()
-      .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null)
-      .setFooter({ text: `${source.user.tag}．使用指令時不須連同 [] 或 <> 一起輸入`, iconURL: source.user.displayAvatarURL() });
+      .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null);
 
     commands.each(command => {
       let description = `** - 指令功能：**${command.description}\n` + this.getDescriptionForCommand(command, true);

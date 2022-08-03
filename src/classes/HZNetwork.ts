@@ -60,9 +60,7 @@ export class HZNetwork extends EventEmitter {
     if (!portNo || message.channel.type !== ChannelType.GuildText) return;
     if (!this.ports.get(portNo)?.has(message.channel.id)) return;
 
-    const helper = new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo Network 中心', iconURL: this.client.user?.displayAvatarURL() })
-      .setHiZolloColor();
+    const helper = new EmbedBuilder().applyHiZolloSettings(message.member, 'HiZollo Network 中心');
 
     const content = message.cleanContent
       .replace(/@everyone/g, `@\u200beveryone`)

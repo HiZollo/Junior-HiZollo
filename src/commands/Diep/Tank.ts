@@ -30,9 +30,8 @@ export default class DiepTank extends Command<[string]> {
 
     await source.defer();
     const info = new EmbedBuilder()
-      .setTitle(`${tank.name}（${tank.nameChinese}）的基本資料`)
+      .applyHiZolloSettings(source.member, `${tank.name}（${tank.nameChinese}）的基本資料`, '資料來源：Diep.io 繁中維基')
       .setThumbnail(tank.image)
-      .setHiZolloColor()
       .setDescription(tank.description)
       .addFields(
         { name: '坦克類型', value: tank.type, inline: true },
@@ -42,8 +41,7 @@ export default class DiepTank extends Command<[string]> {
         { name: '使用武器', value: tank.weapons, inline: true },
         { name: '傷害係數', value: tank.damage, inline: true },
         { name: '更多資訊', value: `點擊[此處](${tank.link})以獲得更多資訊`},
-      )
-      .setFooter({ text: '資料來源：Diep.io 繁中維基' });
+      );
 
     await source.update({ embeds: [info] });
   }

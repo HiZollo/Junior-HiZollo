@@ -46,9 +46,7 @@ export default class Getguildlist extends Command<[]> {
         pages[~~(i/10)].push({ name: `${g.name}｜分支 ${g.shardId}｜${g.memberCount} 位成員\n`, id: g.id });
       });
     
-    const embed = new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo 的伺服器中心', iconURL: source.client.user?.displayAvatarURL() })
-      .setHiZolloColor();
+    const embed = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 的伺服器中心');
     
     const result = await pageSystem({
       mode: PageSystemMode.Description,

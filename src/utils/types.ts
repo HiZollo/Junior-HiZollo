@@ -84,9 +84,9 @@ declare module "discord.js" {
   }
 
   interface EmbedBuilder {
-    applyHiZolloSettings: (member: GuildMember, authorText: string, footerText?: string) => EmbedBuilder;
-    setMemberAuthor: (member: GuildMember, authorText: string) => EmbedBuilder;
-    setMemberFooter: (member: GuildMember, footerText?: string) => EmbedBuilder;
+    applyHiZolloSettings: (member: GuildMember | null, authorText: string, footerText?: string) => EmbedBuilder;
+    setMemberAuthor: (member: GuildMember | null, authorText: string) => EmbedBuilder;
+    setMemberFooter: (member: GuildMember | null, footerText?: string) => EmbedBuilder;
     setUserAuthor: (user: User | null, authorText: string) => EmbedBuilder;
     setUserFooter: (user: User | null, footerText?: string) => EmbedBuilder;
     setHiZolloColor: () => EmbedBuilder;

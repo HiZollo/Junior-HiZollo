@@ -53,11 +53,9 @@ export default class Vote extends Command<string[]> {
                           `${nowTime.getHours()}:${nowTime.getMinutes()}:${nowTime.getSeconds()}`;
 
     const helper = new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo 的投票中心', iconURL: source.client.user?.displayAvatarURL() })
-      .setHiZolloColor()
-      .setTitle(topic)
+      .applyHiZolloSettings(source.member, 'HiZollo 的投票中心', `由 ${source.user.tag} 在 ${nowTimeString} 時所發起的投票`)
       .setDescription(options.join('\n'))
-      .setFooter({ text: `由 ${source.user.tag} 在 ${nowTimeString} 時所發起的投票`, iconURL: source.user.displayAvatarURL() });
+      .setTitle(topic);
 
     await source.update({ embeds: [helper] }).then(async msg => {
       for (var i = 0; i < options.length; i++)

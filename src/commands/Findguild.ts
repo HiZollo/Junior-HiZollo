@@ -53,8 +53,8 @@ export default class Findguild extends Command<[string]> {
 
     await source.defer();
     const info = new EmbedBuilder()
+      .applyHiZolloSettings(source.member, `伺服器 ${guild.name} 的資訊`)
       .setThumbnail(guild.icon)
-      .setTitle(`伺服器 ${guild.name} 的資訊`)
       .addFields(
         { name: '伺服器 ID', value: guild.id },
         { name: '分支編號', value: guild.shardId ?`${guild.shardId}` : '查無資訊' },

@@ -37,9 +37,8 @@ export default class Userinfo extends Command<[GuildMember]> {
     const rolesText = sortedRoles.size ? sortedRoles.first(40).join(', ') + `${sortedRoles.size > 40 ? ', ...' : ''}` : '無';
 
     const info = new EmbedBuilder()
-      .setAuthor({ name: `使用者 ${tag} 的資訊`, iconURL: source.client.user?.displayAvatarURL() })
+      .applyHiZolloSettings(source.member, `使用者 ${tag} 的資訊`)
       .setThumbnail(member.user.displayAvatarURL({ extension: 'png', size: 4096, forceStatic: false }))
-      .setHiZolloColor()
       .addFields(
         { name: '使用者名稱', value: username, inline: true },
         { name: '在本伺服器暱稱', value: nickname ?? '無', inline: true },

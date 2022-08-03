@@ -20,8 +20,7 @@ export default class Links extends Command<[]> {
   public async execute(source: Source): Promise<void> {
     await source.defer();
     const links = new EmbedBuilder()
-    .setAuthor({ name: 'HiZollo 的相關連結', iconURL: source.client.user?.displayAvatarURL() })
-    .setHiZolloColor()
+    .applyHiZolloSettings(source.member, 'HiZollo 的相關連結')
     .addFields({
       name: '相關網站連結',
       value: `HiZollo 官網上各部分的連結，相關資訊都在此\n`+

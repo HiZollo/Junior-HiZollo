@@ -135,11 +135,12 @@ export class MusicViewRenderer {
       case MusicControllerActions.Info:
         const embed = this.baseEmbed
           .setDescription(this.getTrackDescription(nowPlaying))
+          .setThumbnail(nowPlaying?.thumbnailUrl ?? null)
           .setFooter({
             text: `由 ${nowPlaying.requester.displayName} 指定的歌曲｜${nowPlaying.looping ? '🔁 循環播放中' : '➡️ 無重複播放'}`,
             iconURL: nowPlaying.requester.displayAvatarURL()
           });
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+          await interaction.reply({ embeds: [embed], ephemeral: true });
         return;
     }
 

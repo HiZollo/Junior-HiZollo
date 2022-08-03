@@ -49,9 +49,7 @@ export default class Connection extends Command<[]> {
       return;
     }
 
-    const embed = new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo 的音樂中心', iconURL: source.client.user?.displayAvatarURL() })
-      .setHiZolloColor();
+    const embed = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 的音樂中心');
 
     const selected = await pageSystem({
       mode: PageSystemMode.Description, 

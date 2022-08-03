@@ -40,9 +40,7 @@ export default class Hznetwork extends Command<[string]> {
   }
 
   private async getEmbedForAllPorts(source: Source): Promise<EmbedBuilder> {
-    const embed = new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo Network 中心', iconURL: source.client.user?.displayAvatarURL() })
-      .setHiZolloColor();
+    const embed = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo Network 中心');
 
     let description = '';
     for (const portNo of source.client.network.registeredPorts) {
@@ -59,9 +57,7 @@ export default class Hznetwork extends Command<[string]> {
   }
 
   private async getEmbedForPort(source: Source, portNo: string): Promise<EmbedBuilder> {
-    const embed = new EmbedBuilder()
-      .setAuthor({ name: 'HiZollo Network 中心', iconURL: source.client.user?.displayAvatarURL() })
-      .setHiZolloColor();
+    const embed = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo Network 中心');
     
     const counts = await source.client.shard?.broadcastEval((client, {portNo}) => {
       const port = client.network.ports.get(portNo) as Map<string, Webhook>;
