@@ -7,16 +7,18 @@ import removeMd from "../features/utils/removeMd";
 
 export class HZNetwork extends EventEmitter {
   public client: HZClient;
+  public registeredPorts: Set<string>;
+  public ports: Map<string, Map<string, Webhook>>;
 
   private hookPrefix: string;
   private portPrefix: string;
-  private ports: Map<string, Map<string, Webhook>>;
   private loaded: boolean;
 
   constructor(client: HZClient) {
     super();
 
     this.client = client;
+    this.registeredPorts = new Set(['1', '8', '9', '27']);
     this.hookPrefix = config.bot.network.namePrefix;
     this.portPrefix = config.bot.network.portPrefix;
     this.ports = new Map();
@@ -115,7 +117,7 @@ export class HZNetwork extends EventEmitter {
 
     // 傳送訊息
     try {
-      message.delete();
+      await message.delete().catch(() => {});
 
       let finalMessage = '';
       if (reference.content?.length) finalMessage += `> **${reference.username}**：${reference.content}\n`;
@@ -291,8 +293,4 @@ export class HZNetwork extends EventEmitter {
     const emojiLength = emojis.join('').length - emojis.length;
     return reply.length > 30 + emojiLength ? reply.substr(0, 30 + emojiLength) + '...' : reply;
   }
-
-  private registeredPorts = new Set([
-    '1', '8', '9', '27'
-  ]);
 }
