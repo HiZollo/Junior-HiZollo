@@ -15,6 +15,7 @@ if (!process.env.OSU_APIKEY) throw new Error('Osu API key not configured.');
 export default {
   bot: {
     prefix: "x!",
+    id: "784969407830294538",
     token: process.env.TOKEN,
     network: {
       namePrefix: "ZELLO",

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { EventEmitter } from "events";
-import { ApplicationCommand, ApplicationCommandOption, ApplicationCommandOptionChoiceData, ApplicationCommandOptionData, ApplicationCommandOptionType, ApplicationCommandSubCommandData, ApplicationCommandType, Awaitable, ChatInputApplicationCommandData, Collection, GuildMFALevel, GuildResolvable, Interaction, Message, PermissionFlagsBits, PermissionsBitField } from "discord.js";
+import { Awaitable, Collection, GuildMFALevel, Interaction, Message, PermissionFlagsBits } from "discord.js";
 import { Command } from "./Command";
 import { CommandParser } from "./CommandParser";
 import { HZClient } from "./HZClient";
@@ -33,11 +33,6 @@ export class CommandManager extends EventEmitter {
   public subcommands: Collection<string, Collection<string, Command<unknown>>>;
 
   /**
-   * 待更新的指令／指令群
-   */
-  public deployQueue: ChatInputApplicationCommandData[];
-
-  /**
    * 指令是否已載入完畢
    */
   private loaded: boolean;
@@ -51,50 +46,7 @@ export class CommandManager extends EventEmitter {
     this.client = client;
     this.commands = new Collection();
     this.subcommands = new Collection();
-    this.deployQueue = [];
     this.loaded = false;
-  }
-
-
-  static subcommandGroupDescriptionFormat(groupName: string): string {
-    return `執行 ${groupName} 群組指令`;
-  }
-
-  static parseSubcommandGroup(groupName: string, commands: Collection<string, Command<unknown>>): ChatInputApplicationCommandData {
-    return {
-      type: ApplicationCommandType.ChatInput, 
-      name: groupName, 
-      nameLocalizations: undefined, 
-      description: CommandManager.subcommandGroupDescriptionFormat(groupName), 
-      descriptionLocalizations: undefined, 
-      defaultMemberPermissions: undefined, 
-      dmPermission: false, 
-      options: commands.map(CommandManager.paresSubcommand)
-    }
-  }
-
-  static paresSubcommand(command: Command<unknown>): ApplicationCommandSubCommandData {
-    return {
-      type: ApplicationCommandOptionType.Subcommand, 
-      name: command.name, 
-      nameLocalizations: undefined, 
-      description: command.description, 
-      descriptionLocalizations: undefined, 
-      options: command.options ?? []
-    };
-  }
-
-  static parseCommand(command: Command<unknown>): ChatInputApplicationCommandData {
-    return {
-      type: ApplicationCommandType.ChatInput, 
-      name: command.name, 
-      nameLocalizations: undefined, 
-      description: command.description, 
-      descriptionLocalizations: undefined, 
-      defaultMemberPermissions: PermissionsBitField.resolve(command.permissions?.user ?? 0n), 
-      dmPermission: false, 
-      options: command.options ?? []
-    };
   }
 
   /**
@@ -113,11 +65,19 @@ export class CommandManager extends EventEmitter {
 
       // 如果是資料夾就是群組指令
       if (fs.statSync(filePath).isDirectory()) {
-        const group = this.loadSubcommandGroup(filePath, file);
-        const data = CommandManager.parseSubcommandGroup(file.toLowerCase(), group);
-        if (this.commandUpdated(applicationCommands, file.toLowerCase(), data)) {
-          this.deployQueue.push(data);
+        const subcommandFiles = fs.readdirSync(dirPath);
+        const group = new Collection<string, Command<unknown>>();
+    
+        for (const subcommandFile of subcommandFiles) {
+          if (!subcommandFile.endsWith('.js')) continue;
+          
+          const C: new () => Command<unknown> = require(path.join(dirPath, subcommandFile)).default;
+          const instance = new C();
+    
+          group.set(instance.name, instance);
         }
+    
+        this.subcommands.set(file.toLowerCase(), group);
       }
 
       // 其他就是一般指令
@@ -125,100 +85,11 @@ export class CommandManager extends EventEmitter {
         const C: new () => Command<unknown> = require(filePath).default;
         const instance = new C();
         this.commands.set(instance.name, instance);
-        if (instance.type === CommandType.Developer) continue;
-
-        const data = CommandManager.parseCommand(instance);
-        if (this.commandUpdated(applicationCommands, data.name, data)) {
-          this.deployQueue.push(data);
-        }
       }
     }
 
     this.loaded = true;
     this.emit('loaded');
-  }
-
-  private loadSubcommandGroup(dirPath: string, groupName: string): Collection<string, Command<unknown>> {
-    const subcommandFiles = fs.readdirSync(dirPath);
-    const group = new Collection<string, Command<unknown>>();
-
-    for (const subcommandFile of subcommandFiles) {
-      if (!subcommandFile.endsWith('.js')) continue;
-      
-      const C: new () => Command<unknown> = require(path.join(dirPath, subcommandFile)).default;
-      const instance = new C();
-      if (instance.type === CommandType.Developer) continue;
-
-      group.set(instance.name, instance);
-    }
-
-    this.subcommands.set(groupName.toLowerCase(), group);
-    return group;
-  }
-
-  private commandUpdated(
-    applicationCommands: Collection<string, ApplicationCommand<{ guild: GuildResolvable }>>, 
-    commandName: string, 
-    localCommand: ChatInputApplicationCommandData
-  ): boolean {
-    const appCommand = applicationCommands.find(command => command.name === commandName);
-    if (!appCommand) return true;
-
-    // primitive values
-    if (appCommand.description !== ('description' in localCommand ? localCommand.description : CommandManager.subcommandGroupDescriptionFormat(commandName))) return true;
-    if (!appCommand.defaultMemberPermissions !== !localCommand.defaultMemberPermissions) return true;
-    if (!appCommand.dmPermission !== !localCommand.dmPermission) return true;
-
-    // localizations
-    if (!dataSame(appCommand.nameLocalizations, localCommand.nameLocalizations)) return true;
-    if (!dataSame(appCommand.descriptionLocalizations, localCommand.descriptionLocalizations)) return true;
-
-    // options
-    return this.optionsUpdated(appCommand.options, localCommand.options ?? []);
-  }
-
-  private optionsUpdated(appOptions: ApplicationCommandOption[], localOptions: ApplicationCommandOptionData[]): boolean {
-    if (appOptions.length !== localOptions.length) return true;
-
-    return appOptions.some((appOption, i) => {
-      const localOption = localOptions[i];
-      if (appOption.type !== localOption.type) return true;
-
-      // required primitive values
-      if (appOption.name !== localOption.name) return true;
-      if (appOption.description !== localOption.description) return true;
-      if (!appOption.autocomplete !== !localOption.autocomplete) return true;
-
-      // optional primitive values
-      if (('required' in appOption && appOption.required) !== ('required' in localOption && localOption.required)) return true;
-      if (('channelTypes' in appOption && appOption.channelTypes) !== ('channelTypes' in localOption && localOption.channelTypes)) return true;
-      if (('minValue' in appOption && appOption.minValue) !== ('minValue' in localOption && localOption.minValue)) return true;
-      if (('maxValue' in appOption && appOption.maxValue) !== ('maxValue' in localOption && localOption.maxValue)) return true;
-      if (('minLength' in appOption && appOption.minLength) !== ('minLength' in localOption && localOption.minLength)) return true;
-      if (('maxLength' in appOption && appOption.maxLength) !== ('maxLength' in localOption && localOption.maxLength)) return true;
-
-      // localizations
-      if (!dataSame(appOption.nameLocalizations, localOption.nameLocalizations)) return true;
-      if (!dataSame(appOption.descriptionLocalizations, localOption.descriptionLocalizations)) return true;
-
-      // choices and options
-      if (this.choicesUpdated(('choices' in appOption && appOption.choices) || [], ('choices' in localOption && localOption.choices) || [])) return true;
-      if (this.optionsUpdated(('options' in appOption && appOption.options) || [], ('options' in localOption && localOption.options) || [])) return true;
-
-      return false;
-    });
-  }
-
-  private choicesUpdated(appChoices: ApplicationCommandOptionChoiceData[], localChoices: ApplicationCommandOptionChoiceData[]): boolean {
-    if (appChoices.length !== localChoices.length) return true;
-    
-    return appChoices.some((appChoice, i) => {
-      const localChoice = localChoices[i];
-      if (appChoice.name !== localChoice.name) return true;
-      if (appChoice.value !== localChoice.value) return true;
-      if (!dataSame(appChoice.nameLocalizations, localChoice.nameLocalizations)) return true;
-      return false;
-    })
   }
 
   /**
