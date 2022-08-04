@@ -3,21 +3,29 @@ import path from "path";
 import { REST } from "@discordjs/rest";
 import { ApplicationCommandOptionAllowedChannelTypes, ApplicationCommandOptionType, RESTPostAPIApplicationCommandsJSONBody, Routes, SlashCommandBuilder, SlashCommandSubcommandBuilder } from "discord.js";
 import config from "./config";
+import constant from "./constant.json";
 import { Command } from "./classes/Command";
 import { CommandType } from "./utils/enums";
 import { HZCommandOptionData } from "./utils/types";
 
 (async () => {
   const rest = new REST({ version: '10' }).setToken(config.bot.token);
-  const commands = loadCommands(path.join(__dirname, './commands'));
+  const { globalCommands, devCommands } = loadCommands(path.join(__dirname, './commands'));
 
   try {
     console.log('正在註冊全域指令');
     await rest.put(
       Routes.applicationCommands(config.bot.id), 
-      { body: commands }
+      { body: globalCommands }
     );
     console.log('全域指令註冊成功');
+
+    console.log('正在註冊私人指令');
+    await rest.put(
+      Routes.applicationGuildCommands(config.bot.id, constant.devGuild.id), 
+      { body: devCommands }
+    );
+    console.log('私人指令註冊成功');
   } catch (error) {
     console.error(error);
   }
@@ -29,8 +37,12 @@ import { HZCommandOptionData } from "./utils/types";
  * @param dirPath 要讀取的資料夾
  * @returns 
  */
-function loadCommands(dirPath: string): RESTPostAPIApplicationCommandsJSONBody[] {
-  const commands: RESTPostAPIApplicationCommandsJSONBody[] = [];
+function loadCommands(dirPath: string): {
+  globalCommands: RESTPostAPIApplicationCommandsJSONBody[], 
+  devCommands: RESTPostAPIApplicationCommandsJSONBody[]
+} {
+  const globalCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
+  const devCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
   const commandFiles = fs.readdirSync(dirPath);
 
   for (const file of commandFiles) {
@@ -38,10 +50,15 @@ function loadCommands(dirPath: string): RESTPostAPIApplicationCommandsJSONBody[]
   
     // 如果是資料夾就是群組指令
     if (fs.statSync(filePath).isDirectory()) {
-      const builder = new SlashCommandBuilder()
+      const globalBuilder = new SlashCommandBuilder()
         .setName(file.toLocaleLowerCase())
         .setDescription(`執行 ${file.toLocaleLowerCase()} 群組指令`)
         .setDMPermission(false);
+      const devBuilder = new SlashCommandBuilder()
+        .setName(file.toLocaleLowerCase())
+        .setDescription(`執行 ${file.toLocaleLowerCase()} 群組指令`)
+        .setDMPermission(false);
+      let globalExist = false, devExist = false;
   
       const subcommandFiles = fs.readdirSync(filePath);
       for (const subcommandFile of subcommandFiles) {
@@ -50,13 +67,13 @@ function loadCommands(dirPath: string): RESTPostAPIApplicationCommandsJSONBody[]
         const C: new () => Command<unknown> = require(path.join(filePath, subcommandFile)).default;
         const subcommand = new C();
   
-        // 這邊只註冊全域指令
-        if (subcommand.type !== CommandType.Developer) {
-          addSubcommand(builder, subcommand);
-        }
+        addSubcommand(subcommand.type === CommandType.Developer ? devBuilder : globalBuilder, subcommand);
+        globalExist ||= subcommand.type !== CommandType.Developer;
+        devExist ||= subcommand.type === CommandType.Developer;
       }
   
-      commands.push(builder.toJSON());
+      if (globalExist) globalCommands.push(globalBuilder.toJSON());
+      if (devExist) devCommands.push(devBuilder.toJSON());
     }
   
     // 其他就是一般指令
@@ -64,14 +81,11 @@ function loadCommands(dirPath: string): RESTPostAPIApplicationCommandsJSONBody[]
       const C: new () => Command<unknown> = require(filePath).default;
       const command = new C();
   
-      // 這邊只註冊全域指令
-      if (command.type !== CommandType.Developer) {
-        commands.push(parseCommand(command));
-      }
+      (command.type === CommandType.Developer ? devCommands : globalCommands).push(parseCommand(command));
     }
   }
 
-  return commands;
+  return { globalCommands, devCommands };
 }
 
 /**

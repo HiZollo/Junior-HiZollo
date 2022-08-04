@@ -20,6 +20,7 @@
   },
   "scripts": {
     "build": "tsc --watch",
+    "deploy": "node dist/deploy.js",
     "start": "node dist/index.js",
     "test": "node dist/index.js dev"
   },
