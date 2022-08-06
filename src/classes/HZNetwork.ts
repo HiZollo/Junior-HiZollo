@@ -1,9 +1,10 @@
-import { Channel, ChannelType, EmbedBuilder, Guild, GuildMFALevel, Message, PermissionFlagsBits, TextChannel, Webhook, WebhookMessageOptions } from "discord.js";
+import { Awaitable, Channel, ChannelType, EmbedBuilder, Guild, GuildMFALevel, Message, PermissionFlagsBits, TextChannel, Webhook, WebhookMessageOptions } from "discord.js";
 import { EventEmitter } from "events";
 import { HZClient } from "./HZClient";
 import config from "../config";
 import tempMessage from "../features/utils/tempMessage";
 import removeMd from "../features/utils/removeMd";
+import { HZNetworkEvents } from "../utils/interfaces";
 
 export class HZNetwork extends EventEmitter {
   public client: HZClient;
@@ -233,7 +234,7 @@ export class HZNetwork extends EventEmitter {
         });
       }));
     }, { context: { portNo, options } });
-    this.emit('broadcast', portNo, options);
+    this.emit('crosspost', portNo, options);
   }
 
   /**
@@ -290,5 +291,30 @@ export class HZNetwork extends EventEmitter {
     const emojis = reply.match(/<(a)?:(\w{1,32}):(\d{17,19})>?/g) || [];
     const emojiLength = emojis.join('').length - emojis.length;
     return reply.length > 30 + emojiLength ? reply.substr(0, 30 + emojiLength) + '...' : reply;
+  }
+
+
+  public on<K extends keyof HZNetworkEvents>(event: K, listener: (...args: HZNetworkEvents[K]) => Awaitable<void>): this;
+  public on<S extends string | symbol>(event: Exclude<S, keyof HZNetworkEvents>, listener: (...args: any[]) => Awaitable<void>): this;
+  public on(event: string | symbol, listener: (...args: any[]) => Awaitable<void>): this {
+    return super.on(event, listener);
+  }
+
+  public once<K extends keyof HZNetworkEvents>(event: K, listener: (...args: HZNetworkEvents[K]) => Awaitable<void>): this;
+  public once<S extends string | symbol>(event: Exclude<S, keyof HZNetworkEvents>, listener: (...args: any[]) => Awaitable<void>): this;
+  public once(event: string | symbol, listener: (...args: any[]) => Awaitable<void>): this {
+    return super.once(event, listener);
+  }
+
+  public emit<K extends keyof HZNetworkEvents>(event: K, ...args: HZNetworkEvents[K]): boolean;
+  public emit<S extends string | symbol>(event: Exclude<S, keyof HZNetworkEvents>, ...args: unknown[]): boolean;
+  public emit(event: string | symbol, ...args: unknown[]): boolean {
+    return super.emit(event, ...args);
+  }
+
+  public off<K extends keyof HZNetworkEvents>(event: K, listener: (...args: HZNetworkEvents[K]) => Awaitable<void>): this;
+  public off<S extends string | symbol>(event: Exclude<S, keyof HZNetworkEvents>, listener: (...args: any[]) => Awaitable<void>): this;
+  public off(event: string | symbol, listener: (...args: any[]) => Awaitable<void>): this {
+    return super.off(event, listener);
   }
 }

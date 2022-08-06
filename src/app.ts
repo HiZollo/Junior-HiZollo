@@ -27,11 +27,14 @@ const client = new HZClient({
 import permissionTable from './features/utils/permissionTable';
 /**/
 
-/******************* 指令相關 *******************/
+/******************* 指令載入 *******************/
 client.commands.once('load', () => {
   console.log('所有指令皆已載入完畢');
 });
+/**/
 
+
+/******************* 指令失敗 *******************/
 client.commands.on('reject', async (source, info) => {
   await source.defer({ ephemeral: true });
   const helper = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 的幫助中心');
@@ -112,12 +115,38 @@ client.commands.on('reject', async (source, info) => {
 
   await source.update({ embeds: [helper] });
 });
+/**/
 
+/******************* 指令無效 *******************/
 client.commands.on('unavailable', async source => {
   await source.defer({ ephemeral: true });
   await source.temp('這個指令目前無法使用，這通常是因為這個指令正在更新，稍待片刻後就能正常使用了');
 });
+/**/
 
+/******************* Network 載入 *******************/
+client.network.on('loaded', () => {
+  console.log('HiZollo Network 載入完畢');
+});
+/**/
+
+/******************* Network 載入 *******************/
+client.network.on('crosspost', (portNo, options) => {
+  console.log(portNo, options);
+});
+/**/
+
+/******************* Network 載入 *******************/
+client.network.on('joined', (portNo, channel) => {
+  console.log(portNo, channel.name);
+});
+/**/
+
+/******************* Network 載入 *******************/
+client.network.on('left', (portNo, channel) => {
+  console.log(portNo, channel.name);
+});
+/**/
 
 /******************* 上線確認 *******************/
 client.on('ready', async () => {

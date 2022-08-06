@@ -1,6 +1,6 @@
 import { ButtonBuilder, ModalBuilder } from "@discordjs/builders";
 import { VoiceConnection } from "@discordjs/voice";
-import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, EmbedBuilder, GuildMember, GuildTextBasedChannel, MessageOptions, VoiceBasedChannel } from "discord.js";
+import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, EmbedBuilder, GuildMember, GuildTextBasedChannel, MessageOptions, TextChannel, VoiceBasedChannel, WebhookMessageOptions } from "discord.js";
 import { InfoData, YouTubeStream } from "play-dl";
 import { HZClient } from "../classes/HZClient";
 import { Source } from "../classes/Source";
@@ -13,16 +13,22 @@ export interface HZClientOptions extends ClientOptions {
   devMode?: boolean;
 }
 
-/******************* CommandManager *******************/
+
+
+export interface HZNetworkEvents {
+  loaded: [];
+  crosspost: [portNo: string, options: WebhookMessageOptions];
+  joined: [portNo: string, channel: TextChannel];
+  left: [portNo: string, channel: TextChannel];
+}
 
 export interface CommandManagerEvents {
-  error: [commandName: string, error: unknown]
+  error: [commandName: string, error: unknown];
   executed: [commandName: string, args: unknown[]];
   loaded: [];
   unavailable: [source: Source];
 }
 
-/******************* CommandParser *******************/
 export interface CommandParserOptionBaseResult {
   arg: unknown;
 }
