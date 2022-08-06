@@ -1,17 +1,17 @@
 import dotenv from "dotenv";
 import path from "path";
-import { ButtonInteraction, Client, Collection, PermissionsBitField, SelectMenuInteraction, WebhookClient } from "discord.js";
+import { Client, Collection, PermissionsBitField, SelectMenuInteraction, WebhookClient } from "discord.js";
 import osu from "node-osu";
 import { CommandManager } from "./CommandManager";
 import CooldownManager from "./CooldownManager";
 import config from "../config";
-import loadButtons from '../features/appUtils/loadButtons';
 import loadSelectMenus from '../features/appUtils/loadSelectMenus';
 import getActivity from "../features/utils/getActivity";
 import { HZClientOptions } from "../utils/interfaces";
 import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";
 import { HZNetwork } from "./HZNetwork";
 import { AutocompleteManager } from "./AutocompleteManager";
+import { ButtonManager } from "./ButtonManager";
 
 dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 
@@ -21,7 +21,7 @@ export class HZClient extends Client {
   
   public commands: CommandManager;
   public autocomplete: AutocompleteManager;
-  public buttons: Collection<string, (interaction: ButtonInteraction<"cached">) => Promise<void>>;
+  public buttons: ButtonManager;
   public selectmenus: Collection<string, (interaction: SelectMenuInteraction<"cached">) => Promise<void>>;
 
   public cooldown: CooldownManager;
@@ -44,7 +44,7 @@ export class HZClient extends Client {
 
     this.commands = new CommandManager(this);
     this.autocomplete = new AutocompleteManager(this);
-    this.buttons = new Collection();
+    this.buttons = new ButtonManager(this);
     this.selectmenus = new Collection();
 
     this.cooldown = new CooldownManager(this);
@@ -67,10 +67,10 @@ export class HZClient extends Client {
 
   public async initialize(): Promise<void> {
     await this.commands.load(path.join(__dirname, '../commands/'));
-    await this.network.load();
     await this.autocomplete.load(path.join(__dirname, '../autocomplete'));
-    await loadButtons(this);
+    await this.buttons.load(path.join(__dirname, '../buttons'));
     await loadSelectMenus(this);
+    await this.network.load();
     this.user?.setActivity(await getActivity(this));
   }
 

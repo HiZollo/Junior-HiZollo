@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionData, ApplicationCommandSubCommandData, ApplicationCommandSubGroupData, Collection, PermissionFlags } from "discord.js"
 import osu from "node-osu";
 import { AutocompleteManager } from "../classes/AutocompleteManager";
+import { ButtonManager } from "../classes/ButtonManager";
 import { CommandManager } from "../classes/CommandManager";
 import CooldownManager from "../classes/CooldownManager";
 import { HZNetwork } from "../classes/HZNetwork";
@@ -61,7 +62,7 @@ declare module "discord.js" {
 
   interface Client {
     autocomplete: AutocompleteManager;
-    buttons: Collection<string, (interaction: ButtonInteraction<"cached">) => Promise<void>>;
+    buttons: ButtonManager;
     selectmenus: Collection<string, (interaction: SelectMenuInteraction<"cached">) => Promise<void>>;
     commands: CommandManager;
     cooldown: CooldownManager;
