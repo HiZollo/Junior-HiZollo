@@ -6,6 +6,7 @@ import { CommandManager } from "../classes/CommandManager";
 import CooldownManager from "../classes/CooldownManager";
 import { HZNetwork } from "../classes/HZNetwork";
 import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";
+import { SelectMenuManager } from "../classes/SelectMenuManager";
 import { ArgumentParseType, CommandManagerRejectReason, CommandOptionType } from "./enums";
 import { CommandParserOptionFailWithChoicesResult, CommandParserOptionFailWithLimitResult, CommandParserOptionFailWithPureStatusResult, CommandParserOptionPassResult, PageSystemDescriptionOptions, PageSystemEmbedFieldOptions } from "./interfaces";
 
@@ -63,7 +64,7 @@ declare module "discord.js" {
   interface Client {
     autocomplete: AutocompleteManager;
     buttons: ButtonManager;
-    selectmenus: Collection<string, (interaction: SelectMenuInteraction<"cached">) => Promise<void>>;
+    selectmenus: SelectMenuManager;
     commands: CommandManager;
     cooldown: CooldownManager;
     music: ClientMusicManager;

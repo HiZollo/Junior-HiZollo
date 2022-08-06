@@ -1,17 +1,17 @@
 import dotenv from "dotenv";
 import path from "path";
-import { Client, Collection, PermissionsBitField, SelectMenuInteraction, WebhookClient } from "discord.js";
+import { Client, Collection, PermissionsBitField, WebhookClient } from "discord.js";
 import osu from "node-osu";
 import { CommandManager } from "./CommandManager";
 import CooldownManager from "./CooldownManager";
 import config from "../config";
-import loadSelectMenus from '../features/appUtils/loadSelectMenus';
 import getActivity from "../features/utils/getActivity";
 import { HZClientOptions } from "../utils/interfaces";
 import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";
 import { HZNetwork } from "./HZNetwork";
 import { AutocompleteManager } from "./AutocompleteManager";
 import { ButtonManager } from "./ButtonManager";
+import { SelectMenuManager } from "./SelectMenuManager";
 
 dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 
@@ -22,7 +22,7 @@ export class HZClient extends Client {
   public commands: CommandManager;
   public autocomplete: AutocompleteManager;
   public buttons: ButtonManager;
-  public selectmenus: Collection<string, (interaction: SelectMenuInteraction<"cached">) => Promise<void>>;
+  public selectmenus: SelectMenuManager;
 
   public cooldown: CooldownManager;
   public music: ClientMusicManager;
@@ -45,7 +45,7 @@ export class HZClient extends Client {
     this.commands = new CommandManager(this);
     this.autocomplete = new AutocompleteManager(this);
     this.buttons = new ButtonManager(this);
-    this.selectmenus = new Collection();
+    this.selectmenus = new SelectMenuManager(this);
 
     this.cooldown = new CooldownManager(this);
     this.music = new ClientMusicManager(this);
@@ -69,7 +69,7 @@ export class HZClient extends Client {
     await this.commands.load(path.join(__dirname, '../commands/'));
     await this.autocomplete.load(path.join(__dirname, '../autocomplete'));
     await this.buttons.load(path.join(__dirname, '../buttons'));
-    await loadSelectMenus(this);
+    await this.selectmenus.load(path.join(__dirname, '../selectmenus'));
     await this.network.load();
     this.user?.setActivity(await getActivity(this));
   }

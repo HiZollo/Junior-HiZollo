@@ -6,10 +6,9 @@
 *************************************************************************/
 
 /******************* 系統變數設置 *******************/
-import { EmbedBuilder, GatewayIntentBits, InteractionType } from 'discord.js';
+import { EmbedBuilder, GatewayIntentBits } from 'discord.js';
 import './djsAddon';
 import config from './config';
-import constant from './constant.json';
 import { HZClient } from './classes/HZClient';
 import { CommandManagerRejectReason, CommandParserOptionResultStatus } from './utils/enums';
 const client = new HZClient({
@@ -171,26 +170,9 @@ client.on('messageCreate', async message => {
 /******************* 指令互動 *******************/
 client.on('interactionCreate', async interaction => {
   client.autocomplete.onInteractionCreate(interaction);
+  client.buttons.onInteractionCreate(interaction);
+  client.selectmenus.onInteractionCreate(interaction);
   client.commands.interactionRun(interaction);
-
-  /********* 篩選 *********/
-  if (interaction.type !== InteractionType.MessageComponent) return;
-  if (!interaction.inCachedGuild()) return;
-  if (interaction.user.blocked) return;
-  if (client.devMode && interaction.guild.id !== constant.mainGuild.id) return;
-  /**/
-
-  /********* 訊息配件 *********/
-  if (interaction.type === InteractionType.MessageComponent) {
-    if (interaction.isSelectMenu()) {
-      const [commandName] = interaction.customId.split('_');
-      const action = client.selectmenus.get(commandName);
-      action?.(interaction);
-      return;
-    }
-    return;
-  }
-  /**/
 });
 /**/
 
