@@ -157,6 +157,7 @@ client.on('ready', async () => {
 /******************* 如果出錯 *******************/
 client.on('error', console.error);
 client.commands.on('error', console.error);
+client.network.on('error', console.error);
 process.on('uncaughtException', console.error);
 /**/
 

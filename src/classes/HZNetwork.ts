@@ -147,8 +147,8 @@ export class HZNetwork extends EventEmitter {
         username: message.author.tag,
       });
     } catch (error) {
-      console.log(error);
       message.channel.send(`HiZollo Network 出現傳輸問題……`);
+      this.emit('error', error);
     }
   }
 

@@ -16,6 +16,7 @@ export interface HZClientOptions extends ClientOptions {
 
 
 export interface HZNetworkEvents {
+  error: [error: unknown];
   loaded: [];
   crosspost: [portNo: string, options: WebhookMessageOptions];
   joined: [portNo: string, channel: TextChannel];
