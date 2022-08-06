@@ -7,6 +7,7 @@ import CooldownManager from "../classes/CooldownManager";
 import { HZNetwork } from "../classes/HZNetwork";
 import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";
 import { SelectMenuManager } from "../classes/SelectMenuManager";
+import { WebhookLogger } from "../classes/WebhookLogger";
 import { ArgumentParseType, CommandManagerRejectReason, CommandOptionType } from "./enums";
 import { CommandParserOptionFailWithChoicesResult, CommandParserOptionFailWithLimitResult, CommandParserOptionFailWithPureStatusResult, CommandParserOptionPassResult, PageSystemDescriptionOptions, PageSystemEmbedFieldOptions } from "./interfaces";
 
@@ -71,6 +72,7 @@ declare module "discord.js" {
     network: HZNetwork;
 
     devMode: boolean;
+    logger: WebhookLogger;
 
     angryList: Collection<string, number>;
     isAngryAt(userId: string): Promise<number>;

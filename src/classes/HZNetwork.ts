@@ -56,6 +56,7 @@ export class HZNetwork extends EventEmitter {
   public async onMessageCreate(message: Message): Promise<void> {
     if (message.author.blocked) return;
     if (message.author.bot || message.webhookId) return;
+    if (!message.guild) return;
 
     const portNo = this.getPortNo(message.channel);
     if (!portNo || message.channel.type !== ChannelType.GuildText) return;
@@ -140,15 +141,17 @@ export class HZNetwork extends EventEmitter {
         return;
       }
 
-      await this.broadcast(portNo, {
+      const options = {
         avatarURL: message.author.displayAvatarURL(),
         content: finalMessage.length ? finalMessage : null,
         files: attachments,
         username: message.author.tag,
-      });
+      };
+      await this.crosspost(portNo, options);
+      this.emit('crosspost', portNo, message.guild, message.author);
     } catch (error) {
       message.channel.send(`HiZollo Network 出現傳輸問題……`);
-      this.emit('error', error);
+      this.emit('error', error as Error);
     }
   }
 
@@ -157,7 +160,7 @@ export class HZNetwork extends EventEmitter {
     if (!portNo || channel.type !== ChannelType.GuildText) return;
 
     await this.registerChannel(portNo, channel);
-    await this.broadcast(portNo, {
+    await this.crosspost(portNo, {
       avatarURL: this.client.user?.displayAvatarURL(),
       content: `歡迎 ${channel.guild.name} 加入 HiZollo 聯絡網！`,
       username: '[ HiZollo 全頻廣播 ]',
@@ -171,7 +174,7 @@ export class HZNetwork extends EventEmitter {
     // 新頻道是 HiZollo Network 時，將其加入聯絡網中
     if (newPortNo && newChannel.type === ChannelType.GuildText) {
       await this.registerChannel(newPortNo, newChannel);
-      await this.broadcast(newPortNo, {
+      await this.crosspost(newPortNo, {
         avatarURL: this.client.user?.displayAvatarURL(),
         content: `歡迎 ${newChannel.guild.name} 加入 HiZollo 聯絡網！`,
         username: '[ HiZollo 全頻廣播 ]',
@@ -197,7 +200,7 @@ export class HZNetwork extends EventEmitter {
       const portNo = this.getPortNo(channel);
       if (channel.type === ChannelType.GuildText && portNo) {
         await this.registerChannel(portNo, channel);
-        await this.broadcast(portNo, {
+        await this.crosspost(portNo, {
           avatarURL: this.client.user?.displayAvatarURL(),
           content: `歡迎 ${channel.guild.name} 加入 HiZollo 聯絡網！`,
           username: '[ HiZollo 全頻廣播 ]',
@@ -220,8 +223,9 @@ export class HZNetwork extends EventEmitter {
    * 向相同埠號的所有頻道發送訊息
    * @param portNo 埠號
    * @param options 要發送的訊息
+   * @param from 來源伺服器，未提供此參數時會視為官方廣播
    */
-  public async broadcast(portNo: string, options: WebhookMessageOptions): Promise<void> {
+  public async crosspost(portNo: string, options: WebhookMessageOptions, isBroadcast?: boolean): Promise<void> {
     await this.client.shard?.broadcastEval(async (client, {portNo, options}) => {
       const webhooks = client.network.ports.get(portNo);
       if (!webhooks) return;
@@ -234,7 +238,10 @@ export class HZNetwork extends EventEmitter {
         });
       }));
     }, { context: { portNo, options } });
-    this.emit('crosspost', portNo, options);
+
+    if (isBroadcast) {
+      this.emit('broadcast', portNo, options.content ?? '[無訊息內容]');
+    }
   }
 
   /**

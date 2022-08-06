@@ -26,13 +26,6 @@ const client = new HZClient({
 import permissionTable from './features/utils/permissionTable';
 /**/
 
-/******************* 指令載入 *******************/
-client.commands.once('load', () => {
-  console.log('所有指令皆已載入完畢');
-});
-/**/
-
-
 /******************* 指令失敗 *******************/
 client.commands.on('reject', async (source, info) => {
   await source.defer({ ephemeral: true });
@@ -123,42 +116,58 @@ client.commands.on('unavailable', async source => {
 });
 /**/
 
-/******************* Network 載入 *******************/
-client.network.on('loaded', () => {
-  console.log('HiZollo Network 載入完畢');
+/******************* 指令執行 *******************/
+client.commands.on('executed', (source, commandName, ...args) => {
+  client.logger.commandExecuted(source, commandName, ...args);
 });
 /**/
 
-/******************* Network 載入 *******************/
-client.network.on('crosspost', (portNo, options) => {
-  console.log(portNo, options);
+/******************* Network 全頻廣播 *******************/
+client.network.on('broadcast', (portNo, content) => {
+  client.logger.networkBroadcast(portNo, content);
 });
 /**/
 
-/******************* Network 載入 *******************/
+/******************* Network 傳輸訊息 *******************/
+client.network.on('crosspost', (portNo, guild, author) => {
+  client.logger.networkCrossPost(portNo, guild, author);
+});
+/**/
+
+/******************* Network 新增頻道 *******************/
 client.network.on('joined', (portNo, channel) => {
   console.log(portNo, channel.name);
+  client.logger.networkJoined(portNo, channel);
 });
 /**/
 
-/******************* Network 載入 *******************/
+/******************* Network 刪除頻道 *******************/
 client.network.on('left', (portNo, channel) => {
   console.log(portNo, channel.name);
+  client.logger.networkLeft(portNo, channel);
 });
 /**/
 
 /******************* 上線確認 *******************/
 client.on('ready', async () => {
-  console.log('Ready');
+  client.logger.ready();
   await client.initialize();
 });
 /**/
 
 /******************* 如果出錯 *******************/
-client.on('error', console.error);
-client.commands.on('error', console.error);
-client.network.on('error', console.error);
-process.on('uncaughtException', console.error);
+client.on('error', error => {
+  client.logger.error(error);
+});
+client.commands.on('error', (_commandName, error) => {
+  client.logger.error(error);
+});
+client.network.on('error', error => {
+  client.logger.error(error);
+});
+process.on('uncaughtException', error => {
+  client.logger.error(error);
+});
 /**/
 
 /******************* 訊息創建 *******************/
@@ -197,12 +206,14 @@ client.on('channelDelete', channel => {
 
 /******************* 加入伺服器 *******************/
 client.on('guildCreate', guild => {
+  client.logger.joinGuild(guild);
   client.network.onGuildCreate(guild);
 });
 /**/
 
 /******************* 刪除伺服器 *******************/
 client.on('guildDelete', guild => {
+  client.logger.leaveGuild(guild);
   client.network.onGuildDelete(guild);
 });
 /**/

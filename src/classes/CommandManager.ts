@@ -105,10 +105,8 @@ export class CommandManager extends EventEmitter {
     const member = interaction.member;
     if (!channel || !member) return;
 
-    const command = this.search([
-      interaction.commandName, 
-      interaction.options.getSubcommand(false) ?? undefined
-    ]);
+    const commandName: [string, string | undefined] = [interaction.commandName, interaction.options.getSubcommand(false) ?? undefined];
+    const command = this.search(commandName);
 
     // /********* 搜尋指令 *********/
     // let groupName, commandName; // 群組指令名稱（如有）與將執行的指令名稱
@@ -195,10 +193,10 @@ export class CommandManager extends EventEmitter {
 
     /***** 執行 *****/
     try {
-      await command.slashExecute(interaction, args, channel, member);
-      this.emit('executed', command.name, args);
+      const source = await command.slashExecute(interaction, args, channel, member);
+      this.emit('executed', source, commandName, args);
     } catch (error) {
-      this.emit('error', command.name, error);
+      this.emit('error', command.name, error as Error);
     }
     /**/
   }
@@ -299,10 +297,10 @@ export class CommandManager extends EventEmitter {
 
     /***** 執行 *****/
     try {
-      await command.messageExecute(message, args, channel, member);
-      this.emit('executed', command.name, args);
+      const source = await command.messageExecute(message, args, channel, member);
+      this.emit('executed', source, commandName, args);
     } catch (error) {
-      this.emit('error', command.name, error);
+      this.emit('error', command.name, error as Error);
     }
     /**/
   }

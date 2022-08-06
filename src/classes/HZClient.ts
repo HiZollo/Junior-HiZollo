@@ -12,12 +12,15 @@ import { HZNetwork } from "./HZNetwork";
 import { AutocompleteManager } from "./AutocompleteManager";
 import { ButtonManager } from "./ButtonManager";
 import { SelectMenuManager } from "./SelectMenuManager";
+import { WebhookLogger } from "./WebhookLogger";
 
 dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 
 export class HZClient extends Client {
   public devMode: boolean;
   public blockedUsers: Set<string>;
+
+  public logger: WebhookLogger;
   
   public commands: CommandManager;
   public autocomplete: AutocompleteManager;
@@ -41,6 +44,8 @@ export class HZClient extends Client {
 
     if (!process.env.BLOCKED_USERS) throw new Error('Blocked users not configured.');
     this.blockedUsers = new Set(eval(process.env.BLOCKED_USERS) as string[]);
+
+    this.logger = new WebhookLogger(this);
 
     this.commands = new CommandManager(this);
     this.autocomplete = new AutocompleteManager(this);

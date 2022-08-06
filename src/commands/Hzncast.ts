@@ -67,12 +67,12 @@ export default class Hzncast extends Command<[string]> {
     }
 
     await reply.edit('正在傳送你的訊息……');
-    await source.client.network.broadcast(portNo, {
+    await source.client.network.crosspost(portNo, {
       avatarURL: source.client.user?.displayAvatarURL(),
       content: content,
       files: attachments, 
       username: '[ HiZollo 全頻廣播 ]',
-    });
+    }, true);
     await reply.edit('你的訊息已成功傳送');
   }
 }

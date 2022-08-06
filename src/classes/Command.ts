@@ -31,13 +31,15 @@ export abstract class Command<T> {
     this.twoFactorRequired = options.twoFactorRequired ?? false;
   }
 
-  public async messageExecute(message: Message<true>, args: T, channel: GuildTextBasedChannel, member: GuildMember): Promise<T> {
-    await this.execute(new Source(message, channel, member), args);
-    return args;
+  public async messageExecute(message: Message<true>, args: T, channel: GuildTextBasedChannel, member: GuildMember): Promise<Source<Message<true>>> {
+    const source = new Source(message, channel, member);
+    await this.execute(source, args);
+    return source;
   }
 
-  public async slashExecute(interaction: ChatInputCommandInteraction<"cached">, args: T, channel: GuildTextBasedChannel, member: GuildMember): Promise<T> {
-    await this.execute(new Source(interaction, channel, member), args);
-    return args;
+  public async slashExecute(interaction: ChatInputCommandInteraction<"cached">, args: T, channel: GuildTextBasedChannel, member: GuildMember): Promise<Source<ChatInputCommandInteraction<"cached">>> {
+    const source = new Source(interaction, channel, member);
+    await this.execute(source, args);
+    return source;
   }
 }
