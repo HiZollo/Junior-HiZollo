@@ -170,50 +170,15 @@ client.on('messageCreate', async message => {
 
 /******************* 指令互動 *******************/
 client.on('interactionCreate', async interaction => {
+  client.autocomplete.onInteractionCreate(interaction);
   client.commands.interactionRun(interaction);
+
   /********* 篩選 *********/
-  if (![InteractionType.ApplicationCommand, InteractionType.ApplicationCommandAutocomplete, InteractionType.MessageComponent].includes(interaction.type)) return;
-  if (!interaction.inCachedGuild() || !interaction.channel) return;
+  if (interaction.type !== InteractionType.MessageComponent) return;
+  if (!interaction.inCachedGuild()) return;
   if (interaction.user.blocked) return;
   if (client.devMode && interaction.guild.id !== constant.mainGuild.id) return;
   /**/
-
-
-  /********* 自動匹配 *********/
-  if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
-    let commandName = interaction.commandName;
-    if (interaction.options.getSubcommand(false)) commandName += '_' + interaction.options.getSubcommand(false)
-
-    const option = interaction.options.getFocused(true);
-    const regExp = new RegExp(option.value.toLowerCase().split('').join('.*?'));
-
-    const result = interaction.client.autocomplete.get(commandName)?.[option.name]?.filter(({ name, devOnly }) => {
-      if (!regExp.test(name.toLowerCase())) return false;
-      if (devOnly && interaction.guild.id !== constant.devGuild.id) return false;
-      return true;
-    });
-    if (!result) return interaction.respond([]);
-
-    result.sort((a, b) => {
-      const aMatch = regExp.exec(a.name.toLowerCase());
-      const bMatch = regExp.exec(b.name.toLowerCase());
-
-      if (!aMatch && !bMatch) return 0;
-      if (!aMatch) return 1;
-      if (!bMatch) return -1;
-  
-      // 符合 regExp 的字串長度越長，代表越不符合
-      if (aMatch[0].length > bMatch[0].length) return 1;
-      if (aMatch[0].length < bMatch[0].length) return -1;
-  
-      // 如果都一樣長就比誰最前面
-      if (aMatch.index > bMatch.index) return 1;
-      if (aMatch.index < bMatch.index) return -1;
-      return 0;
-    });
-  
-    return interaction.respond(result.slice(0, 10).map(({ name: n }) => ({ name: n, value: n })));
-  }
 
   /********* 訊息配件 *********/
   if (interaction.type === InteractionType.MessageComponent) {

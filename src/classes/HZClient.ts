@@ -5,14 +5,13 @@ import osu from "node-osu";
 import { CommandManager } from "./CommandManager";
 import CooldownManager from "./CooldownManager";
 import config from "../config";
-import loadAutocomplete from "../features/appUtils/loadAutocomplete";
 import loadButtons from '../features/appUtils/loadButtons';
 import loadSelectMenus from '../features/appUtils/loadSelectMenus';
 import getActivity from "../features/utils/getActivity";
 import { HZClientOptions } from "../utils/interfaces";
-import { AutocompleteReturnType } from "../utils/types";
 import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";
 import { HZNetwork } from "./HZNetwork";
+import { AutocompleteManager } from "./AutocompleteManager";
 
 dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 
@@ -21,7 +20,7 @@ export class HZClient extends Client {
   public blockedUsers: Set<string>;
   
   public commands: CommandManager;
-  public autocomplete: Collection<string, AutocompleteReturnType>;
+  public autocomplete: AutocompleteManager;
   public buttons: Collection<string, (interaction: ButtonInteraction<"cached">) => Promise<void>>;
   public selectmenus: Collection<string, (interaction: SelectMenuInteraction<"cached">) => Promise<void>>;
 
@@ -44,7 +43,7 @@ export class HZClient extends Client {
     this.blockedUsers = new Set(eval(process.env.BLOCKED_USERS) as string[]);
 
     this.commands = new CommandManager(this);
-    this.autocomplete = new Collection();
+    this.autocomplete = new AutocompleteManager(this);
     this.buttons = new Collection();
     this.selectmenus = new Collection();
 
@@ -69,7 +68,7 @@ export class HZClient extends Client {
   public async initialize(): Promise<void> {
     await this.commands.load(path.join(__dirname, '../commands/'));
     await this.network.load();
-    await loadAutocomplete(this);
+    await this.autocomplete.load(path.join(__dirname, '../autocomplete'));
     await loadButtons(this);
     await loadSelectMenus(this);
     this.user?.setActivity(await getActivity(this));

@@ -15,7 +15,8 @@ export default class Help extends Command<[string]> {
         type: ApplicationCommandOptionType.String, 
         name: '指令名稱', 
         description: '要查詢的特定指令', 
-        required: false
+        required: false, 
+        autocomplete: true
       }], 
       permissions: {
         bot: [PermissionFlagsBits.EmbedLinks]
