@@ -1,5 +1,5 @@
 import { ActionRowBuilder, SelectMenuBuilder } from '@discordjs/builders';
-import { APISelectMenuOption, ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, Message, SelectMenuInteraction } from 'discord.js';
+import { APISelectMenuOption, ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, SelectMenuInteraction } from 'discord.js';
 import { PageSystemMode } from '../../utils/enums.js';
 import { PageSystemDescriptionOptions, PageSystemEmbedFieldOptions, PageSystemPagesOptions } from '../../utils/interfaces.js';
 import { PageSystemOptions } from '../../utils/types.js';
@@ -102,7 +102,7 @@ export default async function pageSystem(options: PageSystemOptions): Promise<Pa
         return;
       }
       await interaction.editReply({ content: '\u200b', components: [], embeds: [] });
-      if (source.source instanceof Message) await message.delete().catch(() => {});
+      if (source.isMessage()) await message.delete().catch(() => {});
       buttonCollector.stop(`selected_${interaction.values[0]}`);
     });
   }

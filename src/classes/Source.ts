@@ -1,9 +1,8 @@
 import { ChatInputCommandInteraction, Client, Guild, GuildMember, GuildTextBasedChannel, InteractionDeferReplyOptions, InteractionResponse, Message, MessagePayload, User, WebhookEditMessageOptions } from "discord.js";
 import tempMessage from "../features/utils/tempMessage";
 
-export class Source {
-  public source: ChatInputCommandInteraction | Message;
-
+export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<true> = ChatInputCommandInteraction<"cached"> | Message<true>> {
+  public source: T;
   public channel: GuildTextBasedChannel;
   public channelId: string;
   public client: Client;
@@ -14,7 +13,7 @@ export class Source {
   public member: GuildMember;
   public user: User;
 
-  constructor(source: ChatInputCommandInteraction<"cached"> | Message<true>, channel: GuildTextBasedChannel, member: GuildMember) {
+  constructor(source: T, channel: GuildTextBasedChannel, member: GuildMember) {
     this.source = source;
 
     this.channel = channel;
@@ -28,6 +27,14 @@ export class Source {
     this.user = 'user' in source ? source.user : source.author;
   }
 
+
+  public isChatInput(): this is Source<ChatInputCommandInteraction<"cached">> {
+    return this.source instanceof ChatInputCommandInteraction<"cached">;
+  }
+
+  public isMessage(): this is Source<Message<true>> {
+    return this.source instanceof Message<true>;
+  }
 
   public get deferred(): boolean {
     return this.source instanceof ChatInputCommandInteraction && this.source.deferred;
