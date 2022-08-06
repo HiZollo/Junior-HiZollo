@@ -96,7 +96,7 @@ export class CommandManager extends EventEmitter {
    * 把第一線的指令互動轉接給各指令類別執行
    * @param interaction 從 client#on('interactionCreate') 得到的指令互動
    */
-  public async interactionRun(interaction: Interaction): Promise<void> {
+  public async onInteractionCreate(interaction: Interaction): Promise<void> {
     if (!interaction.isChatInputCommand() || !interaction.inCachedGuild()) return;
     if (interaction.user.blocked || interaction.user.bot) return;
     if (this.client.devMode && interaction.channel?.isTestChannel()) return;
@@ -208,7 +208,7 @@ export class CommandManager extends EventEmitter {
    * 把第一線的訊息轉接給各指令類別執行
    * @param message 從 client#on('messageCreate') 得到的訊息
    */
-  public async messageRun(message: Message): Promise<void> {
+  public async onMessageCreate(message: Message): Promise<void> {
     if (!message.inGuild()) return;
     if (message.author.blocked || message.author.bot) return;
     if (message.client.devMode && !message.channel.isTestChannel()) return;

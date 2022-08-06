@@ -163,7 +163,7 @@ process.on('uncaughtException', console.error);
 
 /******************* 訊息創建 *******************/
 client.on('messageCreate', async message => {
-  client.commands.messageRun(message);
+  client.commands.onMessageCreate(message);
   client.network.onMessageCreate(message);
 });
 /**/
@@ -172,8 +172,8 @@ client.on('messageCreate', async message => {
 client.on('interactionCreate', async interaction => {
   client.autocomplete.onInteractionCreate(interaction);
   client.buttons.onInteractionCreate(interaction);
+  client.commands.onInteractionCreate(interaction);
   client.selectmenus.onInteractionCreate(interaction);
-  client.commands.interactionRun(interaction);
 });
 /**/
 
