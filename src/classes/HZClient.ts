@@ -183,6 +183,9 @@ export class HZClient extends Client {
       case '24/7': case '247': 
         return message.channel.send('HiZollo 是在 heroku 上代管的，才能做到幾乎 24/7 上線');
       
+      case 'opensource': case 'os':
+        return message.channel.send('HiZollo 的 專案是開源的，你可以到 https://github.com/HiZollo/Junior-HiZollo 查看原始碼');
+      
       case 'otherbot': case 'ob': 
         return message.channel.send(
           '我們官方不支援「其他機器人」使用上的教學以及問題排除，'+
