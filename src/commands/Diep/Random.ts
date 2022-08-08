@@ -9,6 +9,7 @@ export default class DiepInfo extends Command<[string]> {
   constructor() {
     super({
       type: CommandType.Fun, 
+      parent: 'diep', 
       name: 'random', 
       description: '隨機抽取一台 Diep.io 的坦克', 
       aliases: ['rt'], 

@@ -8,6 +8,7 @@ export default class DiepFact extends Command<[]> {
   constructor() {
     super({
       type: CommandType.Fun, 
+      parent: 'diep', 
       name: 'fact', 
       description: '獲得一個 Diep.io 的小知識'
     });

@@ -14,7 +14,7 @@ export default function(client: HZClient): AutocompleteReturnType {
       ...client.commands.subcommands.map((group, commandName) => {
         return {
           name: commandName,
-          devOnly: group.some(command => command.type !== CommandType.Developer)
+          devOnly: group.data.some(command => command.type !== CommandType.Developer)
         };
       })
     ]

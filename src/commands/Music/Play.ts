@@ -7,6 +7,7 @@ export default class MusicPlay extends Command<[string]> {
   constructor() {
     super({
       type: CommandType.Utility, 
+      parent: 'music', 
       name: 'play', 
       description: '加入語音頻道', 
       extraDescription: '若加入的是舞台頻道，可以額外在後面指定 false，讓機器人只有播歌的時候會成為發言人，其他時候會自動退下', 
@@ -28,7 +29,8 @@ export default class MusicPlay extends Command<[string]> {
 
   public async execute(source: Source, [keywordOrUrl]: [string]): Promise<void> {
     if (!source.client.music.has(source.guild.id)) {
-      await source.client.commands.subcommands.get('music')?.get('join')?.execute(source, [true]);
+      const command = source.client.commands.search(['music', 'join']) as Command<unknown>;
+      await command.execute(source, [true]);
       if (!source.guild.members.me?.voice.channel) return;
     }
 

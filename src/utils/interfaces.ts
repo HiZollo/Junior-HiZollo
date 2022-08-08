@@ -1,6 +1,6 @@
 import { ButtonBuilder, ModalBuilder } from "@discordjs/builders";
 import { VoiceConnection } from "@discordjs/voice";
-import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, EmbedBuilder, Guild, GuildMember, GuildTextBasedChannel, MessageOptions, TextChannel, User, VoiceBasedChannel } from "discord.js";
+import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, Collection, EmbedBuilder, Guild, GuildMember, GuildTextBasedChannel, MessageOptions, TextChannel, User, VoiceBasedChannel } from "discord.js";
 import { InfoData, YouTubeStream } from "play-dl";
 import { HZClient } from "../classes/HZClient";
 import { Source } from "../classes/Source";
@@ -8,12 +8,19 @@ import { GuildMusicManager } from "../classes/Music/Model/GuildMusicManager";
 import { MusicViewRenderer } from "../classes/Music/View/MusicViewRenderer";
 import { CommandParserOptionResultStatus, CommandType, PageSystemMode } from "./enums";
 import { ArgumentParseMethod, HZCommandOptionData } from "./types";
+import { Command } from "../classes/Command";
+
+export interface SubcommandGroup {
+  type: CommandType.SubcommandGroup;
+  name: string;
+  description: string;
+  aliases?: string[];
+  data: Collection<string, Command<unknown>>;
+}
 
 export interface HZClientOptions extends ClientOptions {
   devMode?: boolean;
 }
-
-
 
 export interface HZNetworkEvents {
   error: [error: Error];
@@ -56,6 +63,7 @@ export interface CommandParserOptionFailWithLimitResult {
 /******************* Command *******************/
 export interface CommandOptions {
   type: CommandType;
+  parent?: string;
   name: string;
   description: string;
   extraDescription?: string;

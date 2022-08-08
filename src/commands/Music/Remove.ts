@@ -7,6 +7,7 @@ export default class MusicRemove extends Command<[number, number]> {
   constructor() {
     super({
       type: CommandType.Utility, 
+      parent: 'music', 
       name: 'remove', 
       description: '將待播清單中的指定歌曲移除', 
       extraDescription: '起始歌曲編號的預設值為 1，終止歌曲編號的預設值為起始歌曲編號', 

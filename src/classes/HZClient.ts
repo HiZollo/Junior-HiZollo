@@ -38,8 +38,6 @@ export class HZClient extends Client {
   public suggestHook: WebhookClient;
   public replyHook: WebhookClient;
 
-  private _invitePermissions: PermissionsBitField | null;
-
   constructor(options: HZClientOptions) {
     super(options);
     
@@ -69,8 +67,6 @@ export class HZClient extends Client {
       completeScores: true,
       parseNumeric: true
     });
-
-    this._invitePermissions = null;
   }
 
   public async initialize(): Promise<void> {
@@ -82,6 +78,7 @@ export class HZClient extends Client {
     this.user?.setActivity(await getActivity(this));
   }
 
+  private _invitePermissions: PermissionsBitField | null = null;
   public get invitePermissions(): PermissionsBitField {
     if (this._invitePermissions) return this._invitePermissions;
 
@@ -90,7 +87,7 @@ export class HZClient extends Client {
       permissions.add(command.permissions?.bot ?? []);
     });
     this.commands.subcommands.each(group => {
-      group.each(command => {
+      group.data.each(command => {
         permissions.add(command.permissions?.bot ?? []);
       });
     });

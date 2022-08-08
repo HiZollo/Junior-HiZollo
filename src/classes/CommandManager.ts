@@ -9,8 +9,9 @@ import { Source } from "./Source";
 import config from '../config';
 import missingPermissions from "../features/utils/missingPermissions";
 import { CommandManagerRejectReason, CommandParserOptionResultStatus, CommandType } from "../utils/enums";
-import { CommandManagerEvents } from "../utils/interfaces";
+import { CommandManagerEvents, SubcommandGroup } from "../utils/interfaces";
 import { CommandManagerRejectInfo } from "../utils/types";
+import { SubcommandManager } from "./SubcommandManager";
 
 /**
  * 掌管所有與指令相關的操作，並支援單層的群組指令，必須保證 help 指令存在
@@ -30,7 +31,7 @@ export class CommandManager extends EventEmitter {
   /**
    * 群組指令
    */
-  public subcommands: Collection<string, Collection<string, Command<unknown>>>;
+  public subcommands: SubcommandManager;
 
   /**
    * 指令是否已載入完畢
@@ -45,7 +46,7 @@ export class CommandManager extends EventEmitter {
     super();
     this.client = client;
     this.commands = new Collection();
-    this.subcommands = new Collection();
+    this.subcommands = new SubcommandManager(client);
     this.loaded = false;
   }
 
@@ -56,34 +57,17 @@ export class CommandManager extends EventEmitter {
   public async load(dirPath: string): Promise<void> {
     if (this.loaded) throw new Error('Commands have already been loaded.');
 
-    const applicationCommands = await this.client.application?.commands.fetch().catch(console.log);
-    if (!applicationCommands) throw new Error('Falied to fetch application commands.');
-
     const commandFiles = fs.readdirSync(dirPath);
     for (const file of commandFiles) {
-      const filePath = path.join(dirPath, file);
+      if (!file.endsWith('.js')) continue;
 
-      // 如果是資料夾就是群組指令
-      if (fs.statSync(filePath).isDirectory()) {
-        const subcommandFiles = fs.readdirSync(dirPath);
-        const group = new Collection<string, Command<unknown>>();
-    
-        for (const subcommandFile of subcommandFiles) {
-          if (!subcommandFile.endsWith('.js')) continue;
-          
-          const C: new () => Command<unknown> = require(path.join(dirPath, subcommandFile)).default;
-          const instance = new C();
-    
-          group.set(instance.name, instance);
-        }
-    
-        this.subcommands.set(file.toLowerCase(), group);
+      const C: new () => Command<unknown> = require(path.join(dirPath, file)).default;
+      const instance = new C();
+
+      if (instance.type === CommandType.SubcommandGroup) {
+        this.subcommands.load(path.join(dirPath, file.slice(0, -3)), instance);
       }
-
-      // 其他就是一般指令
-      else if (file.endsWith('.js')) {
-        const C: new () => Command<unknown> = require(filePath).default;
-        const instance = new C();
+      else {
         this.commands.set(instance.name, instance);
       }
     }
@@ -108,20 +92,6 @@ export class CommandManager extends EventEmitter {
     const commandName: [string, string | undefined] = [interaction.commandName, interaction.options.getSubcommand(false) ?? undefined];
     const command = this.search(commandName);
 
-    // /********* 搜尋指令 *********/
-    // let groupName, commandName; // 群組指令名稱（如有）與將執行的指令名稱
-    // let command, data; // 指令與其參數
-    // let shortcut = false;
-
-    // // 捷徑用法
-    // if (interaction.commandName === 'z') {
-    //   shortcut = true;
-    //   data = interaction.options.data;
-    //   [groupName, commandName] = Z.getValueByKey(data[0].name).split('_');
-    //   command = this.client.commands.get(groupName).get(commandName);
-    //   data = data[0].options || [];
-    // }
-
     // 重新佈署的全域指令有可能因為快取問題而無法使用
     if (!command) {
       this.emit('unavailable', new Source(interaction, channel, member));
@@ -129,7 +99,7 @@ export class CommandManager extends EventEmitter {
     }
 
     // 斜線指令不可能會只給群組名稱
-    if (command instanceof Collection) return;
+    if (!(command instanceof Command)) return;
 
     if (command.type === CommandType.Developer && !channel.isTestChannel()) return;
 
@@ -221,19 +191,26 @@ export class CommandManager extends EventEmitter {
     if (!message.content.startsWith(config.bot.prefix)) return;
 
     const content = message.content.slice(config.bot.prefix.length).trim();
-    const [, firstArg, spaces, secondArg] = content.match(/^(\S+)(\s*)(\S+)?/) ?? [];
+    const [firstArg, secondArg] = content.split(/ +/, 2);
     if (!firstArg) return;
 
     let commandName: [string, string | undefined] = [firstArg, secondArg];
     let command = message.client.commands.search(commandName);
-    let rawArgs = content.slice(firstArg.length + (command instanceof Command && ![command.name, ...(command.aliases ?? [])].includes(firstArg) && [command.name, ...(command.aliases ?? [])].includes(secondArg) ? (spaces + secondArg).length : 0)).trim();
     if (!command) return;
 
-    // 只給群組名稱就當成使用 help firstArg
-    if (command instanceof Collection) {
-      commandName = ['help', firstArg];
+    let rawArgs = content.slice(firstArg.length).trim();
+    if (command instanceof Command) {
+      commandName = command.parent ? [command.parent, command.name] : [command.name, undefined];
+
+      const matchingNames = [command.name, ...(command.aliases ?? [])];
+      if (!matchingNames.includes(firstArg) && matchingNames.includes(secondArg)) {
+        rawArgs = rawArgs.slice(secondArg.length).trim();
+      }
+    }
+    else {
+      commandName = ['help', command.name];
+      rawArgs = `${command.name} ${rawArgs}`;
       command = message.client.commands.search(commandName) as Command<unknown>;
-      rawArgs = `${firstArg} ${rawArgs}`;
     }
 
     if (command.type === CommandType.Developer && !message.channel.isTestChannel()) return;
@@ -310,45 +287,21 @@ export class CommandManager extends EventEmitter {
    * @param commandName first 是第一個參數，second 是第二個參數
    * @returns 
    */
-  public search(commandName: [string, string | undefined]): Command<unknown> | Collection<string, Command<unknown>> | void {
+  public search(commandName: [string, string | undefined]): Command<unknown> | SubcommandGroup | void {
     const first = commandName[0].toLowerCase();
     const second = commandName[1]?.toLowerCase();
 
-    // 先找 z 指令，這個只有斜線指令才會出現
+    // 先找 z 指令
     if (first === 'z') {
 
     }
 
-    // 沒有第二個參數代表只有一層
-    if (second === undefined) {
-      // 先找一般指令
-      const command: Command<unknown> | Collection<string, Command<unknown>> | undefined = 
-        this.commands.get(first) ||
-        this.commands.find(c => !!c.aliases?.includes(first));
-      if (command) return command;
-
-      // 再找群組指令
-      const group = this.subcommands.get(first);
-      if (group) return group;
-
-      // 再找捷徑用法，假設沒有 collision
-      return this.subcommands.map(group => group.get(first) || group.find(c => !!c.aliases?.includes(first))).find(c => c);
-    }
-
     // 一般指令 + 參數
-    const command = this.commands.get(first) ||
-      this.commands.find(c => !!c.aliases?.includes(first));
+    const command = this.commands.get(first) || this.commands.find(c => !!c.aliases?.includes(first));
     if (command) return command;
 
-    // 群組名稱 + 群組指令
-    const subcommandGroup = this.subcommands.get(first);
-    if (subcommandGroup) {
-      return subcommandGroup.get(second) ||
-        subcommandGroup.find(c => !!c.aliases?.includes(second));
-    }
-
-    // 捷徑用法 + 參數
-    return this.subcommands.map(group => group.get(first) || group.find(c => !!c.aliases?.includes(first))).find(c => c);
+    // 群組指令
+    return this.subcommands.search([first, second]);
   }
 
 	public each(fn: (value: Command<unknown>, key: string, collection: Collection<string, Command<unknown>>) => void): Collection<string, Command<unknown>> {

@@ -1,9 +1,10 @@
-import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, ButtonBuilder, Client, Collection, EmbedBuilder, GuildMember, InteractionReplyOptions, MessageOptions, PermissionFlagsBits, SelectMenuBuilder, SelectMenuInteraction } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, ButtonBuilder, Client, EmbedBuilder, GuildMember, InteractionReplyOptions, MessageOptions, PermissionFlagsBits, SelectMenuBuilder, SelectMenuInteraction } from "discord.js";
 import config from "../config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { CommandOptionType, CommandType } from "../utils/enums";
 import { HZCommandOptionData } from "../utils/types";
+import { SubcommandGroup } from "../utils/interfaces";
 
 export default class Help extends Command<[string]> {
   constructor() {
@@ -163,13 +164,13 @@ export default class Help extends Command<[string]> {
       .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null);
   }
 
-  public getEmbedForSubcommandGroup(source: { client: Client, member: GuildMember }, groupName: string, commands: Collection<string, Command<unknown>>): EmbedBuilder {
+  public getEmbedForSubcommandGroup(source: { client: Client, member: GuildMember }, groupName: string, commands: SubcommandGroup): EmbedBuilder {
     const embed = new EmbedBuilder()
       .applyHiZolloSettings(source.member, 'HiZollo 的幫助中心', '使用指令時不須連同 [] 或 <> 一起輸入')
       .setDescription(`這是 HiZollo 的 ${groupName} 指令清單`)
       .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null);
 
-    commands.each(command => {
+    commands.data.each(command => {
       let description = `** - 指令功能：**${command.description}\n` + this.getDescriptionForCommand(command, true);
       embed.addFields({ name: `${groupName} ${command.name}`, value: description });
     });

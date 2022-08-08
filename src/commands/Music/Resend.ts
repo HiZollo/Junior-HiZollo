@@ -6,6 +6,7 @@ export default class MusicResend extends Command<[]> {
   constructor() {
     super({
       type: CommandType.Utility, 
+      parent: 'music', 
       name: 'resend', 
       description: '重新傳送音樂遙控器', 
       aliases: ['rs']

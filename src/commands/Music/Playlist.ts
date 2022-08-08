@@ -10,6 +10,7 @@ export default class MusicPlaylist extends Command<[]> {
   constructor() {
     super({
       type: CommandType.Utility, 
+      parent: 'music', 
       name: 'playlist', 
       description: '顯示目前的待播清單', 
       aliases: ['pl', 'queue', 'q']

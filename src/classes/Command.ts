@@ -6,6 +6,7 @@ import { ArgumentParseMethod, HZCommandOptionData } from "../utils/types";
 
 export abstract class Command<T> {
   public type: CommandType;
+  public parent: string | null;
   public name: string;
   public description: string;
   public extraDescription?: string;
@@ -20,6 +21,7 @@ export abstract class Command<T> {
 
   constructor(options: CommandOptions) {
     this.type = options.type;
+    this.parent = options.parent ?? null;
     this.name = options.name;
     this.description = options.description;
     this.extraDescription = options.extraDescription;
