@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import path from "path";
-import { Client, Collection, PermissionsBitField, WebhookClient } from "discord.js";
+import { Client, Collection, Message, MessageReaction, PermissionsBitField, WebhookClient } from "discord.js";
 import osu from "node-osu";
 import { CommandManager } from "./CommandManager";
 import CooldownManager from "./CooldownManager";
@@ -13,6 +13,8 @@ import { AutocompleteManager } from "./AutocompleteManager";
 import { ButtonManager } from "./ButtonManager";
 import { SelectMenuManager } from "./SelectMenuManager";
 import { WebhookLogger } from "./WebhookLogger";
+import randomElement from "../features/utils/randomElement";
+import randomInt from "../features/utils/randomInt";
 
 dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 
@@ -94,6 +96,14 @@ export class HZClient extends Client {
     permissions.add(PermissionsBitField.StageModerator);
 
     return this._invitePermissions = permissions;
+  }
+
+  private readonly emojiPool = ['🤔', '😶', '🤨', '😩', '🧐'];
+  private readonly ReactConstant = 9808;
+  public async randomReact(message: Message): Promise<MessageReaction | void> {
+    if (randomInt(0, this.ReactConstant - 1)) return;
+    const emoji = randomElement(this.emojiPool);
+    return message.react(emoji).catch(() => {});
   }
 
   public async guildCount(): Promise<number> {
