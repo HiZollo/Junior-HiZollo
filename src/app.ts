@@ -6,7 +6,7 @@
 *************************************************************************/
 
 /******************* 系統變數設置 *******************/
-import { EmbedBuilder, GatewayIntentBits } from 'discord.js';
+import { EmbedBuilder, GatewayIntentBits, Options } from 'discord.js';
 import './djsAddon';
 import config from './config';
 import { HZClient } from './classes/HZClient';
@@ -18,7 +18,24 @@ const client = new HZClient({
     GatewayIntentBits.GuildMessageReactions, 
     GatewayIntentBits.GuildVoiceStates, 
     GatewayIntentBits.MessageContent
-  ], 
+  ],
+  makeCache: Options.cacheWithLimits({
+    ...Options.DefaultMakeCacheSettings,
+    ApplicationCommandManager: 0,
+    BaseGuildEmojiManager: 0,
+    GuildBanManager: 0,
+    GuildEmojiManager: 0,
+    GuildInviteManager: 0,
+    GuildScheduledEventManager: 0,
+    GuildStickerManager: 0,
+    MessageManager: 0,
+    PresenceManager: 0,
+    ReactionManager: 0,
+    ReactionUserManager: 0,
+    ThreadManager: 0,
+    ThreadMemberManager: 0,
+    UserManager: 0
+  }),
   devMode: process.argv[2]?.toLowerCase() === 'dev'
 });
 
@@ -147,9 +164,9 @@ client.network.on('left', (portNo, channel) => {
 /**/
 
 /******************* 上線確認 *******************/
-client.on('ready', async () => {
+client.on('ready', () => {
   client.logger.ready();
-  await client.initialize();
+  client.initialize();
 });
 /**/
 
@@ -169,7 +186,7 @@ process.on('uncaughtException', error => {
 /**/
 
 /******************* 訊息創建 *******************/
-client.on('messageCreate', async message => {
+client.on('messageCreate', message => {
   client.addonCommand(message);
   client.randomReact(message);
   client.poll(message);
@@ -179,7 +196,7 @@ client.on('messageCreate', async message => {
 /**/
 
 /******************* 指令互動 *******************/
-client.on('interactionCreate', async interaction => {
+client.on('interactionCreate', interaction => {
   client.autocomplete.onInteractionCreate(interaction);
   client.buttons.onInteractionCreate(interaction);
   client.commands.onInteractionCreate(interaction);
