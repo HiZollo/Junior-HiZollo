@@ -101,6 +101,8 @@ export class HZClient extends Client {
   private readonly emojiPool = ['🤔', '😶', '🤨', '😩', '🧐'];
   private readonly ReactConstant = 9808;
   public async randomReact(message: Message): Promise<MessageReaction | void> {
+    if (message.author.blocked || message.author.bot) return;
+    if (this.devMode && !message.channel.isTestChannel()) return;
     if (randomInt(0, this.ReactConstant - 1)) return;
     const emoji = randomElement(this.emojiPool);
     return message.react(emoji).catch(() => {});
