@@ -9,7 +9,7 @@ export default class Hzncast extends Command<[string]> {
       type: CommandType.Developer, 
       name: 'hzncast', 
       description: '對 HiZollo Network 某個特定的埠號廣播訊息', 
-      aliases: ['hzc'], 
+      aliases: ['cast'], 
       options: [{
         type: ApplicationCommandOptionType.String, 
         name: '埠號',

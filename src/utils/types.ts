@@ -81,6 +81,8 @@ declare module "discord.js" {
     block(userId: string): void;
     unblock(userId: string): void;
 
+    guildCount(): Promise<number>;
+
     bugHook: WebhookClient;
     suggestHook: WebhookClient;
     replyHook: WebhookClient;

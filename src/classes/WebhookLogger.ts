@@ -29,20 +29,20 @@ export class WebhookLogger {
     this.send('Log', description, this.client.devMode ? 0xD70000 : 0xFF7D7D);
   }
 
-  public joinGuild(guild: Guild):void {
+  public async joinGuild(guild: Guild): Promise<void> {
     const description = 
 `加入伺服器：${guild.name}
 ID：${guild.id}
-目前服務 ${guild.memberCount} 個伺服器`;
+目前服務 ${await this.client.guildCount()} 個伺服器`;
 
     this.send('Log', description, 0x7DFF7D);
   }
 
-  public leaveGuild(guild: Guild):void {
+  public async leaveGuild(guild: Guild): Promise<void> {
     const description = 
 `離開伺服器：${guild.name}
 ID：${guild.id}
-目前服務 ${guild.memberCount} 個伺服器`;
+目前服務 ${await this.client.guildCount()} 個伺服器`;
 
     this.send('Log', description, 0x00D700);
   }
@@ -79,7 +79,7 @@ ID：${guild.id}
 
   public networkCrossPost(portNo: string, guild: Guild, author: User): void {
     const description = 
-`在 ${portNo} 號埠上發布訊息
+`在 ${portNo} 號埠上發送訊息
 伺服器：${guild.id}
 使用者：${author.tag}（${author.id}）`;
 
@@ -124,6 +124,6 @@ ID：${guild.id}
       target === 'Network Log' ? this.networkLogger :
       this.errorLogger;
     logger.send({ embeds: [this.baseEmbed(target).setColor(color).setDescription(description)] });
-    console.log(description);
+    if (target === 'Log') console.log(description);
   }
 }

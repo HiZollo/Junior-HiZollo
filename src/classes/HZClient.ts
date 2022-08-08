@@ -95,4 +95,9 @@ export class HZClient extends Client {
 
     return this._invitePermissions = permissions;
   }
+
+  public async guildCount(): Promise<number> {
+    const counts = await this.shard?.fetchClientValues('guilds.cache.size').catch(() => {}) as (number[] | undefined);
+    return counts?.reduce((acc, cur) => acc + cur, 0) ?? 0;
+  }
 }

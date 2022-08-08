@@ -136,14 +136,12 @@ client.network.on('crosspost', (portNo, guild, author) => {
 
 /******************* Network 新增頻道 *******************/
 client.network.on('joined', (portNo, channel) => {
-  console.log(portNo, channel.name);
   client.logger.networkJoined(portNo, channel);
 });
 /**/
 
 /******************* Network 刪除頻道 *******************/
 client.network.on('left', (portNo, channel) => {
-  console.log(portNo, channel.name);
   client.logger.networkLeft(portNo, channel);
 });
 /**/
