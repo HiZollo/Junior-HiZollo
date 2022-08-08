@@ -99,6 +99,11 @@ export class HZClient extends Client {
     return this._invitePermissions = permissions;
   }
 
+  public async guildCount(): Promise<number> {
+    const counts = await this.shard?.fetchClientValues('guilds.cache.size').catch(() => {}) as (number[] | undefined);
+    return counts?.reduce((acc, cur) => acc + cur, 0) ?? 0;
+  }
+
   private readonly emojiPool = ['🤔', '😶', '🤨', '😩', '🧐'];
   private readonly ReactConstant = 9808;
   public async randomReact(message: Message): Promise<MessageReaction | void> {
@@ -117,8 +122,78 @@ export class HZClient extends Client {
     }
   }
 
-  public async guildCount(): Promise<number> {
-    const counts = await this.shard?.fetchClientValues('guilds.cache.size').catch(() => {}) as (number[] | undefined);
-    return counts?.reduce((acc, cur) => acc + cur, 0) ?? 0;
+  private readonly addonPrefix = '?';
+  public async addonCommand(message: Message): Promise<Message | void> {
+    if (message.guild?.id !== constant.mainGuild.id) return;
+    if (message.author.blocked || message.author.bot) return;
+    if (!message.content.startsWith(this.addonPrefix)) return;
+
+    const [command] = message.content.slice(this.addonPrefix.length).trim().split(/ +/, 1);
+    switch (command) {
+      case 'rule1': case 'r1': case 'tag':
+        return message.channel.send('請不要隨意 tag 其他使用者，若是請求幫助也不要 tag 太多次');
+      
+      case 'offline': case 'ol': 
+        return message.channel.send('每個月的最後一個週末是定期下線維護日，該日若沒有上線是正常的');
+      
+      case 'networksync': case 'ns': case 'network': 
+        return message.channel.send('若 Network 沒有正常同步，請先確認你的。如果還是不行，請檢查 HiZollo 的權限');
+      
+      case 'cantuse': case 'cu': 
+        return message.channel.send('**我們不會通靈**\n如果不能使用，請報上那個指令的名稱，你的使用方式，最好能附上時間點，方便我們查詢記錄');
+      
+      case 'howtouse': case 'htu': case 'help':
+        return message.channel.send(`請使用 \`${config.bot.prefix}help [指令名稱]\` 查詢一個指令的使用方法，裡面都有說明、用法、範例\n若還是不懂，請說明哪裡看不懂`);
+
+      case '[]<>': case '[]': case '<>': case 'bracket': 
+        return message.channel.send('使用指令時，請不要將括號（\`[]<>\`）一同輸入\n\`[]\`符號表示這個參數必填，\`<>\`則是不必填');
+      
+      case 'changelog': case 'cl': case 'update': 
+        return message.channel.send(
+          `我們的最新更新都會顯示在 \`${config.bot.prefix}ann\` 指令跳出來的清單中\n`+
+          `若想了解之前的更新，可以用 \`${config.bot.prefix}links\` 取得更新日誌的連結`
+        );
+      
+      case 'blockuser': case 'block':
+        return message.channel.send('**我們會對不當使用及屢勸不聽的使用者進行處置**\n若你被加入封鎖名單中，直到解封前，你將無法主動使用 HiZollo 的任何功能');
+
+      case '3partytool': case '3pt': 
+        return message.channel.send(
+          '歡迎在這邊討論任何跟 Discord 機器人製作等相關的問題，團隊成員若是有會回答的也都會分享\n'+
+          '只是我們是直接寫程式運行，若是使用第三方製作軟件，可能會有我們無法解決的問題'
+        );
+      
+      case 'selfbot': case 'sb':
+        return message.channel.send(
+          '歡迎在這邊討論任何跟 Discord 機器人製作等相關的問題，團隊成員若是有會回答的也都會分享\n'+
+          '但有關 selfbot 等違反 Disocrd 政策的東西不在我們的回答範圍內，嚴重者也會被我們永久停權'
+        );
+      
+      case 'python': case 'py':
+        return message.channel.send('Python 在這裡是禁語，不能討論的，他是絕對的邪教。在這裡討論有關 Python 的事情都有可能遭受極大的懲罰').then(msg => {
+          setTimeout(() => { msg.edit(msg.content.replace(/Python/g, '[敏感字詞已和諧]')) }, 1900);
+        });
+      
+      case 'database': case 'db':
+        return message.channel.send(
+          'HiZollo 是沒有使用到有關資料庫的技術的，也就是他沒有辦法儲存任何資料，一但離線就會消失。\n'+
+          '因為這個問題 HiZollo 現在無法做到像是經驗值系統、個別伺服器設定等'
+        );
+
+      case '24/7': case '247': 
+        return message.channel.send('HiZollo 是在 heroku 上代管的，才能做到幾乎 24/7 上線');
+      
+      case 'otherbot': case 'ob': 
+        return message.channel.send(
+          '我們官方不支援「其他機器人」使用上的教學以及問題排除，'+
+          '你可以在這邊找其他熟悉機器人的人來操作，但不要 tag 團隊成員，這不是他們的工作內容'
+        );
+      
+      case 'spoonfeed': case 'sf': case 'google':
+        return message.channel.send('有些問題請自行 Google，不要當伸手牌，真正不能解決的問題再發問');
+      
+      case 'notdeleted': case 'nd': 
+        return message.channel.send('當你發現 HiZollo 沒有把訊息刪乾淨時，其實那只是 Discord 的顯示問題，重新整理之後你就會發現訊息被刪掉了');
+    }
   }
 }
