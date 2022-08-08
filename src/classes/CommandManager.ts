@@ -155,7 +155,7 @@ export class CommandManager extends EventEmitter {
     /***** 檢查參數 *****/
     const result = await CommandParser.parseSlashArgs(interaction, command);
     if (result.status !== CommandParserOptionResultStatus.Pass) {
-      this.emit('reject', new Source(interaction, channel, member), { reason: CommandManagerRejectReason.IllegalArgument, args: [command.options ?? [], result] });
+      this.emit('reject', new Source(interaction, channel, member), { reason: CommandManagerRejectReason.IllegalArgument, args: [commandName, command.options ?? [], result] });
       return;
     }
     const args = result.args;
@@ -266,7 +266,7 @@ export class CommandManager extends EventEmitter {
     /***** 檢查參數 *****/
     const result = await CommandParser.parseMessageArgs(message, rawArgs, command);
     if (result.status !== CommandParserOptionResultStatus.Pass) {
-      this.emit('reject', new Source(message, channel, member), { reason: CommandManagerRejectReason.IllegalArgument, args: [command.options ?? [], result] });
+      this.emit('reject', new Source(message, channel, member), { reason: CommandManagerRejectReason.IllegalArgument, args: [commandName, command.options ?? [], result] });
       return;
     }
     const args = result.args;

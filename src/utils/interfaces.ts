@@ -55,7 +55,7 @@ export interface CommandParserOptionFailWithChoicesResult extends CommandParserO
   choices: ApplicationCommandOptionChoiceData[];
 }
 
-export interface CommandParserOptionFailWithLimitResult {
+export interface CommandParserOptionFailWithLimitResult extends CommandParserOptionBaseResult {
   status: CommandParserOptionResultStatus.ValueTooSmall | CommandParserOptionResultStatus.ValueTooLarge | CommandParserOptionResultStatus.LengthTooShort | CommandParserOptionResultStatus.LengthTooLong;
   limit: number;
 }

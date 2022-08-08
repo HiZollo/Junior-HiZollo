@@ -41,6 +41,7 @@ const client = new HZClient({
 
 /******************* Features *******************/
 import permissionTable from './features/utils/permissionTable';
+import Help from './commands/Help';
 /**/
 
 /******************* 指令失敗 *******************/
@@ -80,46 +81,59 @@ client.commands.on('reject', async (source, info) => {
       break;
     
     case CommandManagerRejectReason.IllegalArgument:
-      const [_commandOptions, { index, status }] = info.args;
+      const [commandName, options, { arg, index, status }] = info.args;
+
+      let description = options.map((o, i) => i === index ? `[${o.name}]` : `${o.name}`).join(' ');
+      description = `\`\`\`css\n/${commandName[0]}${commandName[1] ? ` ${commandName[1]}` : ''} ${description}\n\`\`\`\n`;
+
       switch (status) {
         case CommandParserOptionResultStatus.Required:
-          helper.setTitle('必填')
-            .setDescription(`第 ${index + 1} 個參數是必填的`);
+          helper.setTitle(`參數 ${options[index].name} 是必填的`);
           break;
         
         case CommandParserOptionResultStatus.WrongFormat:
-          helper.setTitle('格式錯誤')
-            .setDescription(`第 ${index + 1} 個參數的格式錯誤`);
+          helper.setTitle(`參數 ${options[index].name} 的格式錯誤`);
+          description += `${arg} 不符合${Help.commandOptionTypeTable[options[index].type]}的格式`;
           break;
       
         case CommandParserOptionResultStatus.NotInChoices:
-          if (!('choices' in info.args[1])) break;
-          const { choices } = info.args[1];
+          if (!('choices' in info.args[2])) break;
+          const { choices } = info.args[2];
           const choicesString = choices.map(({ name: n, value: v }) => n === v.toString() ? `\`${n}\`` : `\`${n}\`/\`${v}\``).flat().join('．');
-          helper.setTitle('不在選項內')
-            .setDescription('選項：\n' + choicesString);
+          helper.setTitle(`${arg} 並不在規定的選項內`)
+          description += `參數 ${options[index].name} 必須是下列選項中的其中一個：\n${choicesString}`;
           break;
               
         case CommandParserOptionResultStatus.ValueTooSmall:
-          helper.setTitle('太小了')
-            .setDescription(`第 ${index + 1} 個參數太小了`);
+          if (!('limit' in info.args[2])) break;
+          let { limit } = info.args[2];
+          helper.setTitle(`參數 ${options[index].name} 太小了`);
+          description += `這個參數必須比 ${limit} 還要大，但你給了 ${arg}`;
           break;
               
         case CommandParserOptionResultStatus.ValueTooLarge:
-          helper.setTitle('太大了')
-            .setDescription(`第 ${index + 1} 個參數太大了`);
+          if (!('limit' in info.args[2])) break;
+          ({ limit } = info.args[2]);
+          helper.setTitle(`參數 ${options[index].name} 太大了`);
+          description += `這個參數必須比 ${limit} 還要小，但你給了 ${arg}`;
           break;
         
         case CommandParserOptionResultStatus.LengthTooShort:
-          helper.setTitle('太短了')
-            .setDescription(`第 ${index + 1} 個參數太短了`);
+          if (!('limit' in info.args[2])) break;
+          ({ limit } = info.args[2]);
+          helper.setTitle(`參數 ${options[index].name} 太短了`);
+          description += `這個參數的長度必須比 ${limit} 還要長，但你給的 ${arg} 的長度只有 ${(arg as string).length}`;
           break;
       
         case CommandParserOptionResultStatus.LengthTooLong:
-          helper.setTitle('太長了')
-            .setDescription(`第 ${index + 1} 個參數太長了`);
+          if (!('limit' in info.args[2])) break;
+          ({ limit } = info.args[2]);
+          helper.setTitle(`參數 ${options[index].name} 太長了`);
+          description += `這個參數的長度必須比 ${limit} 還要短，但你給的 ${arg} 的長度卻是 ${(arg as string).length}`;
           break;
       }
+      helper.setDescription(description);
+      break;
   }
 
   await source.update({ embeds: [helper] });

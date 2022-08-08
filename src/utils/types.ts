@@ -36,7 +36,7 @@ export type CommandManagerRejectInfo =
   | { reason: CommandManagerRejectReason.UserMissingPermission, args: [missings: (keyof PermissionFlags)[]] }
   | { reason: CommandManagerRejectReason.InCooldown, args: [time: number] }
   | { reason: CommandManagerRejectReason.InNetwork, args: [] }
-  | { reason: CommandManagerRejectReason.IllegalArgument, args: [commandOptions: HZCommandOptionData[], result: CommandParserFailResult] };
+  | { reason: CommandManagerRejectReason.IllegalArgument, args: [commandName: [string, string | undefined], commandOptions: HZCommandOptionData[], result: CommandParserFailResult] };
 
 export type HZCommandOptionData = (Exclude<ApplicationCommandOptionData,
   | ApplicationCommandSubCommandData
