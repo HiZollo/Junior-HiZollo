@@ -171,6 +171,7 @@ process.on('uncaughtException', error => {
 /******************* 訊息創建 *******************/
 client.on('messageCreate', async message => {
   client.randomReact(message);
+  client.poll(message);
   client.commands.onMessageCreate(message);
   client.network.onMessageCreate(message);
 });

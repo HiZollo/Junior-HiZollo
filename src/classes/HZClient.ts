@@ -5,6 +5,7 @@ import osu from "node-osu";
 import { CommandManager } from "./CommandManager";
 import CooldownManager from "./CooldownManager";
 import config from "../config";
+import constant from "../constant.json";
 import getActivity from "../features/utils/getActivity";
 import { HZClientOptions } from "../utils/interfaces";
 import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";
@@ -106,6 +107,14 @@ export class HZClient extends Client {
     if (randomInt(0, this.ReactConstant - 1)) return;
     const emoji = randomElement(this.emojiPool);
     return message.react(emoji).catch(() => {});
+  }
+
+  private readonly pollChannelId = [constant.mainGuild.channels.announcementId, constant.mainGuild.channels.suggestReportId];
+  public async poll(message: Message): Promise<void> {
+    if (this.pollChannelId.includes(message.channel.id)) {
+      await message.react('👍').catch(() => {});
+      await message.react('👎').catch(() => {});
+    }
   }
 
   public async guildCount(): Promise<number> {
