@@ -198,6 +198,12 @@ export default class Help extends Command<[string]> {
       if ('choices' in option && option.choices) {
         description += `　- 規範選項：${option.choices.map(choice => this.getChoiceString(choice)).join('．')}\n`;
       }
+      if ('minValue' in option || 'maxValue' in option) {
+        description += `　- 數值範圍：\`${option.minValue !== undefined ? `[${option.minValue}` : '(-∞'}, ${option.maxValue !== undefined ? `${option.maxValue}]` : '∞)'}\``;
+      }
+      if ('minLength' in option || 'maxLength' in option) {
+        description += `　- 長度範圍：\`${option.minLength !== undefined ? `[${option.minLength}` : '(0'}, ${option.maxLength !== undefined ? `${option.maxLength}]` : '∞)'}\``;
+      }
     }
     return description;
   }

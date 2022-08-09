@@ -13,7 +13,8 @@ export default class Say extends Command<[string]> {
         type: ApplicationCommandOptionType.String, 
         name: '訊息', 
         description: '要 HiZollo 代替你說的訊息', 
-        required: true
+        required: true, 
+        maxLength: 2000
       }], 
       argumentParseMethod: {
         type: ArgumentParseType.None
