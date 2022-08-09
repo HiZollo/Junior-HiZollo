@@ -7,6 +7,7 @@ import constant from "./constant.json";
 import { Command } from "./classes/Command";
 import { CommandType } from "./utils/enums";
 import { HZCommandOptionData } from "./utils/types";
+import { Translator } from "./classes/Translator";
 
 (async () => {
   const rest = new REST({ version: '10' }).setToken(config.bot.token);
@@ -43,46 +44,77 @@ function loadCommands(dirPath: string): {
 } {
   const globalCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
   const devCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
-  const commandFiles = fs.readdirSync(dirPath);
 
+  const zGlobalCommands: [string, SlashCommandSubcommandBuilder][] = [];
+  const zDevCommands: [string, SlashCommandSubcommandBuilder][] = [];
+
+  const commandFiles = fs.readdirSync(dirPath);
   for (const file of commandFiles) {
-    const filePath = path.join(dirPath, file);
-  
-    // 如果是資料夾就是群組指令
-    if (fs.statSync(filePath).isDirectory()) {
-      const globalBuilder = new SlashCommandBuilder()
-        .setName(file.toLocaleLowerCase())
-        .setDescription(`執行 ${file.toLocaleLowerCase()} 群組指令`)
-        .setDMPermission(false);
-      const devBuilder = new SlashCommandBuilder()
-        .setName(file.toLocaleLowerCase())
-        .setDescription(`執行 ${file.toLocaleLowerCase()} 群組指令`)
-        .setDMPermission(false);
-      let globalExist = false, devExist = false;
-  
-      const subcommandFiles = fs.readdirSync(filePath);
-      for (const subcommandFile of subcommandFiles) {
-        if (!subcommandFile.endsWith('.js')) continue;
-        
-        const C: new () => Command<unknown> = require(path.join(filePath, subcommandFile)).default;
-        const subcommand = new C();
-  
-        addSubcommand(subcommand.type === CommandType.Developer ? devBuilder : globalBuilder, subcommand);
-        globalExist ||= subcommand.type !== CommandType.Developer;
-        devExist ||= subcommand.type === CommandType.Developer;
-      }
-  
-      if (globalExist) globalCommands.push(globalBuilder.toJSON());
-      if (devExist) devCommands.push(devBuilder.toJSON());
-    }
-  
-    // 其他就是一般指令
-    else if (file.endsWith('.js')) {
-      const C: new () => Command<unknown> = require(filePath).default;
-      const command = new C();
-  
+    if (!file.endsWith('.js')) continue;
+    let filePath = path.join(dirPath, file);
+
+    const C: new () => Command<unknown> = require(filePath).default;
+    const command = new C();
+
+    // 非指令群的指令就直接加進去
+    if (command.type !== CommandType.SubcommandGroup) {
       (command.type === CommandType.Developer ? devCommands : globalCommands).push(parseCommand(command));
+      continue;
     }
+
+    // 指令群就去讀群組指令
+    const globalBuilder = new SlashCommandBuilder()
+      .setName(command.name)
+      .setDescription(command.description)
+      .setDMPermission(false);
+    const devBuilder = new SlashCommandBuilder()
+      .setName(command.name)
+      .setDescription(command.description)
+      .setDMPermission(false);
+    let globalExist = false, devExist = false;
+
+    filePath = filePath.slice(0, -3);
+    const subcommandFiles = fs.readdirSync(filePath);
+    for (const subcommandFile of subcommandFiles) {
+      if (!subcommandFile.endsWith('.js')) continue;
+      
+      const C: new () => Command<unknown> = require(path.join(filePath, subcommandFile)).default;
+      const subcommand = new C();
+
+      const subcommandBuilder = parseSubcommand(subcommand);
+      (subcommand.type === CommandType.Developer ? devBuilder : globalBuilder).addSubcommand(subcommandBuilder);
+      (subcommand.type === CommandType.Developer ? zDevCommands : zGlobalCommands).push([command.name, subcommandBuilder])
+      globalExist ||= subcommand.type !== CommandType.Developer;
+      devExist ||= subcommand.type === CommandType.Developer;
+    }
+
+    if (globalExist) globalCommands.push(globalBuilder.toJSON());
+    if (devExist) devCommands.push(devBuilder.toJSON());
+  }
+
+
+  // 處理 z 指令
+  if (zGlobalCommands.length) {
+    const builder = new SlashCommandBuilder()
+      .setName('z')
+      .setDescription('執行 z 指令')
+      .setDMPermission(false);
+    zGlobalCommands.forEach(([parent, command]) => {
+      command.setName(Translator.getZShortcut([parent, command.name])!);
+      builder.addSubcommand(command);
+    });
+    globalCommands.push(builder.toJSON());
+  }
+  if (zDevCommands.length) {
+    const builder = new SlashCommandBuilder()
+      .setName('z')
+      .setDescription('執行 z 指令')
+      .setDMPermission(false);
+    zDevCommands.forEach(([parent, command]) => {
+      command.setName(Translator.getZShortcut([parent, command.name])!);
+      builder.addSubcommand(command);
+    });
+    devCommands.push(builder.toJSON());
   }
 
   return { globalCommands, devCommands };
@@ -112,14 +144,15 @@ function parseCommand(command: Command<unknown>): RESTPostAPIApplicationCommands
  * 幫 {@link SlashCommandBuilder} 加上一個群組指令
  * @param builder 建築師本人
  * @param command 群組指令本人
+ * @returns 群組指令
  */
-function addSubcommand(builder: SlashCommandBuilder, command: Command<unknown>): void {
+function parseSubcommand(command: Command<unknown>): SlashCommandSubcommandBuilder {
   const subcommandbuilder = new SlashCommandSubcommandBuilder()
     .setName(command.name)
     .setDescription(command.description);
   
   command.options?.forEach(option => addOption(subcommandbuilder, option));
-  builder.addSubcommand(subcommandbuilder);
+  return subcommandbuilder;
 }
 
 /**

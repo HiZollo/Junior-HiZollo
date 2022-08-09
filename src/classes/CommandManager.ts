@@ -12,6 +12,7 @@ import { CommandManagerRejectReason, CommandParserOptionResultStatus, CommandTyp
 import { CommandManagerEvents, SubcommandGroup } from "../utils/interfaces";
 import { CommandManagerRejectInfo } from "../utils/types";
 import { SubcommandManager } from "./SubcommandManager";
+import { Translator } from "./Translator";
 
 /**
  * 掌管所有與指令相關的操作，並支援單層的群組指令，必須保證 help 指令存在
@@ -288,12 +289,15 @@ export class CommandManager extends EventEmitter {
    * @returns 
    */
   public search(commandName: [string, string | undefined]): Command<unknown> | SubcommandGroup | void {
-    const first = commandName[0].toLowerCase();
-    const second = commandName[1]?.toLowerCase();
+    let first = commandName[0].toLowerCase();
+    let second = commandName[1]?.toLowerCase();
 
     // 先找 z 指令
-    if (first === 'z') {
-
+    if (first === 'z' && second) {
+      const zCommandName = Translator.getCommandName(second);
+      if (zCommandName) {
+        [first, second] = zCommandName;
+      }
     }
 
     // 一般指令 + 參數
