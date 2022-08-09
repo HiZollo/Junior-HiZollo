@@ -5,20 +5,64 @@ import { GuildMusicControllerOptions } from "../../../utils/interfaces";
 import { GuildMusicManager } from "../Model/GuildMusicManager";
 import { MusicViewRenderer } from "../View/MusicViewRenderer";
 
+/**
+ * 代表單個伺服器的音樂遙控器
+ */
 export class GuildMusicController {
+  /**
+   * 機器人的 client
+   */
   public client: HZClient;
+
+  /**
+   * 與這個音樂遙控器綁定的文字頻道
+   */
   public channel: GuildTextBasedChannel;
+
+  /**
+   * 告知使用者音樂系統狀態的顯示器
+   */
   public view: MusicViewRenderer;
+
+  /**
+   * 所屬伺服器的音樂管家
+   */
   public manager: GuildMusicManager;
+
+  /**
+   * 被遙控器附著的訊息
+   */
   public message: Message | null;
+
+  /**
+   * 負責接收按鈕互動的收集器
+   */
   public collector: InteractionCollector<ButtonInteraction> | null;
 
-  public playButtonsItr: Iterator<ButtonBuilder, ButtonBuilder>;
-  public repeatButtonsItr: Iterator<ButtonBuilder, ButtonBuilder>;
+  /**
+   * 切換播放／暫停狀態的迭代器
+   */
+  private playButtonsItr: Iterator<ButtonBuilder, ButtonBuilder>;
+  
+  /**
+   * 切換重播狀態的迭代器
+   */
+  private repeatButtonsItr: Iterator<ButtonBuilder, ButtonBuilder>;
 
+  /**
+   * 遙控器上負責控制音樂系統的按鈕
+   */
   private controllerButtons: ButtonBuilder[];
+
+  /**
+   * 遙控器上負責顯示資訊的按鈕
+   */
   private dataButtons: ButtonBuilder[];
 
+  /**
+   * 建立一台音樂遙控器
+   * @param options 設定參數
+   */
   constructor({ client, channel, view, manager }: GuildMusicControllerOptions) {
     this.client = client;
     this.channel = channel;
@@ -46,12 +90,18 @@ export class GuildMusicController {
     ];
   }
 
+  /**
+   * 將遙控器原本附著的訊息刪除，並重新附著在一則新發送的訊息
+   */
   public async resend(): Promise<void> {
     await this.message?.delete().catch(() => {});
     this.message = await this.channel.send(this.newMessage);
     this.collector = this.newCollector;
   }
 
+  /**
+   * 清除遙控器附著的訊息以及收集器
+   */
   public async clear(): Promise<void> {
     await this.message?.delete().catch(() => {});
     this.collector?.removeAllListeners('collected');
@@ -68,6 +118,9 @@ export class GuildMusicController {
     }
   }
 
+  /**
+   * 取得新的遙控器按鈕
+   */
   private get newComponents(): ActionRowBuilder<ButtonBuilder>[] {
     return [
       new ActionRowBuilder<ButtonBuilder>().addComponents(...this.controllerButtons), 
@@ -75,6 +128,9 @@ export class GuildMusicController {
     ];
   }
 
+  /**
+   * 在遙控器附著的訊息上建立新的收集器
+   */
   private get newCollector(): InteractionCollector<ButtonInteraction> {
     if (!this.message) throw new Error('Message does not exist.');
     this.collector?.removeAllListeners('collected');
@@ -134,6 +190,9 @@ export class GuildMusicController {
     return collector;
   }
 
+  /**
+   * 回傳一個切換播放／暫停狀態的迭代器
+   */
   private *playButtons(): Generator<ButtonBuilder, ButtonBuilder, void> {
     let index = 0;
     const button = new ButtonBuilder()
@@ -144,6 +203,9 @@ export class GuildMusicController {
     }
   }
 
+  /**
+   * 回傳一個切換重播狀態的迭代器
+   */
   private *repeatButtons(): Generator<ButtonBuilder, ButtonBuilder, void> {
     let index = 0;
     const button = new ButtonBuilder()
@@ -154,6 +216,9 @@ export class GuildMusicController {
     }
   }
 
+  /**
+   * 遙控器按鈕上的表情符號
+   */
   private emojis = Object.freeze({
     play: ['1002969357980270642', '880450475202314300'], 
     repeat: ['➡️', '🔂'], 
