@@ -50,7 +50,7 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
       return this.source.deferReply({ ephemeral: true, ...options});
     }
     if (this.source.deletable) {
-      return this.source.delete();
+      return this.source.delete().catch(() => {});
     }
   }
 
