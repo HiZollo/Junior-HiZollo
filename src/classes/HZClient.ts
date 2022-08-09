@@ -17,6 +17,7 @@ import { WebhookLogger } from "./WebhookLogger";
 import randomElement from "../features/utils/randomElement";
 import randomInt from "../features/utils/randomInt";
 import { Translator } from "./Translator";
+import { HiddenCommandManager } from "./HiddenCommandManager";
 
 dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 
@@ -27,6 +28,7 @@ export class HZClient extends Client {
   public logger: WebhookLogger;
   
   public commands: CommandManager;
+  public hidden: HiddenCommandManager;
   public autocomplete: AutocompleteManager;
   public buttons: ButtonManager;
   public selectmenus: SelectMenuManager;
@@ -50,6 +52,7 @@ export class HZClient extends Client {
     this.logger = new WebhookLogger(this);
 
     this.commands = new CommandManager(this);
+    this.hidden = new HiddenCommandManager(this);
     this.autocomplete = new AutocompleteManager(this);
     this.buttons = new ButtonManager(this);
     this.selectmenus = new SelectMenuManager(this);
@@ -72,6 +75,7 @@ export class HZClient extends Client {
 
   public async initialize(): Promise<void> {
     await this.commands.load(path.join(__dirname, '../commands/'));
+    await this.hidden.load(path.join(__dirname, '../hidden'));
     await this.autocomplete.load(path.join(__dirname, '../autocomplete'));
     await this.buttons.load(path.join(__dirname, '../buttons'));
     await this.selectmenus.load(path.join(__dirname, '../selectmenus'));

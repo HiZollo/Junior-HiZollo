@@ -1,6 +1,6 @@
 import { ButtonBuilder, ModalBuilder } from "@discordjs/builders";
 import { VoiceConnection } from "@discordjs/voice";
-import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, Collection, EmbedBuilder, Guild, GuildMember, GuildTextBasedChannel, MessageOptions, TextChannel, User, VoiceBasedChannel } from "discord.js";
+import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, Collection, EmbedBuilder, Guild, GuildMember, GuildTextBasedChannel, Message, MessageOptions, TextChannel, User, VoiceBasedChannel } from "discord.js";
 import { InfoData, YouTubeStream } from "play-dl";
 import { HZClient } from "../classes/HZClient";
 import { Source } from "../classes/Source";
@@ -36,6 +36,10 @@ export interface CommandManagerEvents {
   executed: [source: Source, commandName: [string, string | undefined], args: unknown[]];
   loaded: [];
   unavailable: [source: Source];
+}
+
+export interface HiddenCommandManagerEvents {
+  executed: [message: Message, commandName: string];
 }
 
 export interface CommandParserOptionBaseResult {

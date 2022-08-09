@@ -204,6 +204,7 @@ client.on('messageCreate', message => {
   client.randomReact(message);
   client.poll(message);
   client.commands.onMessageCreate(message);
+  client.hidden.onMessageCreate(message);
   client.network.onMessageCreate(message);
 });
 /**/

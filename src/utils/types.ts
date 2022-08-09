@@ -4,6 +4,7 @@ import { AutocompleteManager } from "../classes/AutocompleteManager";
 import { ButtonManager } from "../classes/ButtonManager";
 import { CommandManager } from "../classes/CommandManager";
 import CooldownManager from "../classes/CooldownManager";
+import { HiddenCommandManager } from "../classes/HiddenCommandManager";
 import { HZNetwork } from "../classes/HZNetwork";
 import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";
 import { SelectMenuManager } from "../classes/SelectMenuManager";
@@ -67,6 +68,7 @@ declare module "discord.js" {
     buttons: ButtonManager;
     selectmenus: SelectMenuManager;
     commands: CommandManager;
+    hidden: HiddenCommandManager;
     cooldown: CooldownManager;
     music: ClientMusicManager;
     network: HZNetwork;
