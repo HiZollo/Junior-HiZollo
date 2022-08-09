@@ -78,7 +78,7 @@ export class CommandManager extends EventEmitter {
   }
 
   /**
-   * 把第一線的指令互動轉接給各指令類別執行
+   * 轉接第一線的指令互動
    * @param interaction 從 client#on('interactionCreate') 得到的指令互動
    */
   public async onInteractionCreate(interaction: Interaction): Promise<void> {
@@ -172,9 +172,8 @@ export class CommandManager extends EventEmitter {
     /**/
   }
 
-
   /**
-   * 把第一線的訊息轉接給各指令類別執行
+   * 轉接第一線的訊息
    * @param message 從 client#on('messageCreate') 得到的訊息
    */
   public async onMessageCreate(message: Message): Promise<void> {

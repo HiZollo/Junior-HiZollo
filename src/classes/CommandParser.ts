@@ -5,7 +5,7 @@ import { CommandParserOptionResult, CommandParserResult } from "../utils/types";
 import { ArgumentParseMethod, HZCommandOptionData } from "../utils/types";
 import { Command } from "./Command";
 
-type parseMessageOptionData = { 
+type ParseMessageOptionFunctions = { 
   [key in ApplicationCommandOptionType]: (data: {
     data: HZCommandOptionData, 
     message: Message,
@@ -14,7 +14,7 @@ type parseMessageOptionData = {
   }) => Promise<CommandParserOptionResult> 
 }
 
-type parseSlashOptionData = {
+type ParseSlashOptionFunctions = {
   [key in ApplicationCommandOptionType]: (data: {
     interaction: ChatInputCommandInteraction, 
     data: HZCommandOptionData, 
@@ -22,8 +22,17 @@ type parseSlashOptionData = {
   }) => Promise<CommandParserOptionResult>
 }
 
+/**
+ * 將斜線指令或訊息解析成指定格式的解析器
+ * @extends null
+ */
 export class CommandParser extends null {
-  
+  /**
+   * 把原訊息內容預處理成參數陣列
+   * @param method 拆分參數的方法
+   * @param rawArgs 除去指令前綴與指令名稱的訊息內容
+   * @returns 解析後的陣列
+   */
   static preParseMessageRawArgs(method: ArgumentParseMethod, rawArgs: string): string[] {
     if (!rawArgs.length) return [];
     switch (method.type) {
@@ -45,10 +54,10 @@ export class CommandParser extends null {
 
 
   /**
-   * 把使用者的輸入訊息轉換成執行指令需要的參數
+   * 把使用者的輸入訊息解析成執行指令需要的參數，如果過程中有任何不合法的參數會直接中斷解析，並回傳不合法的原因
    * @param message 使用者的輸入訊息
    * @param command 使用者觸發的指令
-   * @returns 執行指令需要的參數
+   * @returns 解析結果
    */
   static async parseMessageArgs(message: Message, rawArgs: string, command: Command<unknown>): Promise<CommandParserResult> {
     if (!command.options) {
@@ -79,10 +88,10 @@ export class CommandParser extends null {
 
 
   /**
-   * 把使用者的指令互動轉換成執行指令需要的參數
+   * 把使用者的指令互動解析成執行指令需要的參數，如果過程中有任何不合法的參數會直接中斷解析，並回傳不合法的原因
    * @param interaction 使用者的指令互動
    * @param command 使用者觸發的指令
-   * @returns 執行指令指令需要的參數
+   * @returns 解析結果
    */
   static async parseSlashArgs(interaction: ChatInputCommandInteraction<"cached">, command: Command<unknown>): Promise<CommandParserResult> {
     if (!command.options) {
@@ -108,12 +117,27 @@ export class CommandParser extends null {
     return { args, status: CommandParserOptionResultStatus.Pass };
   }
 
+  /**
+   * [訊息指令專用] 判斷使用者輸入是否在給定的選項內，如果是，就回傳對應選項的 value
+   * @param choices 給定的選項
+   * @param argument 使用者輸入
+   * @returns 對應選項的 value
+   */
   static getChoicesValue(choices: ApplicationCommandOptionChoiceData[], argument: string): string | null {
     return choices.find(c => c.name === argument || c.value.toString() === argument)?.value.toString() ?? null;
   }
 
-
-  static ParseMessageOption: parseMessageOptionData = {
+  /**
+   * 解析訊息指令的一個選項，並回傳解析結果
+   * 
+   * 使用方法：
+   * ```
+   * CommandParser.ParseMessageOption[ApplicationCommandOptionType.Boolean]({ data, preParsedArgs });
+   * ```
+   * 要先在 [] 裡面指定參數型別，再把選項傳進函式裡，如果參數型別給了 `Subcommand` 或 `SubcommandGroup` 則會報錯。
+   * 注意這個函式會執行一次 `preParsedArgs.shift()`（當參數型別是 `Attachment` 時則會執行 `attachments.shift()`），因此傳入的陣列會被改動 
+   */
+  static ParseMessageOption: ParseMessageOptionFunctions = {
     async [ApplicationCommandOptionType.Attachment]({ data, attachments }) {
       const argument = attachments.shift() ?? null;
       return { arg: argument, status: CommandParserOptionResultStatus[!argument && data.required ? "Required" : "Pass"] };
@@ -294,8 +318,16 @@ export class CommandParser extends null {
     }
   };
 
-
-  static ParseSlashOption: parseSlashOptionData = {
+  /**
+   * 解析斜線指令的一個選項，並回傳解析結果
+   * 
+   * 使用方法：
+   * ```
+   * CommandParser.ParseSlashOption[ApplicationCommandOptionType.Boolean]({ interaction, data, optionName });
+   * ```
+   * 要先在 [] 裡面指定參數型別，再把選項傳進函式裡，如果參數型別給了 `Subcommand` 或 `SubcommandGroup` 則會報錯。
+   */
+  static ParseSlashOption: ParseSlashOptionFunctions = {
     async [ApplicationCommandOptionType.Attachment]({ interaction, data, optionName }) {
       const argument = interaction.options.getAttachment(optionName ?? data.name);
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };

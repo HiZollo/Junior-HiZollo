@@ -1,8 +1,8 @@
 import { HZClient } from "../classes/HZClient";
 import tanks from "../features/json/diepTanks.json";
-import { AutocompleteReturnType } from "../utils/types";
+import { AutocompleteData } from "../utils/types";
 
-export default function(_client: HZClient): AutocompleteReturnType {
+export default function(_client: HZClient): AutocompleteData {
   const result = [];
   for (const tank in tanks)
     result.push({ name: tank });

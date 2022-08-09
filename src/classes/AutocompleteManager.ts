@@ -1,35 +1,60 @@
 import fs from 'fs';
 import path from 'path';
 import constant from '../constant.json';
-import { AutocompleteReturnType } from "../utils/types";
+import { AutocompleteData } from "../utils/types";
 import { HZClient } from "./HZClient";
 import { Interaction, InteractionType } from 'discord.js';
 
-
+/**
+ * 掌管斜線指令中的自動匹配選項
+ */
 export class AutocompleteManager {
+  /**
+   * 機器人的 client
+   */
   public client: HZClient;
-  private data: Map<string, AutocompleteReturnType>;
+
+  /**
+   * 斜線指令名稱－回應資訊的鍵值對
+   */
+  private data: Map<string, AutocompleteData>;
+
+  /**
+   * 自動匹配指令是否已載入完畢
+   */
   private loaded: boolean;
 
+  /**
+   * 建立自動匹配管家
+   * @param client 機器人的 client
+   */
   constructor(client: HZClient) {
     this.client = client;
     this.data = new Map();
     this.loaded = false;
   }
 
+  /**
+   * 載入自動匹配的回應
+   * @param dirPath 要載入的目標資料夾
+   */
   public async load(dirPath: string): Promise<void> {
     if (this.loaded) throw new Error('Autocomplete has already been loaded.');
 
     const autocompleteFiles = fs.readdirSync(dirPath);
     for (const file of autocompleteFiles) {
       if (!file.endsWith('.js')) continue;
-      const func: (client: HZClient) => AutocompleteReturnType = require(path.join(dirPath, file)).default;
+      const func: (client: HZClient) => AutocompleteData = require(path.join(dirPath, file)).default;
       this.data.set(file.slice(0, -3), func(this.client));
     }
 
     this.loaded = true;
   }
 
+  /**
+   * 轉接第一線的指令互動
+   * @param interaction 從 client#on('interactionCreate') 得到的指令互動
+   */
   public async onInteractionCreate(interaction: Interaction): Promise<void> {
     if (interaction.type !== InteractionType.ApplicationCommandAutocomplete) return;
     if (!interaction.inCachedGuild()) return;

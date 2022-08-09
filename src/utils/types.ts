@@ -50,7 +50,7 @@ export type ArgumentParseMethod =
   | { type: ArgumentParseType.Quote, quotes: [string, string] }
   | { type: ArgumentParseType.Custom, func(s: string): string[] }
 
-export type AutocompleteReturnType = { [key: string]: { name: string, devOnly?: boolean }[] };
+export type AutocompleteData = { [key: string]: { name: string, devOnly?: boolean }[] };
 
 export type PageSystemOptions = PageSystemDescriptionOptions | PageSystemEmbedFieldOptions;
 
