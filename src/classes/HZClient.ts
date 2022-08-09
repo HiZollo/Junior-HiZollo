@@ -16,6 +16,7 @@ import { SelectMenuManager } from "./SelectMenuManager";
 import { WebhookLogger } from "./WebhookLogger";
 import randomElement from "../features/utils/randomElement";
 import randomInt from "../features/utils/randomInt";
+import { Translator } from "./Translator";
 
 dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 
@@ -134,7 +135,7 @@ export class HZClient extends Client {
         return message.channel.send('每個月的最後一個週末是定期下線維護日，該日若沒有上線是正常的');
       
       case 'networksync': case 'ns': case 'network': 
-        return message.channel.send('若 Network 沒有正常同步，請先確認你的。如果還是不行，請檢查 HiZollo 有沒有管理 Webhooks 的權限');
+        return message.channel.send(`若 Network 沒有正常同步，請先確認你的。如果還是不行，請檢查 HiZollo 有沒有 __${Translator.getPermissionChinese('ManageWebhooks')}__ 的權限`);
       
       case 'cantuse': case 'cu': 
         return message.channel.send('**我們不會通靈**\n如果不能使用，請報上那個指令的名稱，你的使用方式，最好能附上時間點，方便我們查詢記錄');

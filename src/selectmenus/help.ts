@@ -9,7 +9,7 @@ export default async function help(interaction: SelectMenuInteraction<"cached">)
   const selected = interaction.values[0];
 
   if (scope === 'main') {
-    const message = help.getMessageForType(interaction, selected);
+    const message = help.getMessageForType(interaction, Number(selected));
     await interaction.reply({ ephemeral: true, ...message });
     return;
   }

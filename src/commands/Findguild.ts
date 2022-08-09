@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import permissionTable from "../features/utils/permissionTable";
+import { Translator } from "../classes/Translator";
 import { CommandType } from "../utils/enums";
 
 export default class Findguild extends Command<[string]> {
@@ -60,7 +60,7 @@ export default class Findguild extends Command<[string]> {
         { name: '分支編號', value: guild.shardId ?`${guild.shardId}` : '查無資訊' },
         { name: '成員數量', value: `${guild.memberCount}` },
         { name: 'HiZollo 加入時間', value: `<t:${~~(guild.joinedAt/1000)}>` },
-        { name: 'HiZollo 擁有權限', value: guild?.permissions ? guild?.permissions.map(p => permissionTable[p]).join('．') : '查無資訊' },
+        { name: 'HiZollo 擁有權限', value: guild?.permissions ? guild?.permissions.map(p => Translator.getPermissionChinese(p)).join('．') : '查無資訊' },
         { name: '擁有者', value: `<@${guild.ownerId}>` }
       );
     await source.update({ embeds: [info] });

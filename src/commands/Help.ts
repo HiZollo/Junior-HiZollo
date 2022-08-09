@@ -2,9 +2,10 @@ import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationComman
 import config from "../config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { CommandOptionType, CommandType } from "../utils/enums";
+import { CommandType } from "../utils/enums";
 import { HZCommandOptionData } from "../utils/types";
 import { SubcommandGroup } from "../utils/interfaces";
+import { Translator } from "../classes/Translator";
 
 export default class Help extends Command<[string]> {
   constructor() {
@@ -63,13 +64,13 @@ export default class Help extends Command<[string]> {
       .setCustomId('help_menu_main')
       .setPlaceholder('請選擇一個指令分類');
     
-    for (const type of Object.keys(Help.commandTypeName)) {
-      if (type === `${CommandType.Developer}`) continue;
+    for (const type of Object.values(CommandType).filter((t): t is CommandType => typeof t === 'number')) {
+      if (type === CommandType.Developer) continue;
       menu.addOptions({
-        label: `${Help.commandTypeName[type]}`, 
-        description: Help.commandTypeDescription[type], 
+        label: Translator.getCommandTypeChinese(type), 
+        description: Translator.getCommandTypeChineseDescription(type), 
         emoji: '🔹', 
-        value: type
+        value: `${type}`
       });
     }
 
@@ -89,12 +90,12 @@ export default class Help extends Command<[string]> {
       .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null);
 
     let counter = 0;
-    for (const type of Object.keys(Help.commandTypeName)) {
-      if (type === `${CommandType.Developer}`) continue;
+    for (const type of Object.values(CommandType).filter((t): t is CommandType => typeof t === 'number')) {
+      if (type === CommandType.Developer) continue;
 
       embed.addFields({
-        name: `🔹 **${Help.commandTypeName[type]}**`, 
-        value: Help.commandTypeDescription[type], 
+        name: `🔹 **${Translator.getCommandTypeChinese(type)}**`, 
+        value: Translator.getCommandTypeChineseDescription(type), 
         inline: true
       });
       counter++;
@@ -108,20 +109,20 @@ export default class Help extends Command<[string]> {
   }
 
   
-  public getMessageForType(interaction: SelectMenuInteraction<"cached">, type: string): InteractionReplyOptions {
+  public getMessageForType(interaction: SelectMenuInteraction<"cached">, type: CommandType): InteractionReplyOptions {
     return {
       components: this.getComponentsForType(interaction, type), 
       embeds: this.getEmbedsForType(interaction, type)
     };
   }
 
-  public getComponentsForType(interaction: SelectMenuInteraction<"cached">, type: string): ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[] {
+  public getComponentsForType(interaction: SelectMenuInteraction<"cached">, type: CommandType): ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[] {
     const menu = new SelectMenuBuilder()
       .setCustomId('help_menu_type')
       .setPlaceholder('請選擇一個指令');
     
     interaction.client.commands.each(command => {
-      if (command.type.toString() === type) {
+      if (command.type === type) {
         menu.addOptions({
           label: command.name, 
           description: command.description, 
@@ -136,14 +137,14 @@ export default class Help extends Command<[string]> {
     ];
   }
 
-  public getEmbedsForType(interaction: SelectMenuInteraction<"cached">, type: string): EmbedBuilder[] {
+  public getEmbedsForType(interaction: SelectMenuInteraction<"cached">, type: CommandType): EmbedBuilder[] {
     let description =
-      `以下是所有**${Help.commandTypeName[type]}**分類中的指令\n` +
+      `以下是所有**${Translator.getCommandTypeChinese(type)}**分類中的指令\n` +
       `你可以使用 \`${config.bot.prefix}help 指令名稱\` 或 \`/help 指令名稱\` 來查看特定指令的使用方法\n\n`;
 
     const commands: string[] = [];
     interaction.client.commands.each(command => {
-      if (command.type.toString() === type) {
+      if (command.type === type) {
         commands.push(`\`${command.name}\``);
       }
     });
@@ -182,7 +183,7 @@ export default class Help extends Command<[string]> {
     if (!isSubcommand && command.extraDescription) description += `${command.extraDescription}\n`;
     if (!isSubcommand) description += '\n';
     if (command.aliases) description += `** - 替代名稱：**${command.aliases.map(a => `\`${a}\``).join(', ')}\n`;
-    if (!isSubcommand && command.type) description += `** - 分類位置：**${Help.commandTypeName[`${command.type}`]}\n`;
+    if (!isSubcommand && command.type) description += `** - 分類位置：**${Translator.getCommandTypeChinese(command.type)}\n`;
     if (command.options) description += `** - 指令參數：**${this.optionsToString(command.options)}`;
     if (command.cooldown) description += `** - 冷卻時間：**${command.cooldown} 秒\n`;
     return description;
@@ -194,7 +195,7 @@ export default class Help extends Command<[string]> {
     for (const option of options) {
       description += ` \`${this.getOptionNameString(option)}\`\n`;
       description += `　- 選項說明：${option.description}\n`
-      description += `　- 規範型別：${this.getOptionTypeString(option.type, option.parseAs)}\n`;
+      description += `　- 規範型別：${Translator.getCommandOptionTypeChinese(option)}\n`;
       if ('choices' in option && option.choices) {
         description += `　- 規範選項：${option.choices.map(choice => this.getChoiceString(choice)).join('．')}\n`;
       }
@@ -214,71 +215,7 @@ export default class Help extends Command<[string]> {
     return `${pattern.replace(/\%i/g, '1')} ${pattern.replace(/\%i/g, '2')} ...`
   }
 
-  private getOptionTypeString(type: ApplicationCommandOptionType, parseAs?: CommandOptionType): string {
-    if (parseAs) {
-      return Help.commandOptionTypeTable[parseAs];
-    }
-    return Help.applicationCommandOptionTypeTable[type];
-  }
-
   private getChoiceString(choice: ApplicationCommandOptionChoiceData): string {
     return choice.name === choice.value.toString() ? `\`${choice.name}\`` : `\`${choice.name}\`/\`${choice.value}\``;
   }
-
-
-  static commandTypeName = Object.freeze({
-    [`${CommandType.Contact}`]: '聯繫', 
-    [`${CommandType.Developer}`]: '開發者專用', 
-    [`${CommandType.Fun}`]: '娛樂', 
-    [`${CommandType.SinglePlayerGame}`]: '單人遊戲', 
-    [`${CommandType.MultiPlayerGame}`]: '多人遊戲', 
-    [`${CommandType.Information}`]: '資訊', 
-    [`${CommandType.Miscellaneous}`]: '雜項', 
-    [`${CommandType.Network}`]: '聯絡網', 
-    [`${CommandType.SubcommandGroup}`]: '指令群', 
-    [`${CommandType.Utility}`]: '功能'
-  });
-
-  static commandTypeDescription = Object.freeze({
-    [`${CommandType.Contact}`]: '與 HiZollo 的開發者聯絡', 
-    [`${CommandType.Developer}`]: '開發者專用指令', 
-    [`${CommandType.Fun}`]: '適合在聊天室跟朋友玩樂', 
-    [`${CommandType.SinglePlayerGame}`]: '讓你在沒人的凌晨三點邊吃美味蟹堡邊玩遊戲', 
-    [`${CommandType.MultiPlayerGame}`]: '跟伺服器上的夥伴一起玩遊戲', 
-    [`${CommandType.Information}`]: '顯示 HiZollo 的相關資訊', 
-    [`${CommandType.Miscellaneous}`]: '開發者懶得分類的指令', 
-    [`${CommandType.Network}`]: '查看 HiZollo 聯絡網的相關功能', 
-    [`${CommandType.SubcommandGroup}`]: '集合很多指令的指令', 
-    [`${CommandType.Utility}`]: 'HiZollo 多少還是會一些有用的功能好嗎'
-  });
-
-  static applicationCommandOptionTypeTable: { [key in ApplicationCommandOptionType]: string } = Object.freeze({
-    [ApplicationCommandOptionType.Attachment]: '檔案', 
-    [ApplicationCommandOptionType.Boolean]: '布林值', 
-    [ApplicationCommandOptionType.Channel]: '頻道', 
-    [ApplicationCommandOptionType.Integer]: '整數', 
-    [ApplicationCommandOptionType.Mentionable]: '使用者或身分組', 
-    [ApplicationCommandOptionType.Number]: '數字', 
-    [ApplicationCommandOptionType.Role]: '身分組', 
-    [ApplicationCommandOptionType.String]: '字串', 
-    [ApplicationCommandOptionType.Subcommand]: '子指令', 
-    [ApplicationCommandOptionType.SubcommandGroup]: '指令群', 
-    [ApplicationCommandOptionType.User]: '使用者'
-  });
-
-  static commandOptionTypeTable: { [key in CommandOptionType]: string } = Object.freeze({
-    [CommandOptionType.Attachment]: '檔案', 
-    [CommandOptionType.Boolean]: '布林值', 
-    [CommandOptionType.Channel]: '頻道', 
-    [CommandOptionType.Emoji]: '表情符號', 
-    [CommandOptionType.Integer]: '整數', 
-    [CommandOptionType.Member]: '伺服器成員', 
-    [CommandOptionType.Mentionable]: '使用者或身分組', 
-    [CommandOptionType.Number]: '數字', 
-    [CommandOptionType.Role]: '身分組', 
-    [CommandOptionType.String]: '字串', 
-    [CommandOptionType.Subcommand]: '子指令', 
-    [CommandOptionType.SubcommandGroup]: '指令群', 
-    [CommandOptionType.User]: '使用者'
-  });
 }

@@ -40,8 +40,7 @@ const client = new HZClient({
 });
 
 /******************* Features *******************/
-import permissionTable from './features/utils/permissionTable';
-import Help from './commands/Help';
+import { Translator } from './classes/Translator';
 /**/
 
 /******************* 指令失敗 *******************/
@@ -62,12 +61,12 @@ client.commands.on('reject', async (source, info) => {
     
     case CommandManagerRejectReason.UserMissingPermission:
       helper.setTitle('你被權限之神禁錮了')
-        .setDescription(`以下是你缺少的權限\n\n${info.args[0].map(perm => `- ${permissionTable[perm]}`).join('\n')}`);
+        .setDescription(`以下是你缺少的權限\n\n${info.args[0].map(perm => `- ${Translator.getPermissionChinese(perm)}`).join('\n')}`);
       break;
     
     case CommandManagerRejectReason.BotMissingPermission:
       helper.setTitle('給我這麼點權限怎麼夠我用')
-        .setDescription(`我把我要的權限都列出來了，快點給我不然我沒辦法幫你執行這個指令\n\n${info.args[0].map(perm => `- ${permissionTable[perm]}`).join('\n')}`);
+        .setDescription(`我把我要的權限都列出來了，快點給我不然我沒辦法幫你執行這個指令\n\n${info.args[0].map(perm => `- ${Translator.getPermissionChinese(perm)}`).join('\n')}`);
       break;
     
     case CommandManagerRejectReason.InCooldown:
@@ -93,7 +92,7 @@ client.commands.on('reject', async (source, info) => {
         
         case CommandParserOptionResultStatus.WrongFormat:
           helper.setTitle(`參數 ${options[index].name} 的格式錯誤`);
-          description += `${arg} 不符合${Help.commandOptionTypeTable[options[index].type]}的格式`;
+          description += `${arg} 不符合${Translator.getCommandOptionTypeChinese(options[index])}的格式`;
           break;
       
         case CommandParserOptionResultStatus.NotInChoices:
