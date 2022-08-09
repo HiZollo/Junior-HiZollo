@@ -274,13 +274,23 @@ export class MusicViewRenderer {
 `;
   }
 
+  /**
+   * 將時間轉換為字串
+   * @param time 單位為毫秒的時間
+   * @returns 轉換後的字串
+   */
   public msFormat(time: number): string {
     time = Math.round(time / 1000);
     const [h, m, s] = [~~(time / 3600), ~~(time % 3600 / 60), time % 60];
     return `${h ? `${h}:${fixedDigits(m, 2)}` : `${m}`}:${fixedDigits(s, 2)}`;
   }
 
-  public viewsFormat(views: number) {
+  /**
+   * 將觀看次數轉換為字串
+   * @param views 觀看次數
+   * @returns 轉換後的字串
+   */
+  public viewsFormat(views: number): string {
     const bases = [10000, 10000, 10000];
     const baseNames = ['', '萬', '億', '兆'];
 
