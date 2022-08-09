@@ -199,7 +199,7 @@ function addOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
             .setAutocomplete(!!option.autocomplete);
           if ('minValue' in option) {
             if (option.minValue != null) o.setMinValue(option.minValue);
-            if (option.maxValue != null) o.setMinValue(option.maxValue);
+            if (option.maxValue != null) o.setMaxValue(option.maxValue);
           }
           if ('choices' in option) {
             if (option.choices != null) o.setChoices(...(option.choices as { name: string, value: number }[]));
@@ -224,7 +224,7 @@ function addOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
             .setAutocomplete(!!option.autocomplete);
           if ('minValue' in option) {
             if (option.minValue != null) o.setMinValue(option.minValue);
-            if (option.maxValue != null) o.setMinValue(option.maxValue);
+            if (option.maxValue != null) o.setMaxValue(option.maxValue);
           }
           if ('choices' in option) {
             if (option.choices != null) o.setChoices(...(option.choices as { name: string, value: number }[]));
@@ -249,7 +249,7 @@ function addOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
             .setAutocomplete(!!option.autocomplete);
           if ('minLength' in option) {
             if (option.minLength != null) o.setMinLength(option.minLength);
-            if (option.maxLength != null) o.setMinLength(option.maxLength);
+            if (option.maxLength != null) o.setMaxLength(option.maxLength);
           }
           if ('choices' in option) {
             if (option.choices != null) o.setChoices(...(option.choices as { name: string, value: string }[]));
