@@ -58,7 +58,10 @@ export default class OsuBest extends Command<[string]> {
 
     const helper = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 的 osu! 中心');
 
-    await message.delete().catch(() => {});
+    if (source.isMessage()) {
+      await message.delete().catch(() => {});
+    }
+    
     await pageSystem({
       mode: PageSystemMode.EmbedField,
       source: source,

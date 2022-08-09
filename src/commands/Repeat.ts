@@ -22,7 +22,7 @@ export default class Repeat extends Command<[string]> {
   }
 
   public async execute(source: Source, [content]: [string]): Promise<void> {
-    await source.defer({ ephemeral: true });
+    await source.defer();
     await source.update({
       content: content,
       allowedMentions: {

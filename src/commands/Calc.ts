@@ -59,6 +59,7 @@ export default class Calc extends Command<[string]> {
       return;
     }
 
+    await source.defer();
     await source.update(finalContent);
   }
 }

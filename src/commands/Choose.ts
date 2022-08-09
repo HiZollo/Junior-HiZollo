@@ -21,7 +21,7 @@ export default class Choose extends Command<string[]> {
   }
 
   public async execute(source: Source, options: string[]): Promise<void> {
-    options = options.filter(o => o);
+    options = options.filter(o => o != null);
 
     if (options.length < 2) {
       await source.defer({ ephemeral: true });

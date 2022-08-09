@@ -17,7 +17,8 @@ type parseMessageOptionData = {
 type parseSlashOptionData = {
   [key in ApplicationCommandOptionType]: (data: {
     interaction: ChatInputCommandInteraction, 
-    data: HZCommandOptionData
+    data: HZCommandOptionData, 
+    optionName?: string
   }) => Promise<CommandParserOptionResult>
 }
 
@@ -60,7 +61,13 @@ export class CommandParser extends null {
     const args: any = [];
     for (let i = 0; i < command.options.length; i++) {
       do {
-        const result: CommandParserOptionResult = await CommandParser.ParseMessageOption[command.options[i].type]({ data: command.options[i], message, preParsedArgs, attachments });
+        const result: CommandParserOptionResult = await CommandParser.ParseMessageOption[command.options[i].type]({
+          data: command.options[i], 
+          message, 
+          preParsedArgs, 
+          attachments
+        });
+
         if (result.status !== CommandParserOptionResultStatus.Pass) {
           return { index: i, ...result };
         }
@@ -84,11 +91,19 @@ export class CommandParser extends null {
 
     const args: unknown[] = [];
     for (let i = 0; i < command.options.length; i++) {
-      const result: CommandParserOptionResult = await CommandParser.ParseSlashOption[command.options[i].type]({ interaction, data: command.options[i] });
-      if (result.status !== CommandParserOptionResultStatus.Pass) {
-        return { index: i, ...result };
-      }
-      args.push(result.arg);
+      let repeatIndex = 1;
+      do {
+        const result: CommandParserOptionResult = await CommandParser.ParseSlashOption[command.options[i].type]({ 
+          interaction, 
+          data: command.options[i], 
+          optionName: command.options[i].name.replaceAll('%i', repeatIndex.toString())
+        });
+        
+        if (result.status !== CommandParserOptionResultStatus.Pass) {
+          return { index: i, ...result };
+        }
+        args.push(result.arg);
+      } while (command.options[i].repeat && repeatIndex++ < 5);
     }
     return { args, status: CommandParserOptionResultStatus.Pass };
   }
@@ -281,43 +296,43 @@ export class CommandParser extends null {
 
 
   static ParseSlashOption: parseSlashOptionData = {
-    async [ApplicationCommandOptionType.Attachment]({ interaction, data }) {
-      const argument = interaction.options.getAttachment(data.name);
+    async [ApplicationCommandOptionType.Attachment]({ interaction, data, optionName }) {
+      const argument = interaction.options.getAttachment(optionName ?? data.name);
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };
     },
 
-    async [ApplicationCommandOptionType.Boolean]({ interaction, data }) {
-      const argument = interaction.options.getBoolean(data.name);
+    async [ApplicationCommandOptionType.Boolean]({ interaction, data, optionName }) {
+      const argument = interaction.options.getBoolean(optionName ?? data.name);
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };
     },
 
-    async [ApplicationCommandOptionType.Channel]({ interaction, data }) {
-      const argument = interaction.options.getChannel(data.name);
+    async [ApplicationCommandOptionType.Channel]({ interaction, data, optionName }) {
+      const argument = interaction.options.getChannel(optionName ?? data.name);
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };
     },
 
-    async [ApplicationCommandOptionType.Integer]({ interaction, data }) {
-      const argument = interaction.options.getInteger(data.name);
+    async [ApplicationCommandOptionType.Integer]({ interaction, data, optionName }) {
+      const argument = interaction.options.getInteger(optionName ?? data.name);
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };
     },
 
-    async [ApplicationCommandOptionType.Mentionable]({ interaction, data }) {
-      const argument = interaction.options.getMentionable(data.name);
+    async [ApplicationCommandOptionType.Mentionable]({ interaction, data, optionName }) {
+      const argument = interaction.options.getMentionable(optionName ?? data.name);
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };
     },
 
-    async [ApplicationCommandOptionType.Number]({ interaction, data }) {
-      const argument = interaction.options.getNumber(data.name);
+    async [ApplicationCommandOptionType.Number]({ interaction, data, optionName }) {
+      const argument = interaction.options.getNumber(optionName ?? data.name);
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };
     },
 
-    async [ApplicationCommandOptionType.Role]({ interaction, data }) {
-      const argument = interaction.options.getRole(data.name);
+    async [ApplicationCommandOptionType.Role]({ interaction, data, optionName }) {
+      const argument = interaction.options.getRole(optionName ?? data.name);
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };
     },
 
-    async [ApplicationCommandOptionType.String]({ interaction, data }) {
-      const argument = interaction.options.getString(data.name);
+    async [ApplicationCommandOptionType.String]({ interaction, data, optionName }) {
+      const argument = interaction.options.getString(optionName ?? data.name);
       if (argument === null) {
         return { arg: null, status: CommandParserOptionResultStatus.Pass };
       }
@@ -327,8 +342,8 @@ export class CommandParser extends null {
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };
     },
 
-    async [ApplicationCommandOptionType.User]({ interaction, data }) {
-      const argument = interaction.options.getUser(data.name) ?? null;
+    async [ApplicationCommandOptionType.User]({ interaction, data, optionName }) {
+      const argument = interaction.options.getUser(optionName ?? data.name) ?? null;
       if (argument === null) {
         return { arg: null, status: CommandParserOptionResultStatus.Pass };
       }

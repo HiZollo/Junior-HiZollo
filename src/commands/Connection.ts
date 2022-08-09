@@ -38,6 +38,7 @@ export default class Connection extends Command<[]> {
         if (index % 5 === 0) pages.push([]);
         pages[~~(index / 5)].push({
           name: `${con.name}\n\`GID\` ${con.id}\n\`USR\` ${con.members}`,
+          guildName: con.name, 
           id: con.id
         });
         index++;
@@ -64,6 +65,9 @@ export default class Connection extends Command<[]> {
       allowSelect: true
     });
 
-    if (selected) source.client.music.leave(selected.id);
+    if (selected) {
+      source.client.music.leave(selected.id);
+      await source.update(`已退出 ${selected.guildName}`);
+    }
   }
 }

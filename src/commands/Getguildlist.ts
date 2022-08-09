@@ -43,7 +43,7 @@ export default class Getguildlist extends Command<[]> {
       .sort((gA, gB) => gB.memberCount - gA.memberCount)
       .forEach((g, i) => {
         if (i % 10 === 0) pages.push([]);
-        pages[~~(i/10)].push({ name: `${g.name}｜分支 ${g.shardId}｜${g.memberCount} 位成員\n`, id: g.id });
+        pages[~~(i/10)].push({ name: `${g.name}｜分支 ${g.shardId}｜${g.memberCount} 位成員`, id: g.id });
       });
     
     const embed = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 的伺服器中心');

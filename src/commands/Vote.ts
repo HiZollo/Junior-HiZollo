@@ -48,6 +48,7 @@ export default class Vote extends Command<string[]> {
       return;
     }
     
+    await source.defer();
     const nowTime = new Date();
     const nowTimeString = `${nowTime.getFullYear()}年${nowTime.getMonth()+1}月${nowTime.getDate()}日 `+
                           `${nowTime.getHours()}:${nowTime.getMinutes()}:${nowTime.getSeconds()}`;
