@@ -19,10 +19,9 @@ export default class Say extends Command<[string]> {
         type: ArgumentParseType.None
       }, 
       permissions: {
-        bot: [PermissionFlagsBits.ManageMessages, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel], 
-        user: [PermissionFlagsBits.ManageMessages, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]
-      }, 
-      twoFactorRequired: true
+        bot: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel], 
+        user: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]
+      }
     });
   }
 

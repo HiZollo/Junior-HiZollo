@@ -27,9 +27,8 @@ export default class FinalCode extends Command<GuildMember[]> {
         repeat: true
       }], 
       permissions: {
-        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.ManageMessages, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]
-      }, 
-      twoFactorRequired: true
+        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]
+      }
     });
   }
 

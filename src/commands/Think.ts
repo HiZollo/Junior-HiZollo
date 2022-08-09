@@ -18,10 +18,9 @@ export default class Think extends Command<[string]> {
         choices: Object.keys(thinks).map(choice => ({ name: choice, value: choice }))
       }], 
       permissions: {
-        bot: [PermissionFlagsBits.ManageMessages, PermissionFlagsBits.SendMessages, PermissionFlagsBits.UseExternalEmojis, PermissionFlagsBits.ViewChannel], 
+        bot: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.UseExternalEmojis, PermissionFlagsBits.ViewChannel], 
         user: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]
-      }, 
-      twoFactorRequired: true
+      }
     });
   }
 

@@ -29,9 +29,8 @@ export default class Bullsandcows extends Command<[boolean]> {
         required: false
       }], 
       permissions: {
-        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.ManageMessages, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]
-      }, 
-      twoFactorRequired: true
+        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]
+      }
     });
   }
 
