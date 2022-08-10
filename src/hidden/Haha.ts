@@ -19,6 +19,6 @@ export default class Haha extends HiddenCommand {
   private r2 = ['你要不要吃……哈…呵伊阿…'];
 
   public execute(message: Message): boolean {
-    return this.randomResponse(message, this.r1, this.r1, this.r2);
+    return this.rareResponse(message, this.r1, this.r1, this.r2);
   }
 }

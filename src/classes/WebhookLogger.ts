@@ -4,14 +4,34 @@ import constant from "../constant.json";
 import { HZClient } from "./HZClient";
 import { Source } from "./Source";
 
-
+/**
+ * 掌管所有記錄器
+ */
 export class WebhookLogger {
+  /**
+   * 機器人的 client
+   */
   public client: HZClient;
 
+  /**
+   * 主要的記錄器
+   */
   public mainLogger: WebhookClient;
+
+  /**
+   * 記錄 Network 狀態的記錄器
+   */
   public networkLogger: WebhookClient;
+
+  /**
+   * 記錄錯誤內容的記錄器
+   */
   public errorLogger: WebhookClient;
 
+  /**
+   * 建立一個記錄器管家
+   * @param client 機器人的 client
+   */
   constructor(client: HZClient) {
     this.client = client;
 
@@ -20,6 +40,9 @@ export class WebhookLogger {
     this.errorLogger = new WebhookClient({ id: config.webhooks.error.id, token: config.webhooks.error.token });
   }
 
+  /**
+   * client 已就緒
+   */
   public ready(): void {
     const description = 
 `成功登入 ${this.client.user?.tag}
@@ -29,6 +52,10 @@ export class WebhookLogger {
     this.send('Log', description, this.client.devMode ? 0xD70000 : 0xFF7D7D);
   }
 
+  /**
+   * 加入伺服器
+   * @param guild 伺服器
+   */
   public async joinGuild(guild: Guild): Promise<void> {
     const description = 
 `加入伺服器：${guild.name}
@@ -38,6 +65,10 @@ ID：${guild.id}
     this.send('Log', description, 0x7DFF7D);
   }
 
+  /**
+   * 離開伺服器
+   * @param guild 伺服器
+   */
   public async leaveGuild(guild: Guild): Promise<void> {
     const description = 
 `離開伺服器：${guild.name}
@@ -47,6 +78,10 @@ ID：${guild.id}
     this.send('Log', description, 0x00D700);
   }
 
+  /**
+   * 發生錯誤
+   * @param error 錯誤
+   */
   public error(error: Error): void {
     const elines = error.stack?.split('\n');
     const ename = elines?.shift() ?? 'No Error Name Specified.';
@@ -65,6 +100,12 @@ ID：${guild.id}
     console.log(error);
   }
 
+  /**
+   * 指令執行成功
+   * @param source 來源
+   * @param commandName 指令名稱
+   * @param args 指令參數
+   */
   public commandExecuted(source: Source, commandName: [string, string | undefined], ...args: unknown[]): void {
     const description = 
 `${source.isChatInput() ? `斜線指令：\`/` : `訊息指令：\`${config.bot.prefix}`}${commandName[0]}${commandName[1] ? ` ${commandName[1]}` : ``}\`
@@ -75,8 +116,12 @@ ID：${guild.id}
     this.send('Log', description, source.isChatInput() ? 0x7DFFFF : 0x7D7DFF);
   }
 
-
-
+  /**
+   * Network 發送訊息
+   * @param portNo 埠號
+   * @param guild 來源伺服器
+   * @param author 發送者
+   */
   public networkCrossPost(portNo: string, guild: Guild, author: User): void {
     const description = 
 `在 ${portNo} 號埠上發送訊息
@@ -86,6 +131,24 @@ ID：${guild.id}
     this.send('Network Log', description, 0x7D7DFF);
   }
 
+  /**
+   * Network 全頻廣播
+   * @param portNo 埠號
+   * @param content 廣播內容
+   */
+  public networkBroadcast(portNo: string, content: string): void {
+    const description = 
+`在 ${portNo} 號埠上全頻廣播
+廣播內容：${content}`;
+    
+    this.send('Network Log', description, 0xFFFF7D);
+  }
+
+  /**
+   * 加入 Network
+   * @param portNo 埠號
+   * @param channel 頻道
+   */
   public networkJoined(portNo: string, channel: TextChannel): void {
     const description = 
 `在 ${portNo} 號埠上建立連線
@@ -95,6 +158,11 @@ ID：${guild.id}
     this.send('Network Log', description, 0x7DFF7D);
   }
 
+  /**
+   * 離開 Network
+   * @param portNo 埠號
+   * @param channel 頻道
+   */
   public networkLeft(portNo: string, channel: TextChannel): void {
     const description = 
 `在 ${portNo} 號埠上刪除連線
@@ -104,20 +172,23 @@ ID：${guild.id}
     this.send('Network Log', description, 0xFF7D7D);
   }
 
-  public networkBroadcast(portNo: string, content: string): void {
-    const description = 
-`在 ${portNo} 號埠上全頻廣播
-廣播內容：${content}`;
-    
-    this.send('Network Log', description, 0xFFFF7D);
-  }
-
+  /**
+   * 取得基本的嵌入物件
+   * @param title 嵌入物件的標題
+   * @returns 嵌入物件
+   */
   private baseEmbed(title: string): EmbedBuilder {
     return new EmbedBuilder()
       .setAuthor({ name: `${title} - ${Date.now()}`, iconURL: this.client.user?.displayAvatarURL() })
       .setFooter({ text: `分支編號：${this.client.shard?.ids[0]}` });
   }
 
+  /**
+   * 記錄訊息
+   * @param target 訊息種類
+   * @param description 訊息內容
+   * @param color 嵌入物件的顏色
+   */
   private send(target: 'Log' | 'Network Log' | 'Error Log', description: string, color: number): void {
     const logger = 
       target === 'Log' ? this.mainLogger :

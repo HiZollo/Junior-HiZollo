@@ -6,31 +6,64 @@ import tempMessage from "../features/utils/tempMessage";
 import removeMd from "../features/utils/removeMd";
 import { HZNetworkEvents } from "../utils/interfaces";
 
+/**
+ * HiZollo Network 系統
+ * @extends EventEmitter
+ */
 export class HZNetwork extends EventEmitter {
+  /**
+   * 機器人的 client
+   */
   public client: HZClient;
-  public registeredPorts: Set<string>;
+
+  /**
+   * 所有已開放的埠號
+   */
+  public publicPortNo: Set<string>;
+
+  /**
+   * 埠號－（頻道 ID－Webhook）的鍵值對
+   */
   public ports: Map<string, Map<string, Webhook>>;
 
+  /**
+   * Network Webhook 名稱的前綴
+   */
   private hookPrefix: string;
+
+  /**
+   * Network 頻道名稱的前綴
+   */
   private portPrefix: string;
+
+  /**
+   * Network 是否已載入完畢
+   */
   private loaded: boolean;
 
+  /**
+   * 建立 HiZollo Network
+   * @param client 機器人的 client
+   */
   constructor(client: HZClient) {
     super();
 
     this.client = client;
-    this.registeredPorts = new Set(['1', '8', '9', '27']);
+    this.publicPortNo = new Set(['1', '8', '9', '27']);
     this.hookPrefix = config.bot.network.namePrefix;
     this.portPrefix = config.bot.network.portPrefix;
     this.ports = new Map();
     this.loaded = false;
   }
 
+  /**
+   * 載入 HiZollo Network
+   */
   public async load(): Promise<void> {
     if (this.client.devMode) return;
     if (this.loaded) throw new Error('HiZollo Network has already been loaded');
 
-    for (const portNo of this.registeredPorts) {
+    for (const portNo of this.publicPortNo) {
       this.ports.set(portNo, new Map());
     }
   
@@ -38,7 +71,7 @@ export class HZNetwork extends EventEmitter {
       .filter((channel): channel is TextChannel => {
         if (channel.type !== ChannelType.GuildText) return false;
         if (!channel.name.startsWith(this.portPrefix)) return false;
-        return this.registeredPorts.has(channel.name.slice(config.bot.network.portPrefix.length));
+        return this.publicPortNo.has(channel.name.slice(config.bot.network.portPrefix.length));
       })
       .map(async channel => {
         if (!(channel.guild.members.me?.permissions.has(PermissionFlagsBits.ManageWebhooks) && channel.guild.mfaLevel === GuildMFALevel.None)) return;
@@ -53,6 +86,10 @@ export class HZNetwork extends EventEmitter {
     this.emit('loaded');
   }
 
+  /**
+   * 轉接第一線的訊息
+   * @param message 從 client#on('messageCreate') 得到的訊息
+   */
   public async onMessageCreate(message: Message): Promise<void> {
     if (message.author.blocked) return;
     if (message.author.bot || message.webhookId) return;
@@ -155,6 +192,10 @@ export class HZNetwork extends EventEmitter {
     }
   }
 
+  /**
+   * 轉接第一線的新頻道
+   * @param channel 從 client#on('channelCreate') 得到的頻道
+   */
   public async onChannelCreate(channel: Channel): Promise<void> {
     const portNo = this.getPortNo(channel);
     if (!portNo || channel.type !== ChannelType.GuildText) return;
@@ -162,6 +203,11 @@ export class HZNetwork extends EventEmitter {
     await this.registerChannel(portNo, channel);
   }
 
+  /**
+   * 轉接第一線的頻道更新事件
+   * @param oldChannel 從 client#on('channelUpdate') 得到的舊頻道
+   * @param newChannel 從 client#on('channelUpdate') 得到的新頻道
+   */
   public async onChannelUpdate(oldChannel: Channel, newChannel: Channel): Promise<void> {
     const [oldPortNo, newPortNo] = [this.getPortNo(oldChannel), this.getPortNo(newChannel)];
     if (oldPortNo == newPortNo) return;
@@ -177,6 +223,10 @@ export class HZNetwork extends EventEmitter {
     }
   }
 
+  /**
+   * 轉接第一線的頻道刪除事件
+   * @param channel 從 client#on('channelDelete') 得到的頻道
+   */
   public async onChannelDelete(channel: Channel): Promise<void> {
     const portNo = this.getPortNo(channel);
     if (!portNo || channel.type !== ChannelType.GuildText) return;
@@ -184,6 +234,10 @@ export class HZNetwork extends EventEmitter {
     this.unregisterChannel(portNo, channel);
   }
 
+  /**
+   * 轉接第一線的新伺服器
+   * @param guild 從 client#on('guildCreate') 得到的伺服器
+   */
   public async onGuildCreate(guild: Guild): Promise<void> {
     await guild.fetch().catch(() => {});
     guild.channels.cache.each(async channel => {
@@ -194,6 +248,10 @@ export class HZNetwork extends EventEmitter {
     });
   }
 
+  /**
+   * 轉接第一線的伺服器刪除事件
+   * @param guild 從 client#on('guildDelete') 得到的伺服器
+   */
   public async onGuildDelete(guild: Guild): Promise<void> {
     await guild.fetch().catch(() => {});
     guild.channels.cache.each(async channel => {
@@ -208,7 +266,7 @@ export class HZNetwork extends EventEmitter {
    * 向相同埠號的所有頻道發送訊息
    * @param portNo 埠號
    * @param options 要發送的訊息
-   * @param from 來源伺服器，未提供此參數時會視為官方廣播
+   * @param isBroadcast 是否為官方全頻公告
    */
   public async crosspost(portNo: string, options: WebhookMessageOptions, isBroadcast?: boolean): Promise<void> {
     await this.client.shard?.broadcastEval(async (client, {portNo, options}) => {
@@ -231,7 +289,7 @@ export class HZNetwork extends EventEmitter {
 
   /**
    * 把頻道註冊到選定的埠號，如果該頻道本來就有 webhook 會直接沿用，沒有 webhook 則會建立一個
-   * @param portNo 埠號
+   * @param portNo 指定的埠號
    * @param channel 非討論串的文字頻道
    * @param isInitialize 註冊頻道的動作是不是在初始化時執行
    * @returns 原有或新建立的 webhook，可能因為機器人權限不足而無法註冊
@@ -269,28 +327,48 @@ export class HZNetwork extends EventEmitter {
     return hook;
   }
 
+  /**
+   * 把指定埠號的指定頻道移除，這個動作並不會刪除 Webhook
+   * @param portNo 指定的埠號
+   * @param channel 指定的頻道
+   */
   private unregisterChannel(portNo: string, channel: TextChannel): void {
     const success = this.ports.get(portNo)?.delete(channel.id) ?? false;
     if (success) this.emit('left', portNo, channel);
   }
 
+  /**
+   * 判斷頻道名稱是否符合 Network 的格式，並回傳對應埠號
+   * @param channel 指定的頻道
+   * @returns 格式正確時回傳埠號
+   */
   private getPortNo(channel: Channel): string | void {
     if (channel.type !== ChannelType.GuildText) return;
     if (channel.isThread()) return;
     if (!channel.name.startsWith(this.portPrefix)) return;
-    if (!this.registeredPorts.has(channel.name.slice(this.portPrefix.length))) return;
+    if (!this.publicPortNo.has(channel.name.slice(this.portPrefix.length))) return;
     return channel.name.slice(this.portPrefix.length);
   }
 
-  private webhookFormat(portNo: string) {
+  /**
+   * 取得指定埠號對應的 Webhook 名稱
+   * @param portNo 指定的埠號
+   * @returns Webhook 名稱
+   */
+  private webhookFormat(portNo: string): string {
     return `${this.hookPrefix}_NETWORK_PORT_${portNo}`;
   }
 
+  /**
+   * 保留字串的前 30 個字元（表情符號視為一個字元），如果字串過長就在後方補上 `...`
+   * @param reply 輸入字串
+   * @returns 轉換後的字串
+   */
   private parseReply(reply: string): string {
     reply = reply.replace(/\n/g, ' ');
     const emojis = reply.match(/<(a)?:(\w{1,32}):(\d{17,19})>?/g) || [];
     const emojiLength = emojis.join('').length - emojis.length;
-    return reply.length > 30 + emojiLength ? reply.substr(0, 30 + emojiLength) + '...' : reply;
+    return reply.length > 30 + emojiLength ? reply.substring(0, 30 + emojiLength) + '...' : reply;
   }
 
 

@@ -7,11 +7,30 @@ import { HZClient } from "./HZClient";
 import missingPermissions from '../features/utils/missingPermissions';
 import { HiddenCommandManagerEvents } from '../utils/interfaces';
 
+/**
+ * 掌管所有隱藏指令
+ * @extends EventEmitter
+ */
 export class HiddenCommandManager extends EventEmitter {
+  /**
+   * 機器人的 client
+   */
   public client: HZClient;
+
+  /**
+   * 所有隱藏指令
+   */
   private commands: Collection<string, HiddenCommand>;
+
+  /**
+   * 隱藏指令是否已載入完畢
+   */
   private loaded: boolean;
 
+  /**
+   * 建立一個隱藏指令管家
+   * @param client 機器人的 client
+   */
   constructor(client: HZClient) {
     super();
     this.client = client;
@@ -19,6 +38,10 @@ export class HiddenCommandManager extends EventEmitter {
     this.loaded = false;
   }
 
+  /**
+   * 載入所有隱藏指令
+   * @param dirPath 要載入的資料夾
+   */
   public async load(dirPath: string): Promise<void> {
     if (this.loaded) throw new Error('Autocomplete has already been loaded.');
 
@@ -33,6 +56,10 @@ export class HiddenCommandManager extends EventEmitter {
     this.loaded = true;
   }
 
+  /**
+   * 轉接第一線的訊息
+   * @param message 從 client#on('messageCreate') 得到的訊息
+   */
   public async onMessageCreate(message: Message): Promise<void> {
     if (!message.inGuild()) return;
     if (message.author.blocked || message.author.bot) return;
@@ -44,7 +71,6 @@ export class HiddenCommandManager extends EventEmitter {
       this.emit('executed', message, command.name);
     }
   }
-
 
 
   public on<K extends keyof HiddenCommandManagerEvents>(event: K, listener: (...args: HiddenCommandManagerEvents[K]) => Awaitable<void>): this;

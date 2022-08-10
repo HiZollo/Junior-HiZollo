@@ -12,6 +12,6 @@ export default class Oof extends HiddenCommand {
 
 
   public execute(message: Message): boolean {
-    return this.randomResponse(message, ['ooof'], ['ooooof'], ['ƠơỚȱỌǪǫỜờỠŏỖŎŏȎȰꞘ']);
+    return this.rareResponse(message, ['ooof'], ['ooooof'], ['ƠơỚȱỌǪǫỜờỠŏỖŎŏȎȰꞘ']);
   }
 }

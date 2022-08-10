@@ -1,18 +1,66 @@
 import { ChatInputCommandInteraction, Client, Guild, GuildMember, GuildTextBasedChannel, InteractionDeferReplyOptions, InteractionResponse, Message, MessagePayload, User, WebhookEditMessageOptions } from "discord.js";
 import tempMessage from "../features/utils/tempMessage";
 
+/**
+ * 把斜線指令與訊息融合的類別
+ */
 export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<true> = ChatInputCommandInteraction<"cached"> | Message<true>> {
+  /**
+   * 來源
+   */
   public source: T;
+
+  /**
+   * 來源頻道
+   */
   public channel: GuildTextBasedChannel;
+
+  /**
+   * 來源頻道的 ID
+   */
   public channelId: string;
+
+  /**
+   * 機器人的 client
+   */
   public client: Client;
+
+  /**
+   * 來源的建立時間
+   */
   public createdAt: Date;
+
+  /**
+   * 來源的建立時間戳
+   */
   public createdTimestamp: number;
+
+  /**
+   * 來源的伺服器
+   */
   public guild: Guild;
+
+  /**
+   * 來源的 ID
+   */
   public id: string;
+
+  /**
+   * 來源的觸發成員
+   */
   public member: GuildMember;
+
+  /**
+   * 來源的觸發使用者
+   */
   public user: User;
 
+  /**
+   * 建立一個來源
+   * @param source 來源
+   * @param channel 來源頻道
+   * @param member 來源的觸發成員
+   */
   constructor(source: T, channel: GuildTextBasedChannel, member: GuildMember) {
     this.source = source;
 
@@ -27,23 +75,37 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
     this.user = 'user' in source ? source.user : source.author;
   }
 
-
+  /**
+   * [Type Guard] 來源是斜線指令
+   */
   public isChatInput(): this is Source<ChatInputCommandInteraction<"cached">> {
     return this.source instanceof ChatInputCommandInteraction<"cached">;
   }
 
+  /**
+   * [Type Guard] 來源是訊息
+   */
   public isMessage(): this is Source<Message<true>> {
     return this.source instanceof Message<true>;
   }
 
+
+  /**
+   * 來源是否已被延遲，若來源是訊息則永遠回傳 false
+   */
   public get deferred(): boolean {
     return this.source instanceof ChatInputCommandInteraction && this.source.deferred;
   }
 
   /**
-   * CommandInteraction：呼叫 `.deferReply()`。
-   * Message：呼叫 `.delete()`。
-   * @param options deferReply 的選項
+   * 隱藏來源
+   * 
+   * 斜線指令：呼叫 `.deferReply({ ephemeral: true, ...options })`
+   * 
+   * 訊息：呼叫 `.delete()`
+   * 
+   * @param options 上述函式的選項
+   * @returns 上述函式的回傳值
    */
   public async hide(options?: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message | InteractionResponse | void> {
     if (this.source instanceof ChatInputCommandInteraction) {
@@ -55,9 +117,14 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
   }
 
   /**
-   * CommandInteraction：呼叫 `.deferReply()`。
-   * Message：不做任何事。
-   * @param options deferReply 的選項
+   * 延遲來源
+   * 
+   * 斜線指令：呼叫 `.deferReply()`
+   * 
+   * 訊息：不做任何事
+   * 
+   * @param options 上述函式的選項
+   * @returns 上述函式的回傳值
    */
   public async defer(options?: InteractionDeferReplyOptions & { fetchReply?: true }): Promise<Message | InteractionResponse | void> {
     if (this.source instanceof ChatInputCommandInteraction && !this.source.deferred) {
@@ -65,6 +132,16 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
     }
   }
 
+  /**
+   * 傳送暫時的訊息，通常使用此函式前斜線指令會先被 ephemerally deferred
+   * 
+   * 斜線指令：呼叫 `.editReply()`
+   * 
+   * 訊息：調用 `tempMessage()`
+   * 
+   * @param options 上述函式的選項
+   * @returns 上述函式的回傳值
+   */
   public async temp(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message> {
     if (this.source instanceof ChatInputCommandInteraction) {
       return this.source.editReply(options);
@@ -73,10 +150,14 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
   }
 
   /**
-   * CommandInteraction：呼叫 `.editReply()`。
-   * Message：不做任何事。
-   * @param options 編輯選項
-   * @returns 編輯／發送後的訊息
+   * 需要單獨對斜線指令編輯時可以使用此函式
+   * 
+   * 斜線指令：呼叫 `.editReply()`
+   * 
+   * 訊息：不做任何事
+   * 
+   * @param options 上述函式的選項
+   * @returns 上述函式的回傳值
    */
   public async editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | void> {
     if (this.source instanceof ChatInputCommandInteraction) {
@@ -85,25 +166,14 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
   }
 
   /**
-   * CommandInteraction：呼叫 `.editReply()`。
-   * Message：呼叫 `.edit()`。
-   * @param options 編輯選項
-   * @returns 編輯／發送後的訊息
-   */
-  public async edit(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | void> {
-    if (this.source instanceof ChatInputCommandInteraction) {
-      return this.source.editReply(options);
-    }
-    if (this.source.editable) {
-      return this.source.edit(options);
-    }
-  }
-
-  /**
-   * CommandInteraction：呼叫 `.editReply()`。
-   * Message：呼叫 `.channel.send`。
-   * @param options deferReply 的選項
-   * @returns 編輯／發送後的訊息
+   * 實際回應指令，通常會緊接在 {@link defer} 以後
+   * 
+   * 斜線指令：呼叫 `.editReply()`
+   * 
+   * 訊息：呼叫 `.channel.send()`
+   * 
+   * @param options 上述函式的選項
+   * @returns 上述函式的回傳值
    */
   public async update(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message> {
     if (this.source instanceof ChatInputCommandInteraction) {
@@ -112,6 +182,11 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
     return this.source.channel.send(options);
   }
 
+  /**
+   * 把來源轉換為 JSON 格式
+   * @param props 轉換的參數
+   * @returns JSON 化後的資料
+   */
   public toJSON(...props: Record<string, string | boolean>[]): unknown {
     return this.source.toJSON(...props);
   }

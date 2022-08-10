@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import path from "path";
 import { BaseChannel } from "discord.js"
-// import registeredPorts from '../../hznetwork/registeredPorts';
+// import publicPortNo from '../../hznetwork/publicPortNo';
 
 dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 

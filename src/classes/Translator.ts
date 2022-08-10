@@ -2,7 +2,10 @@ import { ApplicationCommandOptionType } from "discord.js";
 import { CommandOptionType, CommandType } from "../utils/enums";
 import { HZCommandOptionData } from "../utils/types";
 
-
+/**
+ * 掌管常數與字串的轉換
+ * @extends null
+ */
 export class Translator extends null {
   /**
    * 將群組指令全名轉換為 z 指令的捷徑名稱

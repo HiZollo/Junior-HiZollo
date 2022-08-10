@@ -30,7 +30,7 @@ export class CommandManager extends EventEmitter {
   public commands: Collection<string, Command<unknown>>;
 
   /**
-   * 群組指令
+   * 群組指令管家
    */
   public subcommands: SubcommandManager;
 
@@ -283,9 +283,9 @@ export class CommandManager extends EventEmitter {
   }
 
   /**
-   * 尋找指令
-   * @param commandName first 是第一個參數，second 是第二個參數
-   * @returns 
+   * 尋找並回傳指令或指令群，支援群組指令、捷徑用法
+   * @param commandName 要搜尋的指令名稱，支援群組指令、捷徑用法
+   * @returns 找到的指令或指令群
    */
   public search(commandName: [string, string | undefined]): Command<unknown> | SubcommandGroup | void {
     let first = commandName[0].toLowerCase();
@@ -299,7 +299,7 @@ export class CommandManager extends EventEmitter {
       }
     }
 
-    // 一般指令 + 參數
+    // 一般指令優先
     const command = this.commands.get(first) || this.commands.find(c => !!c.aliases?.includes(first));
     if (command) return command;
 

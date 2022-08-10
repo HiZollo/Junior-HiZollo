@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import path from "path";
-import { Client, Collection, Message, MessageReaction, PermissionsBitField, WebhookClient } from "discord.js";
+import { Client, Collection, Message, MessageReaction, PermissionFlagsBits, PermissionsBitField, WebhookClient } from "discord.js";
 import osu from "node-osu";
 import { CommandManager } from "./CommandManager";
 import CooldownManager from "./CooldownManager";
@@ -21,26 +21,15 @@ import { HiddenCommandManager } from "./HiddenCommandManager";
 
 dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 
+/**
+ * 擴展的 client
+ * @extends Client
+ */
 export class HZClient extends Client {
-  public devMode: boolean;
-  public blockedUsers: Set<string>;
-
-  public logger: WebhookLogger;
-  
-  public commands: CommandManager;
-  public hidden: HiddenCommandManager;
-  public autocomplete: AutocompleteManager;
-  public buttons: ButtonManager;
-  public selectmenus: SelectMenuManager;
-
-  public cooldown: CooldownManager;
-  public music: ClientMusicManager;
-  public network: HZNetwork;
-
-  public bugHook: WebhookClient;
-  public suggestHook: WebhookClient;
-  public replyHook: WebhookClient;
-
+  /**
+   * 建立一個擴展版 client
+   * @param options 
+   */
   constructor(options: HZClientOptions) {
     super(options);
     
@@ -73,6 +62,9 @@ export class HZClient extends Client {
     });
   }
 
+  /**
+   * 初始化這個 client
+   */
   public async initialize(): Promise<void> {
     await this.commands.load(path.join(__dirname, '../commands/'));
     await this.hidden.load(path.join(__dirname, '../hidden'));
@@ -83,6 +75,9 @@ export class HZClient extends Client {
     this.user?.setActivity(await getActivity(this));
   }
 
+  /**
+   * 避免重複計算的最少量權限快取
+   */
   private _invitePermissions: PermissionsBitField | null = null;
   public get invitePermissions(): PermissionsBitField {
     if (this._invitePermissions) return this._invitePermissions;
@@ -96,7 +91,7 @@ export class HZClient extends Client {
         permissions.add(command.permissions?.bot ?? []);
       });
     });
-    permissions.add(PermissionsBitField.StageModerator);
+    permissions.add(PermissionFlagsBits.ManageWebhooks, PermissionsBitField.StageModerator);
 
     return this._invitePermissions = permissions;
   }
@@ -106,8 +101,21 @@ export class HZClient extends Client {
     return counts?.reduce((acc, cur) => acc + cur, 0) ?? 0;
   }
 
+  /**
+   * 隨機反應的反應
+   */
   private readonly emojiPool = ['🤔', '😶', '🤨', '😩', '🧐'];
+
+  /**
+   * 隨機反應機率的倒數
+   */
   private readonly ReactConstant = 9808;
+
+  /**
+   * 對一則訊息隨機反應
+   * @param message 訊息
+   * @returns 成功反應時回傳該反應
+   */
   public async randomReact(message: Message): Promise<MessageReaction | void> {
     if (message.author.blocked || message.author.bot) return;
     if (this.devMode && !message.channel.isTestChannel()) return;
@@ -116,7 +124,15 @@ export class HZClient extends Client {
     return message.react(emoji).catch(() => {});
   }
 
+  /**
+   * 需要投票功能的頻道 ID
+   */
   private readonly pollChannelId = [constant.mainGuild.channels.announcementId, constant.mainGuild.channels.suggestReportId];
+
+  /**
+   * 對指定頻道中的訊息附加投票用的表情符號
+   * @param message 訊息
+   */
   public async poll(message: Message): Promise<void> {
     if (this.pollChannelId.includes(message.channel.id)) {
       await message.react('👍').catch(() => {});
@@ -124,7 +140,16 @@ export class HZClient extends Client {
     }
   }
 
+  /**
+   * 附加指令的前綴
+   */
   private readonly addonPrefix = '?';
+
+  /**
+   * 執行附加指令
+   * @param message 訊息來源
+   * @returns 傳送出的訊息
+   */
   public async addonCommand(message: Message): Promise<Message | void> {
     if (message.guild?.id !== constant.mainGuild.id) return;
     if (message.author.blocked || message.author.bot) return;

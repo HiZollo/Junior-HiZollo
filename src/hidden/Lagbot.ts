@@ -16,6 +16,6 @@ export default class Lagbot extends HiddenCommand {
   private r3 = ['你確定不是你那邊的問題嗎', '你確定你網路沒問題嗎'];
 
   public execute(message: Message): boolean {
-    return this.alwaysResponse(message, this.r1, this.r2, this.r3);
+    return this.randomResponse(message, this.r1, this.r2, this.r3);
   }
 }

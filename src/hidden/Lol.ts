@@ -15,6 +15,6 @@ export default class Lol extends HiddenCommand {
   private r3 = ['你已被 LOOOOOOOOL 之神造訪', 'ⱠƠǪỜỠỖỚỌḼ'];
 
   public execute(message: Message): boolean {
-    return this.randomResponse(message, this.r1, this.r2, this.r3);
+    return this.rareResponse(message, this.r1, this.r2, this.r3);
   }
 }

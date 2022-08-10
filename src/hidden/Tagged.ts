@@ -24,7 +24,7 @@ export default class Tagged extends HiddenCommand {
   ];
 
   public execute(message: Message): boolean {
-    this.alwaysResponse(message, this.r1);
+    this.randomResponse(message, this.r1);
     return true;
   }
 }

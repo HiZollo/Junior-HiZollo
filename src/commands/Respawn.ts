@@ -14,7 +14,7 @@ export default class Respawn extends Command<[]> {
 
   public async execute(source: Source): Promise<void> {
     await source.hide();
-    await source.edit('已開始重設所有分支');
+    await source.update('已開始重設所有分支');
     await source.client.shard?.respawnAll();
   }
 }

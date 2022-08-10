@@ -43,7 +43,7 @@ export default class Hznetwork extends Command<[string]> {
     const embed = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo Network 中心');
 
     let description = '';
-    for (const portNo of source.client.network.registeredPorts) {
+    for (const portNo of source.client.network.publicPortNo) {
       const channelCounts = await source.client.shard?.broadcastEval((client, {portNo}) => {
         return client.network.ports.get(portNo)?.size ?? 0;
       }, { context: { portNo } }) ?? [];

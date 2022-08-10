@@ -64,34 +64,113 @@ declare module "discord.js" {
   }
 
   interface Client {
-    autocomplete: AutocompleteManager;
-    buttons: ButtonManager;
-    selectmenus: SelectMenuManager;
+    /**
+     * 是否在開發模式中運行
+     */
+    devMode: boolean;
+
+    /**
+     * 被封鎖的使用者 ID
+     */
+    blockedUsers: Set<string>;
+
+    /**
+     * 重要事件的記錄器
+     */
+    logger: WebhookLogger;
+    
+    /**
+     * 指令管家
+     */
     commands: CommandManager;
+
+    /**
+     * 隱藏指令管家
+     */
     hidden: HiddenCommandManager;
+
+    /**
+     * 自動匹配管家
+     */
+    autocomplete: AutocompleteManager;
+
+    /**
+     * 永久按鈕管家
+     */
+    buttons: ButtonManager;
+
+    /**
+     * 永久選單管家
+     */
+    selectmenus: SelectMenuManager;
+
+    /**
+     * 冷卻系統管家
+     */
     cooldown: CooldownManager;
+
+    /**
+     * 音樂系統管家
+     */
     music: ClientMusicManager;
+
+    /**
+     * Network 管家
+     */
     network: HZNetwork;
 
-    devMode: boolean;
-    logger: WebhookLogger;
-
-    angryList: Collection<string, number>;
-    isAngryAt(userId: string): Promise<number>;
-
-    blockedUsers: Set<string>;
-    block(userId: string): void;
-    unblock(userId: string): void;
-
-    guildCount(): Promise<number>;
-
+    /**
+     * 用於記錄錯誤回報的 Webhook
+     */
     bugHook: WebhookClient;
+
+    /**
+     * 用於記錄建議回報的 Webhook
+     */
     suggestHook: WebhookClient;
+
+    /**
+     * 用於記錄開發者回覆的 Webhook
+     */
     replyHook: WebhookClient;
 
+    /**
+     * 被 HiZollo 討厭的使用者 ID－氣消時間
+     */
+    angryList: Collection<string, number>;
+
+    /**
+     * HiZollo 是否正在生某個使用者的氣
+     * @param userId 指定的使用者
+     */
+    isAngryAt(userId: string): Promise<number>;
+
+    /**
+     * 暫時封鎖一名使用者
+     * @param userId 指定的使用者
+     */
+    block(userId: string): void;
+
+    /**
+     * 暫時解封一名使用者
+     * @param userId 指定的使用者
+     */
+    unblock(userId: string): void;
+
+    /**
+     * 取得伺服器總數
+     */
+    guildCount(): Promise<number>;
+
+    /**
+     * osu! 的 API
+     */
     osuApi: osu.Api;
 
-    invitePermissions: PermissionsBitField;
+    /**
+     * 要完整使用 HiZollo 所需的最少量權限
+     */
+    get invitePermissions(): PermissionsBitField;
   }
 
   interface EmbedBuilder {
