@@ -152,9 +152,11 @@ client.commands.on('executed', (source, commandName, ...args) => {
 });
 /**/
 
+/******************* 隱藏指令執行 *******************/
 client.hidden.on('executed', (message, commandName) => {
   client.logger.hiddenExecuted(message, commandName);
 });
+/**/
 
 /******************* Network 全頻廣播 *******************/
 client.network.on('broadcast', (portNo, content) => {
