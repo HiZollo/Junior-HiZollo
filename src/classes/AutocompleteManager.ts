@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "node:fs";
+import path from "node:path";
 import constant from '../constant.json';
 import { AutocompleteData } from "../utils/types";
 import { HZClient } from "./HZClient";

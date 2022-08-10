@@ -1,5 +1,5 @@
 import { Awaitable, Channel, ChannelType, EmbedBuilder, Guild, GuildMFALevel, Message, PermissionFlagsBits, TextChannel, Webhook, WebhookMessageOptions } from "discord.js";
-import { EventEmitter } from "events";
+import { EventEmitter } from "node:events";
 import { HZClient } from "./HZClient";
 import config from "../config";
 import tempMessage from "../features/utils/tempMessage";

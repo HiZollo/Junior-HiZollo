@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import { EventEmitter } from "events";
+import fs from "node:fs";
+import path from "node:path";
+import { EventEmitter } from "node:events";
 import { Awaitable, Collection, GuildMFALevel, Interaction, Message, PermissionFlagsBits } from "discord.js";
 import { Command } from "./Command";
 import { CommandParser } from "./CommandParser";

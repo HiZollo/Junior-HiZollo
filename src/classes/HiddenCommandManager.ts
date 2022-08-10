@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "node:fs";
+import path from "node:path";
 import { Awaitable, Collection, Message, PermissionFlagsBits } from "discord.js";
-import { EventEmitter } from "events";
+import { EventEmitter } from "node:events";
 import { HiddenCommand } from "./HiddenCommand";
 import { HZClient } from "./HZClient";
 import missingPermissions from '../features/utils/missingPermissions';

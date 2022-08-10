@@ -1,6 +1,6 @@
 import { Interaction, InteractionType, SelectMenuInteraction } from 'discord.js';
-import fs from 'fs';
-import path from 'path';
+import fs from "node:fs";
+import path from "node:path";
 import constant from '../constant.json';
 import { HZClient } from "./HZClient";
 

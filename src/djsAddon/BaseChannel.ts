@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import path from "path";
+import path from "node:path";
 import { BaseChannel } from "discord.js"
 // import publicPortNo from '../../hznetwork/publicPortNo';
 
