@@ -16,6 +16,6 @@ export default class Lanbot extends HiddenCommand {
   private r3 = [{ files: ['./src/pictures/badbot.jpg'] }];
 
   public execute(message: Message): boolean {
-    return this.randomResponse(message, this.r1, this.r2, this.r3);
+    return this.randomResponse(message, this.r1, this.r2, this.r2, this.r2, this.r3);
   }
 }

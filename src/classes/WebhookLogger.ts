@@ -1,4 +1,4 @@
-import { EmbedBuilder, Guild, TextChannel, User, WebhookClient } from "discord.js";
+import { EmbedBuilder, Guild, Message, TextChannel, User, WebhookClient } from "discord.js";
 import config from "../config";
 import constant from "../constant.json";
 import { HZClient } from "./HZClient";
@@ -114,6 +114,20 @@ ID：${guild.id}
 伺服器：${source.guild.id}`;
 
     this.send('Log', description, source.isChatInput() ? 0x7DFFFF : 0x7D7DFF);
+  }
+
+  /**
+   * 隱藏指令執行成功
+   * @param message 來源訊息
+   * @param commandName 指令名稱
+   */
+  public hiddenExecuted(message: Message, commandName: string): void {
+    const description = 
+`隱藏指令：${commandName}
+執行者：${message.author}
+伺服器：${message.guild!.id}`;
+
+    this.send('Log', description, 0xFF7DFF);
   }
 
   /**

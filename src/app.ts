@@ -152,6 +152,10 @@ client.commands.on('executed', (source, commandName, ...args) => {
 });
 /**/
 
+client.hidden.on('executed', (message, commandName) => {
+  client.logger.hiddenExecuted(message, commandName);
+});
+
 /******************* Network 全頻廣播 *******************/
 client.network.on('broadcast', (portNo, content) => {
   client.logger.networkBroadcast(portNo, content);
