@@ -158,7 +158,7 @@ export default class Help extends Command<[string]> {
     ];
   }
 
-  public getEmbedForCommand(source: { client: Client, member: GuildMember }, command: Command<unknown>): EmbedBuilder {
+  public getEmbedForCommand(source: { client: Client, member: GuildMember }, command: Command): EmbedBuilder {
     return new EmbedBuilder()
       .applyHiZolloSettings(source.member, 'HiZollo 的幫助中心', '使用指令時不須連同 [] 或 <> 一起輸入')
       .setDescription(this.getDescriptionForCommand(command))
@@ -178,7 +178,7 @@ export default class Help extends Command<[string]> {
     return embed;
   }
 
-  private getDescriptionForCommand(command: Command<unknown>, isSubcommand?: boolean): string {
+  private getDescriptionForCommand(command: Command, isSubcommand?: boolean): string {
     let description = !isSubcommand ? `\`${command.name}\`\n${command.description}\n` : '';
     if (!isSubcommand && command.extraDescription) description += `${command.extraDescription}\n`;
     if (!isSubcommand) description += '\n';

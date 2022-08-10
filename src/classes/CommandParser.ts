@@ -59,7 +59,7 @@ export class CommandParser extends null {
    * @param command 使用者觸發的指令
    * @returns 解析結果
    */
-  static async parseMessageArgs(message: Message, rawArgs: string, command: Command<unknown>): Promise<CommandParserResult> {
+  static async parseMessageArgs(message: Message, rawArgs: string, command: Command): Promise<CommandParserResult> {
     if (!command.options) {
       return { args: [], status: CommandParserOptionResultStatus.Pass };
     }
@@ -93,7 +93,7 @@ export class CommandParser extends null {
    * @param command 使用者觸發的指令
    * @returns 解析結果
    */
-  static async parseSlashArgs(interaction: ChatInputCommandInteraction<"cached">, command: Command<unknown>): Promise<CommandParserResult> {
+  static async parseSlashArgs(interaction: ChatInputCommandInteraction<"cached">, command: Command): Promise<CommandParserResult> {
     if (!command.options) {
       return { args: [], status: CommandParserOptionResultStatus.Pass };
     }

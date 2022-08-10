@@ -27,7 +27,7 @@ export class CommandManager extends EventEmitter {
   /**
    * 一般指令
    */
-  public commands: Collection<string, Command<unknown>>;
+  public commands: Collection<string, Command>;
 
   /**
    * 群組指令管家
@@ -62,7 +62,7 @@ export class CommandManager extends EventEmitter {
     for (const file of commandFiles) {
       if (!file.endsWith('.js')) continue;
 
-      const C: new () => Command<unknown> = require(path.join(dirPath, file)).default;
+      const C: new () => Command = require(path.join(dirPath, file)).default;
       const instance = new C();
 
       if (instance.type === CommandType.SubcommandGroup) {
@@ -210,7 +210,7 @@ export class CommandManager extends EventEmitter {
     else {
       commandName = ['help', command.name];
       rawArgs = `${command.name} ${rawArgs}`;
-      command = message.client.commands.search(commandName) as Command<unknown>;
+      command = message.client.commands.search(commandName) as Command;
     }
 
     if (command.type === CommandType.Developer && !message.channel.isTestChannel()) return;
@@ -287,7 +287,7 @@ export class CommandManager extends EventEmitter {
    * @param commandName 要搜尋的指令名稱，支援群組指令、捷徑用法
    * @returns 找到的指令或指令群
    */
-  public search(commandName: [string, string | undefined]): Command<unknown> | SubcommandGroup | void {
+  public search(commandName: [string, string | undefined]): Command | SubcommandGroup | void {
     let first = commandName[0].toLowerCase();
     let second = commandName[1]?.toLowerCase();
 
@@ -307,11 +307,11 @@ export class CommandManager extends EventEmitter {
     return this.subcommands.search([first, second]);
   }
 
-	public each(fn: (value: Command<unknown>, key: string, collection: Collection<string, Command<unknown>>) => void): Collection<string, Command<unknown>> {
+	public each(fn: (value: Command, key: string, collection: Collection<string, Command>) => void): Collection<string, Command> {
 		return this.commands.each(fn);
   }
 
-  public map<T>(fn: (value: Command<unknown>, key: string, collection: Collection<string, Command<unknown>>) => T): T[] {
+  public map<T>(fn: (value: Command, key: string, collection: Collection<string, Command>) => T): T[] {
 		return this.commands.map(fn);
   }
 

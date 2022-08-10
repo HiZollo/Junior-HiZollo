@@ -14,7 +14,7 @@ export default async function help(interaction: SelectMenuInteraction<"cached">)
     return;
   }
   if (scope === 'type') {
-    const command = interaction.client.commands.search([selected, undefined]) as Command<unknown> | SubcommandGroup;
+    const command = interaction.client.commands.search([selected, undefined]) as Command | SubcommandGroup;
     const embed = command instanceof Command ? help.getEmbedForCommand(interaction, command) : help.getEmbedForSubcommandGroup(interaction, selected, command);
     await interaction.reply({ ephemeral: true, embeds: [embed] });
     return

@@ -8,7 +8,7 @@ import { ArgumentParseMethod, HZCommandOptionData } from "../utils/types";
  * 一個指令的藍圖
  * @abstract
  */
-export abstract class Command<T> {
+export abstract class Command<T = unknown> {
   /**
    * 指令的分類
    */

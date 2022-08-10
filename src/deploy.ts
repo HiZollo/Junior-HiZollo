@@ -53,7 +53,7 @@ function loadCommands(dirPath: string): {
     if (!file.endsWith('.js')) continue;
     let filePath = path.join(dirPath, file);
 
-    const C: new () => Command<unknown> = require(filePath).default;
+    const C: new () => Command = require(filePath).default;
     const command = new C();
 
     // 非指令群的指令就直接加進去
@@ -78,7 +78,7 @@ function loadCommands(dirPath: string): {
     for (const subcommandFile of subcommandFiles) {
       if (!subcommandFile.endsWith('.js')) continue;
       
-      const C: new () => Command<unknown> = require(path.join(filePath, subcommandFile)).default;
+      const C: new () => Command = require(path.join(filePath, subcommandFile)).default;
       const subcommand = new C();
 
       const subcommandBuilder = parseSubcommand(subcommand);
@@ -125,7 +125,7 @@ function loadCommands(dirPath: string): {
  * @param command 指令本人
  * @returns 
  */
-function parseCommand(command: Command<unknown>): RESTPostAPIApplicationCommandsJSONBody {
+function parseCommand(command: Command): RESTPostAPIApplicationCommandsJSONBody {
   const builder = new SlashCommandBuilder()
     .setName(command.name)
     .setDescription(command.description)
@@ -146,7 +146,7 @@ function parseCommand(command: Command<unknown>): RESTPostAPIApplicationCommands
  * @param command 群組指令本人
  * @returns 群組指令
  */
-function parseSubcommand(command: Command<unknown>): SlashCommandSubcommandBuilder {
+function parseSubcommand(command: Command): SlashCommandSubcommandBuilder {
   const subcommandbuilder = new SlashCommandSubcommandBuilder()
     .setName(command.name)
     .setDescription(command.description);

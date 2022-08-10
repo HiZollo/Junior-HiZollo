@@ -34,14 +34,14 @@ export class SubcommandManager {
    * @param dirPath 指令群所在的資料夾路徑
    * @param parent 父指令
    */
-  public async load(dirPath: string, parent: Command<unknown>): Promise<void> {
+  public async load(dirPath: string, parent: Command): Promise<void> {
     const subcommandFiles = fs.readdirSync(dirPath);
-    const group = new Collection<string, Command<unknown>>();
+    const group = new Collection<string, Command>();
 
     for (const subcommandFile of subcommandFiles) {
       if (!subcommandFile.endsWith('.js')) continue;
       
-      const C: new () => Command<unknown> = require(path.join(dirPath, subcommandFile)).default;
+      const C: new () => Command = require(path.join(dirPath, subcommandFile)).default;
       const instance = new C();
       group.set(instance.name, instance);
     }
@@ -60,7 +60,7 @@ export class SubcommandManager {
    * @param commandName 要搜尋的指令名稱，支援捷徑用法
    * @returns 找到的指令或指令群
    */
-  public search(commandName: [string, string | undefined]): Command<unknown> | SubcommandGroup | void {
+  public search(commandName: [string, string | undefined]): Command | SubcommandGroup | void {
     const first = commandName[0].toLowerCase();
     const second = commandName[1]?.toLowerCase();
 

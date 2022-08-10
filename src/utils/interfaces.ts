@@ -15,7 +15,7 @@ export interface SubcommandGroup {
   name: string;
   description: string;
   aliases?: string[];
-  data: Collection<string, Command<unknown>>;
+  data: Collection<string, Command>;
 }
 
 export interface HZClientOptions extends ClientOptions {

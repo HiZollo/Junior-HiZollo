@@ -29,7 +29,7 @@ export default class MusicPlay extends Command<[string]> {
 
   public async execute(source: Source, [keywordOrUrl]: [string]): Promise<void> {
     if (!source.client.music.has(source.guild.id)) {
-      const command = source.client.commands.search(['music', 'join']) as Command<unknown>;
+      const command = source.client.commands.search(['music', 'join']) as Command;
       await command.execute(source, [true]);
       if (!source.guild.members.me?.voice.channel) return;
     }
