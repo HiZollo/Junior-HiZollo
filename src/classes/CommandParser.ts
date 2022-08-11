@@ -130,12 +130,11 @@ export class CommandParser extends null {
   /**
    * 解析訊息指令的一個選項，並回傳解析結果
    * 
-   * 使用方法：
-   * ```
+   * @example
    * CommandParser.ParseMessageOption[ApplicationCommandOptionType.Boolean]({ data, preParsedArgs });
-   * ```
-   * 要先在 [] 裡面指定參數型別，再把選項傳進函式裡，如果參數型別給了 `Subcommand` 或 `SubcommandGroup` 則會報錯。
-   * 注意這個函式會執行一次 `preParsedArgs.shift()`（當參數型別是 `Attachment` 時則會執行 `attachments.shift()`），因此傳入的陣列會被改動 
+   * 
+   * 要先在 [] 裡面指定參數型別，再把選項傳進函式裡，如果參數型別給了 Subcommand 或 SubcommandGroup 則會報錯。
+   * 注意這個函式會執行一次 preParsedArgs.shift()（當參數型別是 Attachment 時則會執行 attachments.shift()），因此傳入的陣列會被改動 
    */
   static ParseMessageOption: ParseMessageOptionFunctions = {
     async [ApplicationCommandOptionType.Attachment]({ data, attachments }) {
@@ -321,10 +320,9 @@ export class CommandParser extends null {
   /**
    * 解析斜線指令的一個選項，並回傳解析結果
    * 
-   * 使用方法：
-   * ```
+   * @example
    * CommandParser.ParseSlashOption[ApplicationCommandOptionType.Boolean]({ interaction, data, optionName });
-   * ```
+   * 
    * 要先在 [] 裡面指定參數型別，再把選項傳進函式裡，如果參數型別給了 `Subcommand` 或 `SubcommandGroup` 則會報錯。
    */
   static ParseSlashOption: ParseSlashOptionFunctions = {

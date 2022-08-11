@@ -3,6 +3,11 @@ import { ModelSystemContentOptions, ModelSystemOptions } from '../../utils/inter
 
 type CustomMessageOptions = Omit<MessageOptions, 'flags'> & { fetchReply?: boolean };
 
+/**
+ * 建立一個有時效性的表單系統
+ * @param options 選項
+ * @returns 使用者提交的表單互動
+ */
 export default async function modelSystem({ source, buttons: { open, close }, modal, time = 60e3, contents }: ModelSystemOptions): Promise<ModalSubmitInteraction | null> {
   if (buttonIsLink(open.data) || buttonIsLink(close.data)) {
     throw new Error('Some of the buttons are link buttons.');
@@ -81,14 +86,25 @@ export default async function modelSystem({ source, buttons: { open, close }, mo
   });
 }
 
+/**
+ * 把給定物件`{ [key: keyof ModelSystemContentOptions]: string }` 對應出一個新物件，使新物件的鍵與原物件相同，但值是 `{ content: string }`
+ * @param contents 給定物件
+ * @returns 新物件
+ */
 function getMessageOptions(contents: ModelSystemContentOptions): Record<keyof ModelSystemContentOptions, CustomMessageOptions> {
+  // 暫時設成 Partial，實際上所有鍵都會有值對應
   let messageOptions: Partial<Record<keyof ModelSystemContentOptions, CustomMessageOptions>> = {};
+
   for (const key in contents) {
     messageOptions[key as keyof ModelSystemContentOptions] = { content: contents[key as keyof ModelSystemContentOptions] };
   }
+  
   return messageOptions as Record<keyof ModelSystemContentOptions, CustomMessageOptions>;
 }
 
+/**
+ * **[Type Guard]** 按鈕是連結按鈕
+ */
 function buttonIsLink(button: Partial<APIButtonComponent>): button is Partial<APIButtonComponentWithURL> {
   return button.style === ButtonStyle.Link;
 }

@@ -3,6 +3,11 @@ import { ButtonStyle, ComponentType } from 'discord.js';
 import { YesNoSystemOptions } from '../../utils/interfaces.js';
 import randomInt from './randomInt.js';
 
+/**
+ * 建立一個是非選擇系統
+ * @param options 選項
+ * @returns 使用者選出的結果，選擇是則回傳 `true`，否則回傳 `false`，閒置則回傳 `null`
+ */
 export default async function yesNoSystem({ source, messageOptions, labels: [yes, no], contents }: YesNoSystemOptions): Promise<boolean | null> {
   messageOptions.components = [newButtons(yes, no)];
 
@@ -43,6 +48,12 @@ export default async function yesNoSystem({ source, messageOptions, labels: [yes
   });
 }
 
+/**
+ * 建立含有是非按鈕的動作列
+ * @param yes 是按鈕上的顯示標籤
+ * @param no 否按鈕上的顯示標籤
+ * @returns 動作列
+ */
 function newButtons(yes: string, no: string): ActionRowBuilder<ButtonBuilder> {
   return new ActionRowBuilder<ButtonBuilder>()
     .addComponents(
@@ -57,7 +68,11 @@ function newButtons(yes: string, no: string): ActionRowBuilder<ButtonBuilder> {
     );
 }
 
-const noYou = () => {
+/**
+ * 有其他使用者試圖與按下按鈕時所給出的錯誤提示
+ * @returns 錯誤提示
+ */
+function noYou(): string {
   const nou = [
     `這個按鈕不是你的`, `不要亂按別人的按鈕`, `不是你的按鈕就不要亂按`, `別人觸發的按鈕請不要亂動`, `你覺得我會允許你亂動別人的按鈕嗎？`,
     `你怎麼會覺得這個按鈕是你的？`, `用指令的人又不是你，不要亂按好嗎？`, `你有看到指令是誰觸發的嗎？`, `可不可以看清楚你用的是誰的按鈕？`

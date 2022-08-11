@@ -7,9 +7,13 @@ import fixedDigits from './fixedDigits.js';
 import randomInt from './randomInt.js';
 
 
+/**
+ * 建立一個有時效性的翻頁系統，如果選項的型別是 `PageSystemDescriptionOptions`，且 `allowSelect` 為 `true`，會額外建立一個選單給使用者挑選
+ * @param options 選項
+ * @returns 使用者選擇的值（如有）
+ */
 export default async function pageSystem(options: PageSystemDescriptionOptions): Promise<PageSystemPagesOptions | null>;
 export default async function pageSystem(options: PageSystemEmbedFieldOptions): Promise<null>;
-
 export default async function pageSystem(options: PageSystemOptions): Promise<PageSystemPagesOptions | null> {
   const { mode, source, embed, description, thumbnails = [], extendFooter, pages, contents } = options;
   let { index = 0 } = options;
@@ -98,7 +102,7 @@ export default async function pageSystem(options: PageSystemOptions): Promise<Pa
 
     selectCollector.on('collect', async interaction => {
       if (interaction.user.id !== source.user.id) {
-        await interaction.followUp({ content: noYou('清單'), ephemeral: true });
+        await interaction.followUp({ content: noYou('選單'), ephemeral: true });
         return;
       }
       await interaction.editReply({ content: '\u200b', components: [], embeds: [] });
@@ -119,6 +123,11 @@ export default async function pageSystem(options: PageSystemOptions): Promise<Pa
   });
 }
 
+/**
+ * 建立含有翻頁按鈕的動作列
+ * @param pageCount 總頁數
+ * @returns 動作列
+ */
 function newButtons(pageCount: number): ActionRowBuilder<ButtonBuilder> {
   const buttons: ButtonBuilder[] = [];
   if (pageCount >= 1) {
@@ -135,6 +144,12 @@ function newButtons(pageCount: number): ActionRowBuilder<ButtonBuilder> {
   return new ActionRowBuilder<ButtonBuilder>().addComponents(...buttons);
 }
 
+/**
+ * 在使用者翻頁時需要呼叫此函式以調整按鈕可不可以被操作
+ * @param actionRow 按鈕所屬的動作列
+ * @param pageCount 總頁數
+ * @param index 當前頁的駐標
+ */
 function modifyButtons(actionRow: ActionRowBuilder<ButtonBuilder>, pageCount: number, index: number): void {
   if (pageCount === 1) return;
   if (pageCount === 2) {
@@ -148,9 +163,14 @@ function modifyButtons(actionRow: ActionRowBuilder<ButtonBuilder>, pageCount: nu
   actionRow.components[4].setDisabled(index > pageCount - 3); // 最末頁
 }
 
-function newSelectMenu(page: PageSystemPagesOptions[]): ActionRowBuilder<SelectMenuBuilder> {
+/**
+ * 建立含有選單的動作列
+ * @param option 所有選項
+ * @returns 動作列
+ */
+function newSelectMenu(option: PageSystemPagesOptions[]): ActionRowBuilder<SelectMenuBuilder> {
   const selectOptions: APISelectMenuOption[] = [];
-  for (let i = 0; i < page.length; i++) {
+  for (let i = 0; i < option.length; i++) {
     selectOptions.push({
       label: (i + 1).toString(), 
       value: i.toString()
@@ -164,6 +184,11 @@ function newSelectMenu(page: PageSystemPagesOptions[]): ActionRowBuilder<SelectM
   return new ActionRowBuilder<SelectMenuBuilder>().addComponents(select);
 }
 
+/**
+ * 有其他使用者試圖與翻頁系統互動時所給出的錯誤提示
+ * @param type 互動的中文名稱
+ * @returns 錯誤提示
+ */
 function noYou(type: string): string {
   const nou = [
     `這個${type}不是你的`, `不要亂按別人的${type}`, `不是你的${type}就不要亂按`, `別人觸發的${type}請不要亂動`, `你覺得我會允許你亂動別人的${type}嗎？`,

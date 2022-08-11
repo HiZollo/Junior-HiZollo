@@ -3,6 +3,11 @@ import config from '../../config';
 import { websiteLinks } from '../../constant.json';
 import randomElement from './randomElement';
 
+/**
+ * 取得機器人的隨機動態
+ * @param client 機器人的 client
+ * @returns 隨機動態
+ */
 export default async function getActivity(client: Client): Promise<string> {
   const guildCounts = await client.shard?.fetchClientValues('guilds.cache.size').catch(() => {}) as (number[] | undefined);
   if (guildCounts) {
@@ -12,9 +17,12 @@ export default async function getActivity(client: Client): Promise<string> {
   const activity = randomElement(activities);
   if (guildCounts) activities.pop();
 
-  return activity ?? getActivity(client);
+  return activity;
 }
 
+/**
+ * 伺服器數量以外的所有可能動態
+ */
 const activities = [
   websiteLinks.main,
   websiteLinks.main,
