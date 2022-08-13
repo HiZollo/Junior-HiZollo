@@ -256,6 +256,12 @@ client.on('guildDelete', guild => {
 });
 /**/
 
+/******************* 語音狀態改變 *******************/
+client.on('voiceStateUpdate', (oldState, newState) => {
+  client.music.onVoiceStateUpdate(oldState, newState);
+});
+/**/
+
 /******************* 登入機器人 *******************/
 client.login(config.bot.token);
 /**/

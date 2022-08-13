@@ -183,6 +183,16 @@ export class MusicViewRenderer {
   }
 
   /**
+   * 告知使用者機器人已因音樂頻道內沒有真人而自行退出
+   * @param channel 要傳送的目標頻道
+   */
+  public async noHumanInVoice(channel: GuildTextBasedChannel): Promise<void> {
+    const embed = this.baseEmbed
+      .setDescription('語音頻道好像沒有人了欸，那我也離開好了');
+    tempMessage(channel, { embeds: [embed] }, 5);
+  }
+
+  /**
    * 使用者按下遙控器按鈕後的回饋訊息
    * @param action 使用者的動作
    * @param interaction 按鈕互動
