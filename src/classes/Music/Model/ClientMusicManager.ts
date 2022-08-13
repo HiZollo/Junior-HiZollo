@@ -1,5 +1,5 @@
 import { entersState, joinVoiceChannel, VoiceConnectionStatus } from "@discordjs/voice";
-import { GuildTextBasedChannel, VoiceBasedChannel } from "discord.js";
+import { GuildTextBasedChannel, VoiceBasedChannel, VoiceState } from "discord.js";
 import { HZClient } from "../../../classes/HZClient";
 import { Source } from "../../../classes/Source";
 import { MusicViewRenderer } from "../View/MusicViewRenderer";
@@ -173,10 +173,28 @@ export class ClientMusicManager {
    */
   public leave(guildId: string): void {
     const manager = this.guilds.get(guildId);
-    manager?.connection
     if (manager?.connection) {
+      manager.player.stop(true);
       manager.connection.destroy();
       this.guilds.delete(guildId);
     }
+  }
+
+  /**
+   * 當成員的語音狀態更新時需要處理的動作，目前只有判斷頻道是否只剩機器人，如果為真，則離開語音頻道
+   * @param oldState 舊的語音狀態
+   * @param newState 新的語音狀態
+   */
+  public onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState): void {
+    if (!this.has(oldState.guild.id)) return;
+
+    // 只留下離開音樂頻道（oldId -> null），或是切換音樂頻道（oldId -> newId）
+    if (!oldState.channelId || oldState.channelId === newState.channelId) return;
+
+    const manager = this.get(oldState.guild.id)!;
+    if (manager.voiceChannel.members.some(m => !m.user.bot)) return;
+    this.leave(oldState.guild.id);
+    this.view.noHumanInVoice(manager.textChannel);
+    manager.controller.clear();
   }
 }
