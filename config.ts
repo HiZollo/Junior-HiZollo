@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
-import path from "node:path";
-
-dotenv.config({ path: path.join(__dirname, '../src/.env') });
+import "dotenv/config";
 
 if (!process.env.TOKEN) throw new Error('Bot token not configured.');
 if (!process.env.MAIN_WEBHOOK_TOKEN) throw new Error('Main webhook token not configured.');

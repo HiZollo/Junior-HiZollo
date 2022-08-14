@@ -1,10 +1,9 @@
-import dotenv from "dotenv";
 import path from "node:path";
 import { Client, Collection, Message, MessageReaction, PermissionFlagsBits, PermissionsBitField, WebhookClient } from "discord.js";
 import osu from "node-osu";
 import { CommandManager } from "./CommandManager";
 import CooldownManager from "./CooldownManager";
-import config from "../config";
+import config from "@root/config";
 import constant from "../constant.json";
 import getActivity from "../features/utils/getActivity";
 import { HZClientOptions } from "../utils/interfaces";
@@ -18,8 +17,6 @@ import randomElement from "../features/utils/randomElement";
 import randomInt from "../features/utils/randomInt";
 import { Translator } from "./Translator";
 import { HiddenCommandManager } from "./HiddenCommandManager";
-
-dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 
 /**
  * 擴展的 client

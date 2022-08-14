@@ -1,9 +1,5 @@
-import dotenv from "dotenv";
-import path from "node:path";
 import { BaseChannel } from "discord.js"
 // import publicPortNo from '../../hznetwork/publicPortNo';
-
-dotenv.config({ path: path.join(__dirname, '../../src/.env') });
 
 if (!process.env.TEST_CHANNELS) throw new Error('Test channels not configured.');
 const testChannelIds = new Set(eval(process.env.TEST_CHANNELS) as string[]);

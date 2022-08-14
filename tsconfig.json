@@ -5,6 +5,8 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "outDir": "./dist",
+    "rootDir": ".",
+    "baseUrl": ".",
     "removeComments": true,
     "noEmitOnError": true,
     "esModuleInterop": true,
@@ -17,6 +19,9 @@
     "typeRoots": [
       "src/utils",
       "node_modules/@types"
-    ]
+    ],
+    "paths": {
+      "@root/*": ["./*"]
+    }
   }
 }

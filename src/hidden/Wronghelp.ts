@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import config from "../config";
+import config from "@root/config";
 import { HiddenCommand } from "../classes/HiddenCommand";
 
 export default class Wronghelp extends HiddenCommand {

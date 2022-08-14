@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { REST } from "@discordjs/rest";
 import { ApplicationCommandOptionAllowedChannelTypes, ApplicationCommandOptionType, RESTPostAPIApplicationCommandsJSONBody, Routes, SlashCommandBuilder, SlashCommandSubcommandBuilder } from "discord.js";
-import config from "./config";
+import config from "@root/config";
 import constant from "./constant.json";
 import { Command } from "./classes/Command";
 import { CommandType } from "./utils/enums";

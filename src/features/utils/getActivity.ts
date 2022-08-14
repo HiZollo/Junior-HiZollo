@@ -1,5 +1,5 @@
 import { Client } from 'discord.js';
-import config from '../../config';
+import config from '@root/config';
 import { websiteLinks } from '../../constant.json';
 import randomElement from './randomElement';
 

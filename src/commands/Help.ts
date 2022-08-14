@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, ButtonBuilder, Client, EmbedBuilder, GuildMember, InteractionReplyOptions, MessageOptions, PermissionFlagsBits, SelectMenuBuilder, SelectMenuInteraction } from "discord.js";
-import config from "../config";
+import config from "@root/config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { CommandType } from "../utils/enums";
