@@ -1,4 +1,4 @@
-import { entersState, joinVoiceChannel, VoiceConnectionStatus } from "@discordjs/voice";
+import { AudioPlayerStatus, entersState, joinVoiceChannel, VoiceConnectionStatus } from "@discordjs/voice";
 import { GuildTextBasedChannel, VoiceBasedChannel, VoiceState } from "discord.js";
 import { HZClient } from "../../../classes/HZClient";
 import { Source } from "../../../classes/Source";
@@ -188,12 +188,15 @@ export class ClientMusicManager {
   public onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState): void {
     if (!this.has(oldState.guild.id)) return;
 
-    // 只留下離開音樂頻道（oldId -> null），或是切換音樂頻道（oldId -> newId）
+    // 只留下離開音樂頻道（oldId -> null），或是切換音樂頻道（oldId -> newId）的情形
     if (!oldState.channelId || oldState.channelId === newState.channelId) return;
 
     const manager = this.get(oldState.guild.id)!;
+
     if (manager.voiceChannel.members.some(m => !m.user.bot)) return;
-    this.leave(oldState.guild.id);
+    if (manager.player.state.status !== AudioPlayerStatus.Idle) return;
+
+    this.leave(manager.guild.id);
     this.view.noHumanInVoice(manager.textChannel);
     manager.controller.clear();
   }
