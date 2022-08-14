@@ -1,4 +1,4 @@
-import config from "../../config";
+import config from "@root/config";
 const { prefix } = config.bot;
 
 export default `

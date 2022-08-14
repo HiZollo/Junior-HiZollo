@@ -6,7 +6,7 @@ import { Command } from "./Command";
 import { CommandParser } from "./CommandParser";
 import { HZClient } from "./HZClient";
 import { Source } from "./Source";
-import config from '../config';
+import config from '@root/config';
 import missingPermissions from "../features/utils/missingPermissions";
 import { CommandManagerRejectReason, CommandParserOptionResultStatus, CommandType } from "../utils/enums";
 import { CommandManagerEvents, SubcommandGroup } from "../utils/interfaces";

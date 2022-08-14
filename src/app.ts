@@ -8,7 +8,7 @@
 /******************* 系統變數設置 *******************/
 import { EmbedBuilder, GatewayIntentBits, Options } from 'discord.js';
 import './djsAddon';
-import config from './config';
+import config from '@root/config';
 import { HZClient } from './classes/HZClient';
 import { CommandManagerRejectReason, CommandParserOptionResultStatus } from './utils/enums';
 const client = new HZClient({

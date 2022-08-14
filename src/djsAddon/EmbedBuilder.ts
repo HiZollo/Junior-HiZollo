@@ -1,5 +1,5 @@
 import { EmbedBuilder, GuildMember, User } from "discord.js"
-import config from "../config";
+import config from "@root/config";
 import randomInt from "../features/utils/randomInt";
 
 Object.defineProperties(EmbedBuilder.prototype, {

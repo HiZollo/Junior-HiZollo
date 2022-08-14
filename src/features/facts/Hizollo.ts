@@ -1,4 +1,4 @@
-import config from '../../config';
+import config from '@root/config';
 
 export const Hizollo = [
   '當你輸入...或......，HiZollo 會回應.......，一共是七個點。但有差不多 1% 的機率，他會回應七個句號。', '當你刷中 HiZollo 的稀有回應時，他的動態會更新',

@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType, EmbedBuilder, Webhook } from "discord.js";
-import config from "../config";
+import config from "@root/config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { CommandType } from "../utils/enums";

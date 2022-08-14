@@ -1,8 +1,8 @@
 import { ShardingManager } from 'discord.js';
-import config from './config';
+import config from '@root/config';
 const shardArgs = process.argv.slice(2);
 
-const manager = new ShardingManager('./dist/app.js', {
+const manager = new ShardingManager('./dist/src/app.js', {
   token: config.bot.token,
   shardArgs: shardArgs
 });
