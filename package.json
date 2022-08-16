@@ -19,8 +19,7 @@
     "node": ">=16.9.0"
   },
   "scripts": {
-    "build": "tsc",
-    "postbuild": "resolve-tspaths",
+    "build": "tsc-watch --onSuccess resolve-tspaths",
     "deploy": "node dist/src/deploy.js",
     "start": "node dist/src/index.js",
     "test": "node dist/src/index.js dev"
@@ -39,6 +38,7 @@
   },
   "homepage": "https://github.com/kyometori/Junior-HiZollo#readme",
   "devDependencies": {
-    "resolve-tspaths": "^0.7.4"
+    "resolve-tspaths": "^0.7.4",
+    "tsc-watch": "^5.0.3"
   }
 }
