@@ -9,7 +9,7 @@ export default class MusicLeave extends Command<[]> {
       type: CommandType.Utility, 
       parent: 'music', 
       name: 'leave', 
-      description: '離開語音頻道', 
+      description: '讓我離開語音頻道', 
       extraDescription: '若加入的是舞台頻道，可以額外在後面指定 false，讓機器人只有播歌的時候會成為發言人，其他時候會自動退下', 
       aliases: ['l'], 
       permissions: {

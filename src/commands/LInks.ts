@@ -9,7 +9,7 @@ export default class Links extends Command<[]> {
     super({ 
       type: CommandType.Information, 
       name: 'links', 
-      description: '顯示 HiZollo 的相關連結', 
+      description: '顯示和我有關的所有連結', 
       aliases: ['link', 'hzweb', 'invite', 'website'], 
       permissions: {
         bot: [PermissionFlagsBits.EmbedLinks]

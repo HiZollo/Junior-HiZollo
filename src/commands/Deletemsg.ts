@@ -26,9 +26,15 @@ export default class Deletemsg extends Command<[number]> {
   }
 
   public async execute(source: Source, [time]: [number]): Promise<void> {
+    const messages = await source.channel?.messages.fetch({ limit: source.isChatInput() ? 1 : 2 }).catch(() => {});
+    const message = messages?.first(-1)[0];
+
     await source.hide();
 
-    const message = (await source.channel?.messages.fetch({ limit: 1 }))?.first();
+    if (!message) {
+      await source.temp(`我找不到上一則訊息欸，可不可以再確認一下`);
+      return;
+    }
     if (!message?.deletable) {
       await source.temp('我無法刪除這則訊息');
       return;

@@ -57,7 +57,7 @@ export default class Getmsg extends Command<[string]> {
     super({
       type: CommandType.Utility, 
       name: 'getmsg', 
-      description: '將頻道最近 100 條訊息匯出成 .txt 或 .json 檔案', 
+      description: '將頻道最近 100 條訊息匯出成指定格式的檔案', 
       options: [{
         type: ApplicationCommandOptionType.String, 
         name: '格式',

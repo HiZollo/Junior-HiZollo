@@ -8,11 +8,11 @@ export default class Say extends Command<[string]> {
     super({ 
       type: CommandType.Fun, 
       name: 'say', 
-      description: '命令 HiZollo 代替你說一句話', 
+      description: '讓我代替你說一句話', 
       options: [{
         type: ApplicationCommandOptionType.String, 
         name: '訊息', 
-        description: '要 HiZollo 代替你說的訊息', 
+        description: '要我代替你說的訊息', 
         required: true, 
         maxLength: 2000
       }], 

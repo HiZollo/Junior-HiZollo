@@ -10,7 +10,7 @@ export default class Announcement extends Command<[]> {
     super({ 
       type: CommandType.Information, 
       name: 'announcement', 
-      description: '顯示 HiZollo 最近的官方公告以及更新日誌', 
+      description: '顯示我的官方公告以及更新日誌', 
       aliases: ['ann'], 
       permissions: {
         bot: [PermissionFlagsBits.EmbedLinks]

@@ -9,11 +9,11 @@ export default class EBall extends Command<[string]> {
     super({
       type: CommandType.Fun, 
       name: '8ball', 
-      description: '當你對人生感到迷茫時，或許可以來問問 HiZollo 的神奇 8 號球……', 
+      description: '問我一個問題，讓我的神奇 8 號球來指引你的方向', 
       options: [{ 
         type: ApplicationCommandOptionType.String, 
         name: '問題', 
-        description: '你要向 HiZollo 的神奇 8 號球請示的問題', 
+        description: '你要向我的神奇 8 號球請示的問題', 
         required: true
       }], 
       argumentParseMethod: {

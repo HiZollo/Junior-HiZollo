@@ -8,7 +8,7 @@ export default class React extends Command<[string]> {
     super({ 
       type: CommandType.Fun, 
       name: 'react', 
-      description: '刪除指定數量的訊息', 
+      description: '在前一則訊息上加入反應', 
       aliases: ['r'], 
       options: [{
         type: ApplicationCommandOptionType.String, 

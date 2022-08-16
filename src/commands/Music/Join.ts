@@ -9,7 +9,7 @@ export default class MusicJoin extends Command<[boolean]> {
       type: CommandType.Utility, 
       parent: 'music', 
       name: 'join', 
-      description: '加入語音頻道', 
+      description: '讓我加入你所在的語音頻道', 
       aliases: ['j'], 
       options: [{
         type: ApplicationCommandOptionType.Boolean, 

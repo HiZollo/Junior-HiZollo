@@ -9,7 +9,7 @@ export default class Updateann extends Command<[]> {
     super({ 
       type: CommandType.Developer, 
       name: 'updateann', 
-      description: '正式發布公告用', 
+      description: '正式發布更新公告', 
       aliases: ['ua']
     });
   }

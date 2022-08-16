@@ -8,7 +8,7 @@ export default class Name extends Command<[]> {
     super({ 
       type: CommandType.Information, 
       name: 'name', 
-      description: 'HiZollo 叫什麼名字呢？真是個好問題呢'
+      description: '我叫什麼名字呢？真是個好問題呢'
     });
   }
 

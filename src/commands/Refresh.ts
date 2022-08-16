@@ -8,7 +8,7 @@ export default class Refresh extends Command<[]> {
     super({ 
       type: CommandType.Miscellaneous, 
       name: 'refresh', 
-      description: '不喜歡 HiZollo 現在的動態嗎？嗯……給你個機會重刷好了', 
+      description: '重刷我的個人動態', 
       cooldown: 600
     });
   }

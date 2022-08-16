@@ -8,11 +8,11 @@ export default class Repeat extends Command<[string]> {
     super({ 
       type: CommandType.Fun, 
       name: 'repeat', 
-      description: '命令 HiZollo 複讀一句話', 
+      description: '讓我複讀一句話', 
       options: [{
         type: ApplicationCommandOptionType.String, 
         name: '訊息', 
-        description: '要 HiZollo 複讀的訊息', 
+        description: '要我複讀的訊息', 
         required: true
       }], 
       argumentParseMethod: {

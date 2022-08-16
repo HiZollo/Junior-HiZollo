@@ -9,7 +9,7 @@ export default class Choose extends Command<string[]> {
     super({
       type: CommandType.Utility, 
       name: 'choose', 
-      description: '讓 HiZollo 來拯救你的選擇困難症', 
+      description: '讓我來拯救你的選擇困難症', 
       options: [{ 
         type: ApplicationCommandOptionType.String, 
         name: '選項%i', 

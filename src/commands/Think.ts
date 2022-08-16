@@ -9,7 +9,7 @@ export default class Think extends Command<[string]> {
     super({ 
       type: CommandType.Fun, 
       name: 'think', 
-      description: '讓 HiZollo 送出一個 thinking 表情符號', 
+      description: '讓我幫你送出一個 thinking 表情符號', 
       options: [{
         type: ApplicationCommandOptionType.String, 
         name: '表情', 

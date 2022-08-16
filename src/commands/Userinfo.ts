@@ -8,7 +8,7 @@ export default class Userinfo extends Command<[GuildMember]> {
     super({
       type: CommandType.Utility, 
       name: 'userinfo', 
-      description: '查看一位使用者的資訊', 
+      description: '查看一位伺服器成員的資訊', 
       extraDescription: '不填參數時可以查看自己的資訊', 
       aliases: ['user'], 
       options: [{ 

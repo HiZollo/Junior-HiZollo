@@ -16,7 +16,7 @@ export default class Getguildlist extends Command<[]> {
     super({
       type: CommandType.Developer, 
       name: 'getguildlist', 
-      description: '獲取 HiZollo 所在的伺服器列表', 
+      description: '獲取我所在的伺服器列表', 
       aliases: ['ggl'],
     });
   }

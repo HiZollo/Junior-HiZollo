@@ -10,7 +10,7 @@ export default class Fact extends Command<[string]> {
     super({
       type: CommandType.Fun, 
       name: 'fact', 
-      description: '讓博學多聞的 HiZollo 來告訴你天下大小事', 
+      description: '讓博學多聞的我來告訴你天下大小事', 
       extraDescription: '不填參數時會從所有分類中隨機挑選一個小知識', 
       options: [{
         type: ApplicationCommandOptionType.String, 

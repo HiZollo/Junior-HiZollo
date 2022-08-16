@@ -8,7 +8,7 @@ export default class Purge extends Command<[number]> {
     super({ 
       type: CommandType.Utility, 
       name: 'purge', 
-      description: '刪除指定數量的訊息', 
+      description: '刪除頻道中指定數量的訊息', 
       options: [{
         type: ApplicationCommandOptionType.Integer, 
         name: '數量', 

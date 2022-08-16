@@ -8,7 +8,7 @@ export default class Vote extends Command<string[]> {
     super({
       type: CommandType.Utility, 
       name: 'vote', 
-      description: '讓 HiZollo 幫你發起一場投票', 
+      description: '讓我幫你發起一場投票', 
       options: [{ 
         type: ApplicationCommandOptionType.String, 
         name: '主題', 

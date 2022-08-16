@@ -10,7 +10,7 @@ export default class Tofe extends Command<[boolean]> {
     super({ 
       type: CommandType.SinglePlayerGame, 
       name: '2048', 
-      description: '開啟一場 2048', 
+      description: '開啟一場 2048 遊戲', 
       extraDescription:
         `**遊戲規則：**\n`+
         `在一個 4*4 的版面中會隨機出現 2、4、8 等 2 的次方數\n`+

@@ -6,7 +6,7 @@ export default class Diep extends Command<[]> {
     super({
       type: CommandType.SubcommandGroup, 
       name: 'diep', 
-      description: '執行與 Diep.io 的相關指令', 
+      description: '執行 Diep.io 的相關指令', 
       aliases: ['d']
     });
   }

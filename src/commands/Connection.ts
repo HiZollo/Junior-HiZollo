@@ -10,7 +10,7 @@ export default class Connection extends Command<[]> {
     super({ 
       type: CommandType.Developer, 
       name: 'connection', 
-      description: '查看 HiZollo 的語音連線情形', 
+      description: '查看我的語音連線情形', 
       extraDescription: '也可以把指定的語音連線截斷', 
       aliases: ['con']
     });

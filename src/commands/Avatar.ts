@@ -9,7 +9,7 @@ export default class Avatar extends Command<[GuildMember]> {
     super({
       type: CommandType.Utility, 
       name: 'avatar', 
-      description: '查看多個成員的頭像', 
+      description: '查看一位伺服器成員的頭像', 
       extraDescription: '不填參數時可以查看自己的頭像', 
       aliases: ['av'], 
       options: [{ 

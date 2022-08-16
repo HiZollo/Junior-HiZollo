@@ -8,7 +8,7 @@ export default class DiepServer extends Command<[]> {
       type: CommandType.Information, 
       parent: 'diep', 
       name: 'server', 
-      description: '顯示 Diep.io 繁中維基的伺服器連結', 
+      description: '顯示 Diep.io 繁中維基的 Discord 伺服器連結', 
       aliases: ['discord']
     });
   }

@@ -9,7 +9,7 @@ export default class Botinfo extends Command<[]> {
     super({ 
       type: CommandType.Information, 
       name: 'botinfo', 
-      description: '取得 HiZollo 的基本資料', 
+      description: '取得我的基本資料', 
       permissions: {
         bot: [PermissionFlagsBits.EmbedLinks]
       }

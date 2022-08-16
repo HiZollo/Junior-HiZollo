@@ -7,7 +7,7 @@ export default class Ping extends Command<[]> {
     super({ 
       type: CommandType.Miscellaneous, 
       name: 'ping', 
-      description: '看看 HiZollo 的跑速，快還要更快……蛤你說很慢嗎？所以呢？'
+      description: '敲一下我的大腿看我的反應時間'
     });
   }
 
@@ -15,6 +15,6 @@ export default class Ping extends Command<[]> {
     await source.defer();
     const message = await source.update('計算中……');
     const ping = message.createdTimestamp - source.createdTimestamp;
-    await message.edit(`:information_source:｜Pong！機器人延遲為：${ping}ms，API延遲為：${source.client.ws.ping}ms`);
+    await message.edit(`:information_source:｜Pong！機器人延遲為：${ping}ms，API 延遲為：${source.client.ws.ping}ms`);
   }
 }

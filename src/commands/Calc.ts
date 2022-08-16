@@ -18,7 +18,7 @@ export default class Calc extends Command<[string]> {
     super({
       type: CommandType.Utility, 
       name: 'calc', 
-      description: '讓 HiZollo 來幫你計算一串算式，支援四則運算及單層括號', 
+      description: '讓我來幫你計算一串算式，支援四則運算及雙層括號', 
       aliases: ['c'], 
       options: [{ 
         type: ApplicationCommandOptionType.String, 

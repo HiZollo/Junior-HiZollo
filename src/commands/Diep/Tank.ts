@@ -10,7 +10,7 @@ export default class DiepTank extends Command<[string]> {
       type: CommandType.Information, 
       parent: 'diep', 
       name: 'tank', 
-      description: '查看一台 Diep.io 的坦克資訊',
+      description: '查看一台 Diep.io 坦克的資訊',
       options: [{
         type: ApplicationCommandOptionType.String, 
         name: '坦克',

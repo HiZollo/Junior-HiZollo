@@ -9,8 +9,7 @@ export default class MusicPlay extends Command<[string]> {
       type: CommandType.Utility, 
       parent: 'music', 
       name: 'play', 
-      description: '加入語音頻道', 
-      extraDescription: '若加入的是舞台頻道，可以額外在後面指定 false，讓機器人只有播歌的時候會成為發言人，其他時候會自動退下', 
+      description: '讓我在語音頻道中播一首歌', 
       aliases: ['p'], 
       options: [{
         type: ApplicationCommandOptionType.String, 

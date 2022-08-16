@@ -9,7 +9,7 @@ export default class Coin extends Command<[]> {
     super({
       type: CommandType.Fun, 
       name: 'coin', 
-      description: '讓 HiZollo 擲一枚硬幣',
+      description: '讓我幫你丟一枚硬幣',
       permissions: {
         bot: [PermissionFlagsBits.AttachFiles],
       }
@@ -22,10 +22,10 @@ export default class Coin extends Command<[]> {
     const n = randomInt(1, 100);
     let content = '', url = './src/pictures/';
     if (n <= 48) {
-      content = '你擲出了正面！';
+      content = '你丟出了正面！';
       url += 'coin-head.png';
     } else if (n <= 96) {
-      content = '你擲出了反面！';
+      content = '你丟出了反面！';
       url += 'coin-tail.png';
     } else if (n <= 97) {
       content = '等等，硬幣立了起來';

@@ -9,7 +9,7 @@ export default class Dice extends Command<[number]> {
     super({
       type: CommandType.Fun, 
       name: 'dice', 
-      description: '讓 HiZollo 擲一顆骰子', 
+      description: '讓我幫你丟一顆骰子', 
       options: [{
         type: ApplicationCommandOptionType.Integer, 
         name: '點數',
@@ -30,8 +30,8 @@ export default class Dice extends Command<[number]> {
     if (point) await source.update(this.pointsEmoji[point-1]);
     else {
       const number = ~~(randomInt(0, 102) / 17);
-      if (number === 6) await source.update(`<:hzdice_wth:838041109099446272>\n${source.user}，你擲出了……呃，87 點`);
-      else await source.update(`${this.pointsEmoji[number]} 你擲出了 ${number+1} 點！`);
+      if (number === 6) await source.update(`<:hzdice_wth:838041109099446272>\n${source.user}，你丟出了……呃，87 點`);
+      else await source.update(`${this.pointsEmoji[number]} 你丟出了 ${number+1} 點！`);
     }
   }
 

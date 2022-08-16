@@ -10,7 +10,7 @@ export default class DiepFact extends Command<[]> {
       type: CommandType.Fun, 
       parent: 'diep', 
       name: 'fact', 
-      description: '獲得一個 Diep.io 的小知識'
+      description: '獲得一則隨機的 Diep.io 小知識'
     });
   }
 
