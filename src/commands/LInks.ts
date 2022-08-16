@@ -22,12 +22,17 @@ export default class Links extends Command<[]> {
     const links = new EmbedBuilder()
     .applyHiZolloSettings(source.member, 'HiZollo 的相關連結')
     .addFields({
-      name: '相關網站連結',
-      value: `HiZollo 官網上各部分的連結，相關資訊都在此\n`+
+      name: '官方網站連結',
+      value: `HiZollo 官網上各部分的連結，相關資訊都在這裡\n`+
              `● [網站首頁](${websiteLinks.main} "HiZollo 網站首頁")\n`+
              `● [更新日誌](${websiteLinks.changelog} "HiZollo 的更新日誌")\n`+
              `● [指令列表](${websiteLinks.commands} "HiZollo 的指令列表")\n`+
              `● [用戶條款](${websiteLinks.tos} "HiZollo 使用者條款")`
+    }, {
+      name: 'Github 專案連結',
+      value: `HiZollo Organization 的相關連結\n`+
+             `● [組織網站](${websiteLinks.github} "HiZollo 組織網站")\n`+
+             `● [原始碼](${websiteLinks.source} "HiZollo 原始碼")`
     }, {
       name: '機器人列表連結',
       value: `各個機器人列表上的 HiZollo，不要忘記為我投下一票喔\n`+
