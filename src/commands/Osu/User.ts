@@ -33,9 +33,6 @@ export default class OsuUser extends Command<[string]> {
 
     await source.defer();
 
-    // const { 
-    //   id, name, counts: { SSH, SS, SH, S, A, plays: pc }, pp: { raw: pp, rank, countryRank }, country, level, accuracy } = user;
-
     const { 
       username, pp, rank, country, countryRank, level, accuracy, playcount, 
       scoreRankCount: { ssh, ss, sh, s, a }
