@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionData, ApplicationCommandSubCommandData, ApplicationCommandSubGroupData, Collection, PermissionFlags } from "discord.js"
-import osu from "node-osu";
+import { Client as Osu } from "@hizollo/osu-api";
 import { AutocompleteManager } from "../classes/AutocompleteManager";
 import { ButtonManager } from "../classes/ButtonManager";
 import { CommandManager } from "../classes/CommandManager";
@@ -165,7 +165,7 @@ declare module "discord.js" {
     /**
      * osu! 的 API
      */
-    osuApi: osu.Api;
+    osu: Osu;
 
     /**
      * 要完整使用 HiZollo 所需的最少量權限

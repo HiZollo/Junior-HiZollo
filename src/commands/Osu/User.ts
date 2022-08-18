@@ -21,7 +21,9 @@ export default class OsuUser extends Command<[string]> {
   }
 
   public async execute(source: Source, [player]: [string]): Promise<void> {
-    const user = await source.client.osuApi.getUser({ u: player }).catch(() => {});
+    const [user] = await source.client.osu.users
+      .getUser({ user: player })
+      .catch(() => []);
 
     if (!user) {
       await source.defer({ ephemeral: true });
@@ -31,21 +33,27 @@ export default class OsuUser extends Command<[string]> {
 
     await source.defer();
 
-    const { id, name, counts: { SSH, SS, SH, S, A, plays: pc }, pp: { raw: pp, rank, countryRank }, country, level, accuracy } = user;
+    // const { 
+    //   id, name, counts: { SSH, SS, SH, S, A, plays: pc }, pp: { raw: pp, rank, countryRank }, country, level, accuracy } = user;
+
+    const { 
+      username, pp, rank, country, countryRank, level, accuracy, playcount, 
+      scoreRankCount: { ssh, ss, sh, s, a }
+    } = user;
     const helper = new EmbedBuilder()
       .applyHiZolloSettings(source.member, 'HiZollo 的 osu! 中心')
-      .setThumbnail(`https://a.ppy.sh/${id}`)
+      .setThumbnail(user.avatarURL())
       .addFields([
-        { name: '玩家', value: `[${name}](https://osu.ppy.sh/u/${id})` },
-        { name: 'SS總數', value: `${SSH + SS}`, inline: true },
-        { name: 'SS+', value: `${SSH || 0}`, inline: true },
-        { name: 'SS', value: `${SS || 0}`, inline: true },
-        { name: 'S總數', value: `${SH + S}`, inline: true },
-        { name: 'S+', value: `${SH || 0}`, inline: true },
-        { name: 'S', value: `${S || 0}`, inline: true },
-        { name: 'A總數', value: `${A || 0}` },
+        { name: '玩家', value: `[${username}](${user.profileURL()})` },
+        { name: 'SS總數', value: `${ssh + ss}`, inline: true },
+        { name: 'SS+', value: `${ssh || 0}`, inline: true },
+        { name: 'SS', value: `${ss || 0}`, inline: true },
+        { name: 'S總數', value: `${sh + s}`, inline: true },
+        { name: 'S+', value: `${sh || 0}`, inline: true },
+        { name: 'S', value: `${s || 0}`, inline: true },
+        { name: 'A總數', value: `${a || 0}` },
         { name: '等級', value: `${~~(level)}`, inline: true },
-        { name: '總遊玩次數', value: `${pc || 0}`, inline: true },
+        { name: '總遊玩次數', value: `${playcount || 0}`, inline: true },
         { name: '\u200b', value: '\u200b', inline: true },
         { name: 'pp', value: `${pp || 0}`, inline: true },
         { name: '世界排名', value: `${rank || '無'}`, inline: true },

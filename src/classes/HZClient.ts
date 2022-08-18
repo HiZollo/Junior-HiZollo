@@ -1,6 +1,6 @@
 import path from "node:path";
 import { Client, Collection, Message, MessageReaction, PermissionFlagsBits, PermissionsBitField, WebhookClient } from "discord.js";
-import osu from "node-osu";
+import { Client as Osu } from "@hizollo/osu-api";
 import { CommandManager } from "./CommandManager";
 import CooldownManager from "./CooldownManager";
 import config from "@root/config";
@@ -53,9 +53,8 @@ export class HZClient extends Client {
     this.suggestHook = new WebhookClient({ id: config.webhooks.suggest.id, token: config.webhooks.suggest.token });
     this.replyHook = new WebhookClient({ id: config.webhooks.reply.id, token: config.webhooks.reply.token });
 
-    this.osuApi = new osu.Api(config.osu.apikey, {
-      completeScores: true,
-      parseNumeric: true
+    this.osu = new Osu({ 
+      apiKey: config.osu.apikey
     });
   }
 

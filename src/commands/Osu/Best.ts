@@ -3,6 +3,7 @@ import { Source } from "../../classes/Source";
 import { CommandType, PageSystemMode } from "../../utils/enums";
 import { APIEmbedField, ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 import pageSystem from "../../features/utils/pageSystem";
+import { ScoreRank, ModsBitField, ModsAbbreviation } from "@hizollo/osu-api";
 
 export default class OsuBest extends Command<[string]> {
   constructor() {
@@ -22,38 +23,48 @@ export default class OsuBest extends Command<[string]> {
   }
 
   public async execute(source: Source, [player]: [string]): Promise<void> {
-    const user = await source.client.osuApi.getUser({ u: player }).catch(() => {});
+    const scores = await source.client.osu.users
+      .getUserBest({ user: player })
+      .catch(() => []);
 
-    if (!user) {
+    if (!scores.length) {
       await source.defer({ ephemeral: true });
       await source.update(`我已經盡力了，但仍找不到 ${player} 這位玩家`);
       return;
     }
+
+    const user = (await scores[0].getPlayer())!;
+    const beatmaps = await Promise.all(scores.map(score => score.getBeatmap()))
 
     await source.defer();
     const message = await source.update('清單製作中……');
 
     const fields: APIEmbedField[][] = [];
     const thumbnails: (string | null)[] = [];
-    const scores = await source.client.osuApi.getUserBest({ u: player });
 
-    scores.forEach(({ accuracy, beatmap, counts, maxCombo, mods, pp, perfect, rank, score }) => {
+    scores.forEach((score, i) => {
+      const { title, difficulty: {rating}, maxCombo } = beatmaps[i];
+      const { 
+        score: scoring, rank,  perfect, accuracy, pp,
+        statistics: {countMiss}, maxCombo: maxComboAchieve
+      } = score;
+
       const field: APIEmbedField[] = [
-        { name: '玩家', value: `[${user.name}](https://osu.ppy.sh/u/${user.id})` },
-        { name: '譜面名稱', value: `[${beatmap.title}](https://osu.ppy.sh/beatmapsets/${beatmap.beatmapSetId})` },
-        { name: '難度', value: `${~~(beatmap.difficulty.rating*100)/100}` },
-        { name: '分數', value: `${score}`, inline: true },
-        { name: '等第', value: rank.replace('H', '+').replace('X', 'SS'), inline: true },
+        { name: '玩家', value: `[${user.username}](${user.profileURL()})` },
+        { name: '譜面名稱', value: `[${title}](${beatmaps[i].beatmapURL()})` },
+        { name: '難度', value: `${~~(rating*100)/100}` },
+        { name: '分數', value: `${scoring}`, inline: true },
+        { name: '等第', value: ScoreRank[rank].replace('H', '+').replace('X', 'SS'), inline: true },
         { name: '\u200b', value: '\u200b', inline: true },
-        { name: 'Combo', value: `${maxCombo}/${beatmap.maxCombo} ${perfect ? '[FC] ': counts.miss === 0 ? '[No Miss]' : ''}`, inline: true },
-        { name: '準確率', value: accuracy ? `${~~(Number(accuracy)*10000)/100}%` : '查無資訊', inline: true }, 
+        { name: 'Combo', value: `${maxComboAchieve}/${maxCombo} ${perfect ? '[FC] ': countMiss === 0 ? '[No Miss]' : ''}`, inline: true },
+        { name: '準確率', value: accuracy ? `${~~(accuracy*10000)/100}%` : '查無資訊', inline: true }, 
         { name: '\u200b', value: '\u200b', inline: true },
       ];
       if (pp) field.push({ name: 'pp', value: `${pp}` });
-      field.push({ name: 'Mods', value: this.modResolve(mods).join(' ') });
+      field.push({ name: 'Mods', value: this.modResolve(score.enabledMods).join(' ') });
 
       fields.push(field);
-      thumbnails.push(`https://b.ppy.sh/thumb/${beatmap.beatmapSetId}l.jpg`);
+      thumbnails.push(beatmaps[i].coverThumbnailURL());
     });
 
     const helper = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 的 osu! 中心');
@@ -75,25 +86,16 @@ export default class OsuBest extends Command<[string]> {
     });
   }
 
-  private modResolve(mods: string | string[]): string[] {
-    if (!mods.length) return ['-'];
-    const output = [];
-    if (mods.includes('Easy')) output.push('EZ');
-    if (mods.includes('NoFail')) output.push('NF');
-    if (mods.includes('HalfTime')) output.push('HT');
-    if (mods.includes('HardRock')) output.push('HR');
-    if (mods.includes('Perfect')) output.push('PF');
-    else if (mods.includes('SuddenDeath')) output.push('SD');
-    if (mods.includes('Nightcore')) output.push('NC');
-    else if (mods.includes('DoubleTime')) output.push('DT');
-    if (mods.includes('Hidden')) output.push('HD');
-    if (mods.includes('FadeIn')) output.push('FI');
-    if (mods.includes('Flashlight')) output.push('FL');
-    if (mods.includes('Mirror')) output.push('MR');
-    if (mods.includes('Relax')) output.push('RX');
-    if (mods.includes('SpunOut')) output.push('SO');
-    if (mods.includes('TouchDevice')) output.push('TD');
-  
-    return output;
+  private modResolve(mods: ModsBitField): string[] {
+    if (mods.isNone()) return ['-'];
+    return mods
+      .toArray()
+      .filter((name, _, arr) => {
+        if (name === "DoubleTime" && arr.includes("Nightcore")) return false;
+        if (name === "SuddenDeath" && arr.includes("Perfect")) return false;
+        return true;
+      })
+      .map(name => ModsAbbreviation[name as keyof typeof ModsAbbreviation])
+      .filter(v => v);
   }
 }
