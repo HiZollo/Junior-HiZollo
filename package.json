@@ -11,7 +11,8 @@
     "build": "tsc-watch --onSuccess resolve-tspaths",
     "deploy": "node dist/src/deploy.js",
     "start": "node dist/src/index.js",
-    "test": "node dist/src/index.js dev"
+    "test": "node dist/src/index.js dev",
+    "api": "node dist/src/api/index.js"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
   "homepage": "https://github.com/HiZollo/Junior-HiZollo#readme",
   "dependencies": {
     "@discordjs/voice": "^0.11.0",
+    "@discordjs/ws": "^0.2.0",
     "@hizollo/games": "^2.4.0",
     "@hizollo/osu-api": "^1.2.0",
     "discord.js": "^14.2.0",
