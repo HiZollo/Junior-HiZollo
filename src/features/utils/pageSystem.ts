@@ -26,7 +26,7 @@ export default async function pageSystem(options: PageSystemOptions): Promise<Pa
     embed.setDescription(newDescription);
   }
   else {
-    embed.setDescription(description || null).addFields(pages[index]);
+    embed.setDescription(description || null).setFields(pages[index]);
   }
 
   // 設定其他 embed 屬性
@@ -75,7 +75,7 @@ export default async function pageSystem(options: PageSystemOptions): Promise<Pa
       embed.setDescription(newDescription);
     }
     else {
-      embed.spliceFields(0, 25).addFields(pages[index]);
+      embed.setFields(pages[index]);
     }
 
     footer = `${interaction.user.tag}．第 ${index+1} 頁／共 ${pages.length} 頁${extendFooter ? `｜${extendFooter}` : ''}`;
