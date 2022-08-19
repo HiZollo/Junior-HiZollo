@@ -3,13 +3,11 @@ import { TextBasedChannel } from "../types/interfaces";
 import { APIGuildVoiceChannel, ChannelType, VideoQualityMode } from "../types/types";
 
 export class GuildVoiceChannel extends VoiceChannelBase<ChannelType.GuildVoice> implements TextBasedChannel {
-  public lastMessageId?: string | null;
   public videoQualityMode?: VideoQualityMode;
 
   constructor(client: Client, data: APIGuildVoiceChannel) {
     super(client, data);
 
-    this.lastMessageId = data.last_message_id;
     this.videoQualityMode = data.video_quality_mode;
   }
 

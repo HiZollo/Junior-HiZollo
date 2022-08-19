@@ -1,25 +1,51 @@
 import { Client } from ".";
-import { APIChannelBase, ChannelFlags, ChannelType, Snowflake } from "../types/types";
+import { TextBasedChannel } from "../types/interfaces";
+import { APIChannelBase, ChannelFlags, ChannelType, Routes, Snowflake } from "../types/types";
+import { SnowflakeUtil } from "../utils";
 
 export abstract class ChannelBase<T extends ChannelType> {
-  public client: Client;
-  public type: T;
+  public readonly client: Client;
+  public type: ChannelType;
   public id: Snowflake;
-  public name?: string | null;
   public flags?: ChannelFlags;
 
   constructor(client: Client, data: APIChannelBase<T>) {
     this.client = client;
     this.type = data.type;
     this.id = data.id;
-    this.name = data.name;
-    this.flags = data.flags;
+    this.patch(data);
   }
 
-  // public async delete() {}
-  // public async fetch() {}
+  public get createdTimestamp(): number {
+    return SnowflakeUtil.timestampFrom(this.id);
+  }
+
+  public get createAt(): Date {
+    return new Date(this.createdTimestamp);
+  }
+
+  public async delete(reason: string): Promise<this> {
+    await this.client.rest.delete(Routes.channel(this.id), { reason });
+    return this;
+  }
+
+  public async fetch() {
+    const apiChannel = await this.client.rest.get(Routes.channel(this.id)) as APIChannelBase<T>;
+    return this.patch(apiChannel);
+  }
+
+  public isText(): this is TextBasedChannel {
+    return !!this.type && [ChannelType.DM, ChannelType.GroupDM, ChannelType.GuildText, ChannelType.GuildVoice].includes(this.type);
+  }
 
   public toString(): string {
     return `<#${this.id}>`;
+  }
+
+  protected patch(data: APIChannelBase<T>): this {
+    this.type = data.type;
+    this.id = data.id;
+    this.flags = data.flags;
+    return this;
   }
 }

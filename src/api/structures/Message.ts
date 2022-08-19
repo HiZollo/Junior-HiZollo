@@ -1,11 +1,14 @@
-import { APIActionRowComponent, APIApplication, APIAttachment, APIEmbed, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, GatewayMessageCreateDispatchData, MessageFlags, MessageType, Snowflake } from "../types/types";
-import { Channel, Client, User } from ".";
+import { APIActionRowComponent, APIApplication, APIAttachment, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, APIUser, Channel, GatewayMessageCreateDispatchData, MessageFlags, MessageType, Routes, Snowflake } from "../types/types";
+import { Client, User } from ".";
+import { Util } from "../utils/Util";
+import { TextBasedChannelSendOptions } from "../types/interfaces";
+import { MessageUtil } from "../utils";
 
 export class Message {
   public client: Client;
   public id: Snowflake;
   public channelId: Snowflake;
-  public user: User;
+  public user: APIUser;
   public content: string;
   public timestamp: string;
   public tts: boolean;
@@ -30,12 +33,10 @@ export class Message {
   public position?: number;
 
   constructor(client: Client, data: GatewayMessageCreateDispatchData) {
-    if (!data.guild_id || !data.member) throw new Error('Failed to build Message: Message not in guild.');
-
     this.client = client;
     this.id = data.id;
-    this.channelId = data.channel_id
-    this.user = new User(this.client, data.author);
+    this.channelId = data.channel_id;
+    this.user = data.author;
     this.content = data.content;
     this.timestamp = data.timestamp;
     this.tts = data.tts;
@@ -54,10 +55,18 @@ export class Message {
     this.flags = data.flags;
     this.referencedMessage = data.referenced_message ? new Message(this.client, data.referenced_message) : null;
     this.interaction = data.interaction;
-    this.thread = data.thread ? new Channel(this.client, data.thread) : undefined;
+    this.thread = data.thread ? Util.createChannel(this.client, data.thread) : undefined;
     this.components = data.components;
     this.stickerItems = data.sticker_items;
     this.position = data.position;
+  }
+
+  public async send(message: TextBasedChannelSendOptions | string): Promise<Message> {
+    const body = typeof message === 'string' ? { content: message } : MessageUtil.resolveBody(message);
+    const files = typeof message === 'string' ? [] : await MessageUtil.resolveFiles(message.files ?? []);
+
+    const data = await this.client.rest.post(Routes.channelMessages(this.channelId), { body, files }) as APIMessage;
+    return new Message(this.client, data);
   }
 
   // public async delete() {}

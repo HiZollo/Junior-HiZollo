@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { GatewayIntentBits } from "./types/types";
-import { Client } from "./structures";
+import { Client, Message } from "./structures";
 import { ClientEvents } from "./types/enum";
 
 if (!process.env.TOKEN) throw new Error("Token not set.");
@@ -18,8 +18,9 @@ client.on(ClientEvents.Ready, shardId => {
   console.log(shardId);
 });
 
-client.on(ClientEvents.MessageCreate, message => {
-  console.log(message.content);
+client.on(ClientEvents.MessageCreate, rawMessage => {
+  const message = new Message(client, rawMessage);
+  message.send('hi');
 });
 
 client.login();

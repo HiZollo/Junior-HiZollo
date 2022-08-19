@@ -1,7 +1,8 @@
 import { Client, GuildChannel } from ".";
+import { TextBasedChannel } from "../types/interfaces";
 import { APIThreadChannel, APIThreadMember, APIThreadMetadata, ChannelType } from "../types/types";
 
-export class ThreadChannel extends GuildChannel<ChannelType.GuildPublicThread | ChannelType.GuildPrivateThread | ChannelType.GuildNewsThread> {
+export class ThreadChannel extends GuildChannel<ChannelType.GuildPublicThread | ChannelType.GuildPrivateThread | ChannelType.GuildNewsThread> implements TextBasedChannel {
   public rateLimitPerUser?: number;
   public member?: APIThreadMember;
   public memberCount?: number;

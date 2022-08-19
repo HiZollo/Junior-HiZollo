@@ -3,7 +3,6 @@ import { REST } from "@discordjs/rest";
 import { WebSocketShardEvents, WebSocketManager } from "@discordjs/ws";
 import { EventEmitter } from "node:events";
 import { ClientOptions } from "../types/interfaces";
-import { Message } from "./Message";
 import { ClientEvents } from "../types/enum";
 
 export class Client extends EventEmitter {
@@ -52,7 +51,7 @@ export class Client extends EventEmitter {
 
     switch (event) {
       case GatewayDispatchEvents.MessageCreate:
-        this.emit('MessageCreate', new Message(this, data));
+        this.emit('MessageCreate', data);
         break;
     }
   }
