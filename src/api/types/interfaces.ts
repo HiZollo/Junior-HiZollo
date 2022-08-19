@@ -1,14 +1,7 @@
-import { APIAllowedMentions, APIEmbed, APIMessageComponent, APIMessageReference, APIOverwrite, ChannelType, GatewayIntentBits, MessageFlags, ThreadAutoArchiveDuration, VideoQualityMode } from "./types";
-import { Message } from "../structures";
+import { APIAllowedMentions, APIEmbed, APIMessage, APIMessageComponent, APIMessageReference, APIOverwrite, Awaitable, ChannelType, GatewayIntentBits, MessageFlags, ThreadAutoArchiveDuration, VideoQualityMode } from "./types";
+import { Client, Message, MessageCollector } from "../structures";
 
 
-export interface TextBasedChannel {
-  send(options: TextBasedChannelSendOptions | string): Promise<Message>;
-  createMessageCollector(options: MessageCollectorOptions): Promise<void>;
-  awaitMessages(options: MessageCollectorOptions): Promise<void>;
-  createMessageComponentCollector(options: MessageComponentCollectorOptions): Promise<void>;
-  awaitMessageComponent(options: MessageComponentCollectorOptions): Promise<void>;
-}
 
 export interface ClientOptions {
   token: string;
@@ -66,4 +59,31 @@ export interface APIMessagePatchBody {
   sticker_ids?: string[];
   attachments?: APIMessagePatchBodyAttachment[];
   flags?: MessageFlags;
+}
+
+export interface CollectorOptions {
+  client: Client;
+  filter?: (...args: unknown[]) => Awaitable<boolean>;
+  max?: number;
+  time?: number;
+  idle?: number;
+}
+
+export interface MessageCollectorOptions extends CollectorOptions {
+  channelId: string;
+  guildId?: string;
+}
+
+export interface InteractionCollectorOptions extends CollectorOptions {
+  messageId?: string;
+  channelId?: string;
+  guildId?: string;
+}
+
+export interface TextBasedChannel {
+  send(options: TextBasedChannelSendOptions | string): Promise<Message>;
+  createMessageCollector(options: MessageCollectorOptions): MessageCollector;
+  awaitMessages(options: MessageCollectorOptions): Promise<Map<string, APIMessage>>;
+  createMessageComponentCollector(options: InteractionCollectorOptions): Promise<void>;
+  awaitMessageComponent(options: InteractionCollectorOptions): Promise<void>;
 }

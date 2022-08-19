@@ -1,6 +1,6 @@
-import { APIActionRowComponent, APIApplication, APIAttachment, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, APIUser, Channel, GatewayMessageCreateDispatchData, MessageFlags, MessageType, Routes, Snowflake } from "../types/types";
+import { APIActionRowComponent, APIApplication, APIAttachment, APIChannel, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, APIUser, Channel, GatewayMessageCreateDispatchData, MessageFlags, MessageType, Routes, Snowflake } from "../types/types";
 import { Client, User } from ".";
-import { Util } from "../utils/Util";
+import { ChannelUtil } from "../utils/ChannelUtil";
 import { TextBasedChannelSendOptions } from "../types/interfaces";
 import { MessageUtil } from "../utils";
 
@@ -55,7 +55,7 @@ export class Message {
     this.flags = data.flags;
     this.referencedMessage = data.referenced_message ? new Message(this.client, data.referenced_message) : null;
     this.interaction = data.interaction;
-    this.thread = data.thread ? Util.createChannel(this.client, data.thread) : undefined;
+    this.thread = data.thread ? ChannelUtil.createChannel(this.client, data.thread) : undefined;
     this.components = data.components;
     this.stickerItems = data.sticker_items;
     this.position = data.position;
@@ -74,11 +74,14 @@ export class Message {
   // public async fetch() {}
   // public async react() {}
   // public async reply() {}
-  // public async pin() {}
-  // public async unpin() {}
   // public async awaitMessageComponent() {}
   // public async createMessageComponentCollector() {}
   // public async startThread() {}
+
+  public async fetchChannel(): Promise<Channel> {
+    const data = await this.client.rest.get(Routes.channel(this.channelId)) as APIChannel;
+    return ChannelUtil.createChannel(this.client, data)!;
+  }
 
   public toString(): string {
     return this.content;

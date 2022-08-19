@@ -6,7 +6,6 @@ import { ClientOptions } from "../types/interfaces";
 import { ClientEvents } from "../types/enum";
 
 export class Client extends EventEmitter {
-  public options: ClientOptions;
   public token: string
   public intents: GatewayIntentBits;
 
@@ -15,7 +14,6 @@ export class Client extends EventEmitter {
 
   constructor(options: ClientOptions) {
     super();
-    this.options = options;
     this.token = options.token;
     this.intents = options.intents;
 
@@ -51,7 +49,19 @@ export class Client extends EventEmitter {
 
     switch (event) {
       case GatewayDispatchEvents.MessageCreate:
-        this.emit('MessageCreate', data);
+        this.emit(ClientEvents.MessageCreate, data);
+        break;
+
+      case GatewayDispatchEvents.ChannelDelete:
+        this.emit(ClientEvents.ChannelDelete, data);
+        break;
+
+      case GatewayDispatchEvents.ThreadDelete:
+        this.emit(ClientEvents.ThreadDelete, data);
+        break;
+
+      case GatewayDispatchEvents.GuildDelete:
+        this.emit(ClientEvents.GuildDelete, data);
         break;
     }
   }

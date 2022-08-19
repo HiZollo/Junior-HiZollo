@@ -17,3 +17,7 @@ export * from "./NewsChannel";
 export * from "./TextChannel";
 export * from "./GuildVoiceChannel";
 export * from "./GuildStageVoiceChannel";
+
+
+export * from "./Collector";
+export * from "./MessageCollector";

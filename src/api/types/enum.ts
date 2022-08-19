@@ -1,4 +1,7 @@
 export enum ClientEvents {
   Ready = "Ready", 
-  MessageCreate = "MessageCreate"
+  MessageCreate = "MessageCreate", 
+  ChannelDelete = "ChannelDelete", 
+  ThreadDelete = "ThreadDelete", 
+  GuildDelete = "GuildDelete"
 }

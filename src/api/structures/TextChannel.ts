@@ -7,7 +7,12 @@ export class TextChannel extends GuildTextChannel<ChannelType.GuildText> {
 
   constructor(client: Client, data: APITextChannel) {
     super(client, data);
+    this.patch(data);
+  }
 
+  protected patch(data: APITextChannel): this {
+    super.patch(data);
     this.rateLimitPerUser = data.rate_limit_per_user;
+    return this;
   }
 }

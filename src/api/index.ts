@@ -18,9 +18,9 @@ client.on(ClientEvents.Ready, shardId => {
   console.log(shardId);
 });
 
-client.on(ClientEvents.MessageCreate, rawMessage => {
+client.on(ClientEvents.MessageCreate, async rawMessage => {
   const message = new Message(client, rawMessage);
-  message.send('hi');
+  console.log(await message.fetchChannel());
 });
 
 client.login();
