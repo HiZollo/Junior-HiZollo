@@ -6,8 +6,7 @@ export class AutocompleteInteraction<InGuild extends boolean = boolean> extends 
   public commandId: string;
   public commandType: ApplicationCommandType.ChatInput;
   public options: APIApplicationCommandInteractionDataOption[];
-
-  public responded: boolean;
+  public replied: boolean;
 
   constructor(client: Client, data: APIApplicationCommandAutocompleteInteraction) {
     super(client, data);
@@ -16,12 +15,11 @@ export class AutocompleteInteraction<InGuild extends boolean = boolean> extends 
     this.commandId = data.data.id;
     this.commandType = data.data.type;
     this.options = data.data.options;
-
-    this.responded = false;
+    this.replied = false;
   }
 
-  public async respond(options: APIApplicationCommandOptionChoice): Promise<void> {
-    if (this.responded) throw new Error('This interaction has already been responded.');
+  public async reply(options: APIApplicationCommandOptionChoice[]): Promise<void> {
+    if (this.replied) throw new Error('This interaction has already been responded.');
 
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
@@ -32,6 +30,6 @@ export class AutocompleteInteraction<InGuild extends boolean = boolean> extends 
       }, 
       auth: false
     });
-    this.responded = true;
+    this.replied = true;
   }
 }

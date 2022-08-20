@@ -1,23 +1,22 @@
 import { RawFile } from "@discordjs/rest";
 import { DataResolver } from ".";
-import { APIMessagePatchBody, FileOptions, TextBasedChannelSendOptions } from "../types/interfaces";
+import { APIMessagePatchBody, FileOptions, InteractionReplyOptions, TextBasedChannelSendOptions } from "../types/interfaces";
 
 export class MessageUtil extends null {
-  static resolveBody(options: TextBasedChannelSendOptions): APIMessagePatchBody {
+  static resolveBody(options: TextBasedChannelSendOptions | InteractionReplyOptions): APIMessagePatchBody {
     return {
       content: options.content, 
-      tts: options.tts, 
+      tts: 'tts' in options ? options.tts : undefined, 
       embeds: options.embeds, 
       allowed_mentions: options.allowedMentions, 
-      message_reference: options.messageReference, 
+      message_reference: 'messageReference' in options ? options.messageReference : undefined, 
       components: options.components, 
-      sticker_ids: options.stickerIds, 
+      sticker_ids: 'stickerIds' in options ? options.stickerIds : undefined, 
       attachments: options.files?.map((file, i) => ({
         id: `${i}`, 
         filename: file.name ?? 'file.jpg', 
         descrpition: file.description
-      })), 
-      flags: options.flags
+      }))
     }
   }
 

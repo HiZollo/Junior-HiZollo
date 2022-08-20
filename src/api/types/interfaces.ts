@@ -31,16 +31,26 @@ export interface FileOptions {
   description?: string;
 }
 
-export interface TextBasedChannelSendOptions {
+export interface BaseMessageOptions {
   content?: string;
-  tts?: boolean;
   embeds?: APIEmbed[];
-  allowedMentions?: APIAllowedMentions;
-  messageReference?: APIMessageReference;
   components?: APIMessageComponent[];
-  stickerIds?: string[];
+  allowedMentions?: APIAllowedMentions;
   files?: FileOptions[];
-  flags?: MessageFlags;
+}
+
+export interface TextBasedChannelSendOptions extends BaseMessageOptions {
+  tts?: boolean;
+  messageReference?: APIMessageReference;
+  stickerIds?: string[];
+}
+
+export interface InteractionReplyOptions extends BaseMessageOptions {
+  ephemeral?: boolean;
+}
+
+export interface InteractionDeferOptions extends BaseMessageOptions {
+  ephemeral?: boolean;
 }
 
 export interface APIMessagePatchBodyAttachment {
@@ -84,4 +94,15 @@ export interface TextBasedChannel {
   send(options: TextBasedChannelSendOptions | string): Promise<Message>;
   createMessageCollector(options: CollectorOptions): MessageCollector;
   awaitMessages(options: CollectorOptions): Promise<Map<string, APIMessage>>;
+}
+
+export interface RepliableInteraction {
+  deferred: boolean;
+  replied: boolean;
+  reply(options: InteractionReplyOptions | string): Promise<Message>;
+  deferReply(options: { ephemeral?: boolean }): Promise<Message>;
+  editReply(options: BaseMessageOptions | string): Promise<Message>;
+  fetchReply(): Promise<Message>;
+  deleteReply(): Promise<void>;
+  followUp(options: InteractionReplyOptions): Promise<Message>;
 }
