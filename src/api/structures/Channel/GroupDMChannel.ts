@@ -1,5 +1,5 @@
-import { Client, DMChannelBase, User } from ".";
-import { APIGroupDMChannel, ChannelType } from "../types/types";
+import { Client, DMChannelBase, User } from "..";
+import { APIGroupDMChannel, ChannelType } from "../../types/types";
 
 export class GroupDMChannel extends DMChannelBase<ChannelType.GroupDM> {
   public applicationId?: string;

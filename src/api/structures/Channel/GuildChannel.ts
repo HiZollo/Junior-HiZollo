@@ -1,6 +1,6 @@
-import { Client, ChannelBase } from ".";
-import { GuildChannelEditOptions } from "../types/interfaces";
-import { APIGuildChannel, APIOverwrite, ChannelType, Routes } from "../types/types";
+import { ChannelBase, Client } from "..";
+import { GuildChannelEditOptions } from "../../types/interfaces";
+import { APIGuildChannel, APIOverwrite, ChannelType, Routes } from "../../types/types";
 
 export abstract class GuildChannel<T extends ChannelType> extends ChannelBase<T> {
   public name?: string;

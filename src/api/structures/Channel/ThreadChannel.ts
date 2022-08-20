@@ -1,6 +1,6 @@
-import { Client, GuildChannel } from ".";
-import { APIThreadChannel, APIThreadMember, APIThreadMetadata, ChannelType } from "../types/types";
-import { ChannelUtil } from "../utils";
+import { Client, GuildChannel } from "..";
+import { APIThreadChannel, APIThreadMember, APIThreadMetadata, ChannelType } from "../../types/types";
+import { ChannelUtil } from "../../utils";
 
 export class ThreadChannel extends ChannelUtil.ApplyTextBased(GuildChannel)<ChannelType.GuildPublicThread | ChannelType.GuildPrivateThread | ChannelType.GuildNewsThread> {
   public rateLimitPerUser?: number;

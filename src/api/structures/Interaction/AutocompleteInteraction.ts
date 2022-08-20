@@ -1,5 +1,5 @@
-import { BaseInteraction, Client } from ".";
-import { APIApplicationCommandAutocompleteInteraction, APIApplicationCommandInteractionDataOption, APIApplicationCommandOptionChoice, ApplicationCommandType, InteractionResponseType, Routes } from "../types/types";
+import { BaseInteraction, Client } from "..";
+import { APIApplicationCommandAutocompleteInteraction, APIApplicationCommandInteractionDataOption, APIApplicationCommandOptionChoice, ApplicationCommandType, InteractionResponseType, Routes } from "../../types/types";
 
 export class AutocompleteInteraction<InGuild extends boolean = boolean> extends BaseInteraction<InGuild> {
   public commandName: string;

@@ -1,4 +1,4 @@
-import { ChannelType } from "../types/types";
+import { ChannelType } from "../../types/types";
 import { GuildTextChannel } from "./GuildTextChannel";
 
 export class NewsChannel extends GuildTextChannel<ChannelType.GuildNews> {

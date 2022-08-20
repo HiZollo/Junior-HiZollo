@@ -1,7 +1,7 @@
-import { Collector } from "."
-import { ClientEvents } from "../types/enum";
-import { MessageCollectorOptions } from "../types/interfaces"
-import { APIChannel, APIMessage, APIUnavailableGuild, CollectorEndReason } from "../types/types"
+import { Collector } from ".."
+import { ClientEvents } from "../../types/enum";
+import { MessageCollectorOptions } from "../../types/interfaces"
+import { APIChannel, APIMessage, APIUnavailableGuild, CollectorEndReason } from "../../types/types"
 
 export class MessageCollector extends Collector<string, APIMessage> {
   public channelId: string;

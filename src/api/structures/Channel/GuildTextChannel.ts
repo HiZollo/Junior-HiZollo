@@ -1,6 +1,6 @@
-import { Client, GuildChannel } from ".";
-import { APIGuildTextChannel, GuildTextChannelType, ThreadAutoArchiveDuration } from "../types/types";
-import { ChannelUtil } from "../utils";
+import { Client, GuildChannel } from "..";
+import { APIGuildTextChannel, GuildTextChannelType, ThreadAutoArchiveDuration } from "../../types/types";
+import { ChannelUtil } from "../../utils";
 
 export abstract class GuildTextChannel<T extends GuildTextChannelType> extends ChannelUtil.ApplyTextBased(GuildChannel)<T> {
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;

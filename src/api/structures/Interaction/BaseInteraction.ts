@@ -1,5 +1,5 @@
-import { Client } from ".";
-import { APIInteraction, APIInteractionGuildMember, APIPingInteraction, APIUser, If, InteractionType, LocaleString } from "../types/types";
+import { Client } from "..";
+import { APIInteraction, APIInteractionGuildMember, APIPingInteraction, APIUser, If, InteractionType, LocaleString } from "../../types/types";
 
 export abstract class BaseInteraction<InGuild extends boolean = boolean> {
   public client: Client;

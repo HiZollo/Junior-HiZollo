@@ -1,7 +1,7 @@
-import { Client } from ".";
-import { TextBasedChannel } from "../types/interfaces";
-import { APIChannelBase, ChannelFlags, ChannelType, Routes, Snowflake } from "../types/types";
-import { SnowflakeUtil } from "../utils";
+import { Client } from "..";
+import { TextBasedChannel } from "../../types/interfaces";
+import { APIChannelBase, ChannelFlags, ChannelType, Routes, Snowflake } from "../../types/types";
+import { SnowflakeUtil } from "../../utils";
 
 export abstract class ChannelBase<T extends ChannelType> {
   public readonly client: Client;

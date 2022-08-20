@@ -1,7 +1,7 @@
 import { EventEmitter } from "node:events";
-import { Client } from ".";
-import { CollectorOptions } from "../types/interfaces";
-import { Awaitable, CollectorEndReason } from "../types/types";
+import { Client } from "..";
+import { CollectorOptions } from "../../types/interfaces";
+import { Awaitable, CollectorEndReason } from "../../types/types";
 
 export abstract class Collector<K, V> extends EventEmitter {
   public client: Client;
