@@ -1,4 +1,4 @@
-import { APIChannel, APIInteraction, APIMessage, APIUnavailableGuild, GatewayDispatchEvents, GatewayDispatchPayload, GatewayIntentBits } from "../types/types";
+import { APIChannel, APIInteraction, APIMessage, APIPingInteraction, APIUnavailableGuild, GatewayDispatchEvents, GatewayDispatchPayload, GatewayIntentBits, InteractionType } from "../types/types";
 import { REST } from "@discordjs/rest";
 import { WebSocketShardEvents, WebSocketManager } from "@discordjs/ws";
 import { EventEmitter } from "node:events";
@@ -8,14 +8,14 @@ import { ClientEvents } from "../types/enum";
 export type ClientEventsMap = {
   [ClientEvents.Ready]: [shardId: number];
   [ClientEvents.MessageCreate]: [rawMessage: APIMessage];
-  [ClientEvents.InteractionCreate]: [rawInteraction: APIInteraction];
+  [ClientEvents.InteractionCreate]: [rawInteraction: Exclude<APIInteraction, APIPingInteraction>];
   [ClientEvents.ChannelDelete]: [rawChannel: APIChannel];
   [ClientEvents.ThreadDelete]: [rawThread: APIChannel];
   [ClientEvents.GuildDelete]: [rawGuild: APIUnavailableGuild];
 }
 
 export class Client extends EventEmitter {
-  public token: string
+  public token!: string
   public intents: GatewayIntentBits;
 
   public rest: REST;
@@ -23,7 +23,9 @@ export class Client extends EventEmitter {
 
   constructor(options: ClientOptions) {
     super();
-    this.token = options.token;
+
+    Object.defineProperty(this, 'token', { value: options.token })
+
     this.intents = options.intents;
 
     this.rest = new REST().setToken(this.token);
@@ -81,7 +83,9 @@ export class Client extends EventEmitter {
         break;
       
       case GatewayDispatchEvents.InteractionCreate: 
+        if (data.type === InteractionType.Ping) break;
         this.emit(ClientEvents.InteractionCreate, data);
+        break;
     }
   }
 

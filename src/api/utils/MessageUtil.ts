@@ -1,6 +1,7 @@
 import { RawFile } from "@discordjs/rest";
 import { DataResolver } from ".";
 import { APIMessagePatchBody, FileOptions, InteractionReplyOptions, TextBasedChannelSendOptions } from "../types/interfaces";
+import { MessageFlags } from "../types/types";
 
 export class MessageUtil extends null {
   static resolveBody(options: TextBasedChannelSendOptions | InteractionReplyOptions): APIMessagePatchBody {
@@ -11,6 +12,7 @@ export class MessageUtil extends null {
       allowed_mentions: options.allowedMentions, 
       message_reference: 'messageReference' in options ? options.messageReference : undefined, 
       components: options.components, 
+      flags: 'ephemeral' in options ? MessageFlags.Ephemeral : undefined, 
       sticker_ids: 'stickerIds' in options ? options.stickerIds : undefined, 
       attachments: options.files?.map((file, i) => ({
         id: `${i}`, 

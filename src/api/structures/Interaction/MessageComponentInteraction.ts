@@ -1,5 +1,5 @@
-import { Client, Message } from "..";
-import { APIActionRowComponent, APIMessageActionRowComponent, APIMessageComponentInteraction, ComponentType } from "../../types/types";
+import { ButtonInteraction, Client, Message, SelectMenuInteraction } from "..";
+import { APIActionRowComponent, APIMessageActionRowComponent, APIMessageComponentInteraction, APIModalInteractionResponseCallbackData, ComponentType, InteractionResponseType, Routes } from "../../types/types";
 import { InteractionUtil } from "../../utils";
 import { BaseInteraction } from "./BaseInteraction";
 
@@ -21,5 +21,26 @@ export abstract class MessageComponentInteraction<InGuild extends boolean = bool
     return this.message.components!.find(row =>
       row.components.find(c => 'custom_id' in c && c.custom_id === this.customId)
     )!;
+  }
+
+  public async showModal(modal: APIModalInteractionResponseCallbackData): Promise<void> {
+    if (this.deferred || this.replied) throw new Error('This interaction has already been deferred or replied.');
+
+    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
+        type: InteractionResponseType.Modal, 
+        data: modal
+      }, 
+      auth: false
+    });
+    this.replied = true;
+  }
+
+  public isButton(): this is ButtonInteraction {
+    return this.componentType === ComponentType.Button;
+  }
+
+  public isSelectMenu(): this is SelectMenuInteraction {
+    return this.componentType === ComponentType.SelectMenu;
   }
 }

@@ -1,7 +1,7 @@
 import { Client, ContextMenuInteraction, Message } from "..";
 import { APIMessageApplicationCommandInteraction, APIMessageApplicationCommandInteractionDataResolved } from "../../types/types";
 
-export abstract class MessageInteraction<InGuild extends boolean = boolean> extends ContextMenuInteraction<InGuild> {
+export class MessageInteraction<InGuild extends boolean = boolean> extends ContextMenuInteraction<InGuild> {
   public resolved: APIMessageApplicationCommandInteractionDataResolved;
   public targetMessage: Message;
   

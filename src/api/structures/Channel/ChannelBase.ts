@@ -4,13 +4,14 @@ import { APIChannelBase, ChannelFlags, ChannelType, Routes, Snowflake } from "..
 import { SnowflakeUtil } from "../../utils";
 
 export abstract class ChannelBase<T extends ChannelType> {
-  public readonly client: Client;
+  public client!: Client;
   public type: ChannelType;
   public id: Snowflake;
   public flags?: ChannelFlags;
 
   constructor(client: Client, data: APIChannelBase<T>) {
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
+
     this.type = data.type;
     this.id = data.id;
     this.patch(data);

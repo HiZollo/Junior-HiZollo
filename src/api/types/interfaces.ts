@@ -51,6 +51,7 @@ export interface InteractionReplyOptions extends BaseMessageOptions {
 
 export interface InteractionDeferOptions extends BaseMessageOptions {
   ephemeral?: boolean;
+  fetchReply?: boolean;
 }
 
 export interface APIMessagePatchBodyAttachment {
@@ -100,9 +101,9 @@ export interface RepliableInteraction {
   deferred: boolean;
   replied: boolean;
   reply(options: InteractionReplyOptions | string): Promise<Message>;
-  deferReply(options: { ephemeral?: boolean }): Promise<Message>;
+  deferReply(options?: InteractionDeferOptions): Promise<Message | void>;
   editReply(options: BaseMessageOptions | string): Promise<Message>;
   fetchReply(): Promise<Message>;
   deleteReply(): Promise<void>;
-  followUp(options: InteractionReplyOptions): Promise<Message>;
+  followUp(options: InteractionReplyOptions | string): Promise<Message>;
 }

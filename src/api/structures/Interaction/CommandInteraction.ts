@@ -1,4 +1,4 @@
-import { Client } from ".."
+import { ChatInputInteraction, Client, MessageInteraction, UserInteraction } from ".."
 import { APIApplicationCommandInteraction, APIModalInteractionResponseCallbackData, ApplicationCommandType, InteractionResponseType, Routes } from "../../types/types"
 import { InteractionUtil } from "../../utils"
 import { BaseInteraction } from "./BaseInteraction"
@@ -27,5 +27,17 @@ export abstract class CommandInteraction<InGuild extends boolean = boolean> exte
       auth: false
     });
     this.replied = true;
+  }
+
+  public isChatInput(): this is ChatInputInteraction {
+    return this.commandType === ApplicationCommandType.ChatInput;
+  }
+
+  public isMessage(): this is MessageInteraction {
+    return this.commandType === ApplicationCommandType.Message;
+  }
+
+  public isUser(): this is UserInteraction {
+    return this.commandType === ApplicationCommandType.User;
   }
 }

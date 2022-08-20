@@ -4,7 +4,7 @@ import { Client } from ".";
 
 
 export class User {
-  public client: Client;
+  public client!: Client;
   public id: Snowflake;
   public username: string;
   public discriminator: number;
@@ -21,7 +21,8 @@ export class User {
   public premiumType?: UserPremiumType;
 
   constructor(client: Client, data: APIUser) {
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
+
     this.id = data.id;
     this.username = data.username;
     this.discriminator = parseInt(data.discriminator);

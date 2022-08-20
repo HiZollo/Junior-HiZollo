@@ -5,7 +5,7 @@ import { TextBasedChannelSendOptions } from "../types/interfaces";
 import { MessageUtil } from "../utils";
 
 export class Message {
-  public client: Client;
+  public client!: Client;
   public id: Snowflake;
   public channelId: Snowflake;
   public user: APIUser;
@@ -33,7 +33,8 @@ export class Message {
   public position?: number;
 
   constructor(client: Client, data: GatewayMessageCreateDispatchData) {
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
+
     this.id = data.id;
     this.channelId = data.channel_id;
     this.user = data.author;

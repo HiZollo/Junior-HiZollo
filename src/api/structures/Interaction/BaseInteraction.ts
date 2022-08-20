@@ -1,11 +1,11 @@
-import { Client } from "..";
+import { AutocompleteInteraction, Client, CommandInteraction, MessageComponentInteraction, ModalSubmitInteraction } from "..";
 import { APIInteraction, APIInteractionGuildMember, APIPingInteraction, APIUser, If, InteractionType, LocaleString } from "../../types/types";
 
 export abstract class BaseInteraction<InGuild extends boolean = boolean> {
-  public client: Client;
+  public client!: Client;
   public id: string;
   public applicationId: string;
-  public token: string;
+  public token!: string;
   public version: 1;
   public type: Exclude<InteractionType, InteractionType.Ping>;
   public locale: LocaleString;
@@ -18,10 +18,11 @@ export abstract class BaseInteraction<InGuild extends boolean = boolean> {
   public member: If<InGuild, APIInteractionGuildMember>;
 
   constructor(client: Client, data: Exclude<APIInteraction, APIPingInteraction>) {
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
+    Object.defineProperty(this, 'token', { value: data.token });
+
     this.id = data.id;
     this.applicationId = data.application_id;
-    this.token = data.token;
     this.version = data.version;
     this.type = data.type;
     this.locale = data.locale;
@@ -36,5 +37,21 @@ export abstract class BaseInteraction<InGuild extends boolean = boolean> {
 
   public inGuild(): this is BaseInteraction<true> {
     return !!this.guildId;
+  }
+
+  public isAutocomplete(): this is AutocompleteInteraction {
+    return this.type === InteractionType.ApplicationCommandAutocomplete;
+  }
+
+  public isCommand(): this is CommandInteraction {
+    return this.type === InteractionType.ApplicationCommand;
+  }
+
+  public isMessageComponent(): this is MessageComponentInteraction {
+    return this.type === InteractionType.MessageComponent;
+  }
+
+  public isModalSubmit(): this is ModalSubmitInteraction {
+    return this.type === InteractionType.ModalSubmit;
   }
 }
