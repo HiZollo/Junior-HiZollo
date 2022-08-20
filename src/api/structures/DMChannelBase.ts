@@ -1,8 +1,8 @@
 import { ChannelType } from "../types/types";
 import { ChannelBase } from ".";
-import { TextBasedChannel } from "../types/interfaces";
+import { ChannelUtil } from "../utils";
 
-export abstract class DMChannelBase<T extends ChannelType> extends ChannelBase<T> implements TextBasedChannel {
+export abstract class DMChannelBase<T extends ChannelType> extends ChannelUtil.ApplyTextBased(ChannelBase)<T> {
   // public async send(options: MessageOptions): Promise<Message> {}
   // public async sendTyping(): Promise<void> {}
   // public async createMessageCollector(options = {}) {}

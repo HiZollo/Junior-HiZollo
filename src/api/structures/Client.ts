@@ -1,9 +1,18 @@
-import { GatewayDispatchEvents, GatewayDispatchPayload, GatewayIntentBits } from "../types/types";
+import { APIChannel, APIInteraction, APIMessage, APIUnavailableGuild, GatewayDispatchEvents, GatewayDispatchPayload, GatewayIntentBits } from "../types/types";
 import { REST } from "@discordjs/rest";
 import { WebSocketShardEvents, WebSocketManager } from "@discordjs/ws";
 import { EventEmitter } from "node:events";
 import { ClientOptions } from "../types/interfaces";
 import { ClientEvents } from "../types/enum";
+
+export type ClientEventsMap = {
+  [ClientEvents.Ready]: [shardId: number];
+  [ClientEvents.MessageCreate]: [rawMessage: APIMessage];
+  [ClientEvents.InteractionCreate]: [rawInteraction: APIInteraction];
+  [ClientEvents.ChannelDelete]: [rawChannel: APIChannel];
+  [ClientEvents.ThreadDelete]: [rawThread: APIChannel];
+  [ClientEvents.GuildDelete]: [rawGuild: APIUnavailableGuild];
+}
 
 export class Client extends EventEmitter {
   public token: string
@@ -40,6 +49,13 @@ export class Client extends EventEmitter {
     }
   }
 
+  public adjustMaxListener(delta: number): void {
+    const count = this.getMaxListeners();
+    if (count !== 0 && count + delta > 0) {
+      this.setMaxListeners(count + delta);
+    }
+  }
+
   private onReady(param: { shardId: number }): void {
     this.emit(ClientEvents.Ready, param.shardId);
   }
@@ -63,6 +79,21 @@ export class Client extends EventEmitter {
       case GatewayDispatchEvents.GuildDelete:
         this.emit(ClientEvents.GuildDelete, data);
         break;
+      
+      case GatewayDispatchEvents.InteractionCreate: 
+        this.emit(ClientEvents.InteractionCreate, data);
     }
+  }
+
+  public override emit<K extends keyof ClientEventsMap>(event: K, ...args: ClientEventsMap[K]): boolean {
+    return super.emit(event, ...args);
+  }
+
+  public override on<K extends keyof ClientEventsMap>(event: K, listener: (...args: ClientEventsMap[K]) => void): this {
+    return super.on(event, listener as (...args: any[]) => void);
+  }
+
+  public override off<K extends keyof ClientEventsMap>(event: K, listener: (...args: ClientEventsMap[K]) => void): this {
+    return super.off(event, listener as (...args: any[]) => void);
   }
 }

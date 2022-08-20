@@ -82,8 +82,6 @@ export interface InteractionCollectorOptions extends CollectorOptions {
 
 export interface TextBasedChannel {
   send(options: TextBasedChannelSendOptions | string): Promise<Message>;
-  createMessageCollector(options: MessageCollectorOptions): MessageCollector;
-  awaitMessages(options: MessageCollectorOptions): Promise<Map<string, APIMessage>>;
-  createMessageComponentCollector(options: InteractionCollectorOptions): Promise<void>;
-  awaitMessageComponent(options: InteractionCollectorOptions): Promise<void>;
+  createMessageCollector(options: CollectorOptions): MessageCollector;
+  awaitMessages(options: CollectorOptions): Promise<Map<string, APIMessage>>;
 }

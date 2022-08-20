@@ -1,7 +1,7 @@
 import { Collector } from "."
 import { ClientEvents } from "../types/enum";
 import { MessageCollectorOptions } from "../types/interfaces"
-import { APIChannel, APIGuild, APIMessage, APIThreadChannel, CollectorEndReason } from "../types/types"
+import { APIChannel, APIMessage, APIUnavailableGuild, CollectorEndReason } from "../types/types"
 
 export class MessageCollector extends Collector<string, APIMessage> {
   public channelId: string;
@@ -13,6 +13,7 @@ export class MessageCollector extends Collector<string, APIMessage> {
     this.channelId = options.channelId;
     this.guildId = options.guildId;
 
+    this.client.adjustMaxListener(1);
     this.client.on(ClientEvents.MessageCreate, this.onCollect);
     this.client.on(ClientEvents.ChannelDelete, this.onChannelDelete);
     this.client.on(ClientEvents.ThreadDelete, this.onThreadDelete);
@@ -28,6 +29,7 @@ export class MessageCollector extends Collector<string, APIMessage> {
     this.client.off(ClientEvents.ChannelDelete, this.onChannelDelete);
     this.client.off(ClientEvents.GuildDelete, this.onGuildDelete);
     this.client.off(ClientEvents.ThreadDelete, this.onThreadDelete);
+    this.client.adjustMaxListener(-1);
   }
 
   protected collect(rawMessage: APIMessage): [key: string, value: APIMessage] | null {
@@ -40,13 +42,13 @@ export class MessageCollector extends Collector<string, APIMessage> {
     }
   }
 
-  private onGuildDelete(rawGuild: APIGuild): void {
+  private onGuildDelete(rawGuild: APIUnavailableGuild): void {
     if (rawGuild.id === this.guildId) {
       this.end('guildDelete');
     }
   }
 
-  private onThreadDelete(rawThread: APIThreadChannel): void {
+  private onThreadDelete(rawThread: APIChannel): void {
     if (rawThread.id === this.channelId) {
       this.end('threadDelete');
     }

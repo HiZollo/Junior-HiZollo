@@ -1,5 +1,5 @@
 import { MessageUtil } from ".";
-import { CategoryChannel, Client, DMChannel, GroupDMChannel, GuildStageVoiceChannel, GuildVoiceChannel, Message, MessageCollector, NewsChannel, TextChannel, ThreadChannel } from "../structures";
+import { CategoryChannel, Client, DMChannel, GroupDMChannel /*, GuildStageVoiceChannel, GuildVoiceChannel */, Message, MessageCollector, NewsChannel, TextChannel, ThreadChannel } from "../structures";
 import { CollectorOptions, TextBasedChannel, TextBasedChannelSendOptions } from "../types/interfaces";
 import { APIChannel, APIMessage, Channel, ChannelType, Routes } from "../types/types";
 
@@ -29,14 +29,14 @@ export class ChannelUtil extends null {
       case ChannelType.GuildPublicThread:
         return new ThreadChannel(client, data);
       
-      case ChannelType.GuildStageVoice:
-        return new GuildStageVoiceChannel(client, data);
+      // case ChannelType.GuildStageVoice:
+      //   return new GuildStageVoiceChannel(client, data);
       
       case ChannelType.GuildText:
         return new TextChannel(client, data);
       
-      case ChannelType.GuildVoice:
-        return new GuildVoiceChannel(client, data);
+      // case ChannelType.GuildVoice:
+      //   return new GuildVoiceChannel(client, data);
     }
     return undefined;
   }
@@ -60,10 +60,6 @@ export class ChannelUtil extends null {
           this.createMessageCollector(options).on('end', resolve);
         });
       }
-
-
-      public createMessageComponentCollector(options: MessageComponentCollectorOptions): Promise<void>;
-      public awaitMessageComponent(options: MessageComponentCollectorOptions): Promise<void>;
     }
     return BaseWithTextBased;
   }
