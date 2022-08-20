@@ -18,6 +18,8 @@ export * from "./TextChannel";
 // export * from "./GuildVoiceChannel";
 // export * from "./GuildStageVoiceChannel";
 
+export * from "./BaseInteraction";
+export * from "./AutocompleteInteraction";
 
 export * from "./Collector";
 export * from "./MessageCollector";
