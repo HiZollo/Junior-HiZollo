@@ -1,21 +1,26 @@
-import { APIActionRowComponent, APIApplication, APIAttachment, APIChannel, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, APIUser, Channel, GatewayMessageCreateDispatchData, MessageFlags, MessageType, Routes, Snowflake } from "../types/types";
-import { Client, User } from ".";
+import { APIActionRowComponent, APIApplication, APIAttachment, APIChannel, APIEmbed, APIGuildMember, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, APIUser, Channel, GatewayMessageCreateDispatchData, If, MessageFlags, MessageType, Routes, Snowflake } from "../types/types";
+import { Client, Permissions, User } from ".";
 import { ChannelUtil } from "../utils/ChannelUtil";
 import { TextBasedChannelSendOptions } from "../types/interfaces";
 import { MessageUtil } from "../utils";
 
-export class Message {
+export class Message<InGuild extends boolean = boolean> {
   public client!: Client;
   public id: Snowflake;
   public channelId: Snowflake;
   public user: APIUser;
-  public content: string;
   public timestamp: string;
+
+  public content: string;
   public tts: boolean;
-  public mentions: User[];
-  public mentionEveryone: boolean;
   public attachments: APIAttachment[];
   public embeds: APIEmbed[];
+  public components?: APIActionRowComponent<APIMessageActionRowComponent>[];
+  public stickerItems?: APIStickerItem[];
+
+  public mentions: User[];
+  public mentionEveryone: boolean;
+
   public nonce?: number | string;
   public pinned: boolean;
   public webhookId?: Snowflake;
@@ -28,9 +33,9 @@ export class Message {
   public referencedMessage?: Message | null;
   public interaction?: APIMessageInteraction;
   public thread?: Channel;
-  public components?: APIActionRowComponent<APIMessageActionRowComponent>[];
-  public stickerItems?: APIStickerItem[];
-  public position?: number;
+
+  public guildId: If<InGuild, string>;
+  public member: If<InGuild, APIGuildMember>;
 
   constructor(client: Client, data: GatewayMessageCreateDispatchData) {
     Object.defineProperty(this, 'client', { value: client });
@@ -38,13 +43,18 @@ export class Message {
     this.id = data.id;
     this.channelId = data.channel_id;
     this.user = data.author;
-    this.content = data.content;
     this.timestamp = data.timestamp;
+
+    this.content = data.content;
     this.tts = data.tts;
-    this.mentions = data.mentions.map(m => new User(this.client, m));
-    this.mentionEveryone = data.mention_everyone;
     this.attachments = data.attachments;
     this.embeds = data.embeds;
+    this.components = data.components;
+    this.stickerItems = data.sticker_items;
+
+    this.mentions = data.mentions.map(m => new User(this.client, m));
+    this.mentionEveryone = data.mention_everyone;
+
     this.nonce = data.nonce;
     this.pinned = data.pinned;
     this.webhookId = data.webhook_id;
@@ -57,9 +67,27 @@ export class Message {
     this.referencedMessage = data.referenced_message ? new Message(this.client, data.referenced_message) : null;
     this.interaction = data.interaction;
     this.thread = data.thread ? ChannelUtil.createChannel(this.client, data.thread) : undefined;
-    this.components = data.components;
-    this.stickerItems = data.sticker_items;
-    this.position = data.position;
+
+    this.guildId = (data.guild_id ?? null) as If<InGuild, string>;
+    this.member = (data.member ?? null) as If<InGuild, APIGuildMember>;
+  }
+
+  public get memberPermissions(): Permissions | null {
+    if (!this.inGuild()) return null;
+
+    const guild = this.client.guilds.get(this.guildId);
+    if (!guild) return null;
+
+    if (this.user.id === guild.ownerId) return new Permissions(Permissions.All);
+
+    const member = this.member;
+
+    const roles = guild.roles.filter(r => member.roles.includes(r.id));
+    return new Permissions(roles.reduce((acc, cur) => acc | BigInt(cur.permissions), 0n));
+  }
+
+  public inGuild(): this is Message<true> {
+    return Boolean(this.guildId && this.member);
   }
 
   public async send(message: TextBasedChannelSendOptions | string): Promise<Message> {

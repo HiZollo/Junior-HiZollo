@@ -4,6 +4,7 @@ import { Client, Message, MessageCollector } from "../structures";
 
 
 export interface ClientOptions {
+  id: string;
   token: string;
   intents: GatewayIntentBits;
 }

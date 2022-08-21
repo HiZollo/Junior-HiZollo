@@ -1,5 +1,7 @@
 export * from "./Client";
+export * from "./Guild";
 export * from "./Message";
+export * from "./Permissions";
 export * from "./User";
 
 
@@ -37,3 +39,5 @@ export * from "./Interaction/SelectMenuInteraction";
 
 export * from "./Interaction/MessageInteraction";
 export * from "./Interaction/UserInteraction";
+
+export * from "./Manager/GuildManager";

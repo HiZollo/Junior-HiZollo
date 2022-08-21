@@ -4,5 +4,6 @@ export enum ClientEvents {
   InteractionCreate = "InteractionCreate", 
   ChannelDelete = "ChannelDelete", 
   ThreadDelete = "ThreadDelete", 
+  GuildCreate = "GuildCreate", 
   GuildDelete = "GuildDelete"
 }

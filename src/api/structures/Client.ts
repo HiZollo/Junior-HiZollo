@@ -1,31 +1,37 @@
-import { APIChannel, APIInteraction, APIMessage, APIPingInteraction, APIUnavailableGuild, GatewayDispatchEvents, GatewayDispatchPayload, GatewayIntentBits, InteractionType } from "../types/types";
+import { APIChannel, APIInteraction, APIPingInteraction, APIUnavailableGuild, GatewayDispatchEvents, GatewayDispatchPayload, GatewayGuildCreateDispatchData, GatewayIntentBits, GatewayMessageCreateDispatchData, InteractionType } from "../types/types";
 import { REST } from "@discordjs/rest";
 import { WebSocketShardEvents, WebSocketManager } from "@discordjs/ws";
 import { EventEmitter } from "node:events";
 import { ClientOptions } from "../types/interfaces";
 import { ClientEvents } from "../types/enum";
+import { GuildManager } from ".";
 
 export type ClientEventsMap = {
   [ClientEvents.Ready]: [shardId: number];
-  [ClientEvents.MessageCreate]: [rawMessage: APIMessage];
+  [ClientEvents.MessageCreate]: [rawMessage: GatewayMessageCreateDispatchData];
   [ClientEvents.InteractionCreate]: [rawInteraction: Exclude<APIInteraction, APIPingInteraction>];
+  [ClientEvents.GuildCreate]: [rawGuild: GatewayGuildCreateDispatchData];
   [ClientEvents.ChannelDelete]: [rawChannel: APIChannel];
   [ClientEvents.ThreadDelete]: [rawThread: APIChannel];
   [ClientEvents.GuildDelete]: [rawGuild: APIUnavailableGuild];
 }
 
 export class Client extends EventEmitter {
+  public id: string;
   public token!: string
   public intents: GatewayIntentBits;
 
   public rest: REST;
   public ws: WebSocketManager;
 
+  public guilds: GuildManager;
+
   constructor(options: ClientOptions) {
     super();
 
     Object.defineProperty(this, 'token', { value: options.token })
 
+    this.id = options.id;
     this.intents = options.intents;
 
     this.rest = new REST().setToken(this.token);
@@ -37,11 +43,13 @@ export class Client extends EventEmitter {
 
     this.onReady = this.onReady.bind(this);
     this.onDispatch = this.onDispatch.bind(this);
+
+    this.guilds = new GuildManager(this);
   }
 
   public async login(): Promise<void> {
-    this.ws.on(WebSocketShardEvents.Ready, this.onReady);
     this.ws.on(WebSocketShardEvents.Dispatch, this.onDispatch);
+    this.ws.on(WebSocketShardEvents.Ready, this.onReady);
   
     try {
       await this.ws.connect();
@@ -78,6 +86,19 @@ export class Client extends EventEmitter {
         this.emit(ClientEvents.ThreadDelete, data);
         break;
 
+      case GatewayDispatchEvents.GuildCreate:
+        if (data.unavailable) break;
+
+        const guild = this.guilds.get(data.id);
+        if (guild) {
+          guild.patch(data);
+          break;
+        }
+
+        this.guilds.add(data);
+        this.emit(ClientEvents.GuildCreate, data);
+        break;
+
       case GatewayDispatchEvents.GuildDelete:
         this.emit(ClientEvents.GuildDelete, data);
         break;
@@ -86,6 +107,10 @@ export class Client extends EventEmitter {
         if (data.type === InteractionType.Ping) break;
         this.emit(ClientEvents.InteractionCreate, data);
         break;
+
+      case GatewayDispatchEvents.Ready:
+        console.log('hi');
+        data.guilds.forEach(g => this.guilds.add(g));
     }
   }
 

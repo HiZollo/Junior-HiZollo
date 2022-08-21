@@ -1,12 +1,12 @@
-import "dotenv/config";
+import config from "../../config";
 import { GatewayIntentBits } from "./types/types";
-import { Client } from "./structures";
+import { Client, Message } from "./structures";
 import { ClientEvents } from "./types/enum";
 import { InteractionUtil } from "./utils";
 
-if (!process.env.TOKEN) throw new Error("Token not set.");
 const client = new Client({
-  token: process.env.TOKEN, 
+  id: config.bot.id, 
+  token: config.bot.token, 
   intents: 
     GatewayIntentBits.Guilds |
     GatewayIntentBits.GuildMessages |
@@ -19,17 +19,19 @@ client.on(ClientEvents.Ready, shardId => {
   console.log(shardId);
 });
 
-client.on(ClientEvents.MessageCreate, async () => {
+client.on(ClientEvents.MessageCreate, async rawMessage => {
+  const message = new Message(client, rawMessage);
+  console.log(message.memberPermissions?.toArray());
+});
+
+client.on(ClientEvents.GuildCreate, rawGuild => {
+  console.log(true || rawGuild.roles);
 });
 
 client.on(ClientEvents.InteractionCreate, async rawInteraction => {
   const interaction = InteractionUtil.createInteraction(client, rawInteraction);
 
   if (interaction.isCommand()) {
-    await interaction.deferReply({ ephemeral: true });
-    await interaction.editReply('Pong!');
-    const m = await interaction.followUp({ content: 'P:thinking:ng!', ephemeral: true });
-    console.log(m);
   }
 });
 
