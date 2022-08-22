@@ -9,6 +9,8 @@ export class ActionManager {
   constructor(client: Client) {
     this.client = client;
     this.actions = Actions;
+
+    this.handle = this.handle.bind(this);
   }
 
   public handle(payload: { data: GatewayDispatchPayload, shardId: number }): void {
