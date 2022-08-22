@@ -46,7 +46,6 @@ export interface BaseMessageOptions {
 
 export interface TextBasedChannelSendOptions extends BaseMessageOptions {
   tts?: boolean;
-  messageReference?: APIMessageReference;
   stickerIds?: string[];
 }
 

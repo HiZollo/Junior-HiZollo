@@ -1,5 +1,5 @@
 import config from "../../config";
-import { GatewayIntentBits } from "./types/types";
+import {  GatewayIntentBits } from "./types/types";
 import { Client, Message, Permissions } from "./structures";
 import { ClientEvents } from "./types/enum";
 import { InteractionUtil } from "./utils";
@@ -21,11 +21,11 @@ client.on(ClientEvents.Ready, shardId => {
 
 client.on(ClientEvents.MessageCreate, async rawMessage => {
   const message = new Message(client, rawMessage);
-  console.log(message.memberPermissions?.toArray());
+  message.send('Hi');
 });
 
 client.on(ClientEvents.GuildCreate, rawGuild => {
-  console.log(true || rawGuild.roles);
+  console.log(rawGuild.name);
 });
 
 client.on(ClientEvents.InteractionCreate, async rawInteraction => {

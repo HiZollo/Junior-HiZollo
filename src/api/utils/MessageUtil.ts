@@ -10,7 +10,6 @@ export class MessageUtil extends null {
       tts: 'tts' in options ? options.tts : undefined, 
       embeds: options.embeds, 
       allowed_mentions: options.allowedMentions, 
-      message_reference: 'messageReference' in options ? options.messageReference : undefined, 
       components: options.components, 
       flags: 'ephemeral' in options ? MessageFlags.Ephemeral : undefined, 
       sticker_ids: 'stickerIds' in options ? options.stickerIds : undefined, 

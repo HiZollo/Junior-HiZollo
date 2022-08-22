@@ -16,6 +16,10 @@ export class ChannelManager {
     return this.cache.get(channelId);
   }
 
+  public has(channelId: string): boolean {
+    return this.cache.has(channelId);
+  }
+
   public add(data: APIChannel): Channel | null {
     const channel = ChannelUtil.createChannel(this.client, data);
     if (!channel) return null;

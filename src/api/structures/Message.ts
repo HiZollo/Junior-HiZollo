@@ -1,7 +1,7 @@
 import { APIActionRowComponent, APIApplication, APIAttachment, APIChannel, APIEmbed, APIGuildMember, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, APIUser, Channel, GatewayMessageCreateDispatchData, If, MessageFlags, MessageType, Routes, Snowflake } from "../types/types";
 import { Client, Permissions, User } from ".";
 import { ChannelUtil } from "../utils/ChannelUtil";
-import { TextBasedChannelSendOptions } from "../types/interfaces";
+import { BaseMessageOptions, TextBasedChannelSendOptions } from "../types/interfaces";
 import { MessageUtil } from "../utils";
 
 export class Message<InGuild extends boolean = boolean> {
@@ -97,18 +97,61 @@ export class Message<InGuild extends boolean = boolean> {
     return new Message(this.client, data);
   }
 
-  // public async delete() {}
-  // public async edit() {}
-  // public async fetch() {}
-  // public async react() {}
-  // public async reply() {}
+  public async reply(message: TextBasedChannelSendOptions | string): Promise<Message> {
+    const body = typeof message === 'string' ? { content: message } : MessageUtil.resolveBody(message);
+    const files = typeof message === 'string' ? [] : await MessageUtil.resolveFiles(message.files ?? []);
+
+    const data = await this.client.rest.post(Routes.channelMessages(this.channelId), {
+      body: {
+        ...body, 
+        message_reference: {
+          message_id: this.id
+        }
+      }, 
+      files
+    }) as APIMessage;
+    return new Message(this.client, data);
+  }
+
+  public async delete(): Promise<this> {
+    await this.client.rest.delete(Routes.channelMessage(this.channelId, this.id));
+    return this;
+  }
+
+  /**
+   * 編輯這則訊息，但不會更新訊息，因為我懶得寫
+   * @param message 編輯內容
+   * @returns 自己
+   */
+  public async edit(message: BaseMessageOptions | string): Promise<this> {
+    const body = typeof message === 'string' ? { content: message } : MessageUtil.resolveBody(message);
+    const files = typeof message === 'string' ? [] : await MessageUtil.resolveFiles(message.files ?? []);
+
+    await this.client.rest.patch(Routes.channelMessage(this.channelId, this.id), { body, files }) as APIMessage;
+    return this;
+  }
+
+  public async react(emoji: string): Promise<void> {
+    if (/\d{17,20}/.test(emoji)) {
+      emoji = `emoji:${emoji}`;
+    }
+
+    await this.client.rest.put(Routes.channelMessageOwnReaction(this.channelId, this.id, emoji));
+  }
+
   // public async awaitMessageComponent() {}
   // public async createMessageComponentCollector() {}
-  // public async startThread() {}
 
-  public async fetchChannel(): Promise<Channel> {
-    const data = await this.client.rest.get(Routes.channel(this.channelId)) as APIChannel;
-    return ChannelUtil.createChannel(this.client, data)!;
+  public async fetchChannel(force: boolean = false): Promise<Channel> {
+    let channel = this.client.channels.get(this.channelId);
+
+    if (force || !channel) {
+      const data = await this.client.rest.get(Routes.channel(this.channelId)) as APIChannel;
+      this.client.channels.add(data);
+      channel = this.client.channels.get(this.channelId)!;
+    }
+
+    return channel;
   }
 
   public toString(): string {
