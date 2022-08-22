@@ -6,4 +6,8 @@ export class Util extends null {
   static valuesOf<T>(object: T): (T[keyof T])[] {
     return Object.values(object) as (T[keyof T])[];
   }
+
+  static entriesOf<T>(object: T): [keyof T, T[keyof T]][] {
+    return Object.entries(object) as [keyof T, T[keyof T]][];
+  }
 }

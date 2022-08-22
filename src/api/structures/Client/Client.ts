@@ -1,10 +1,11 @@
-import { APIChannel, APIInteraction, APIPingInteraction, APIUnavailableGuild, GatewayDispatchEvents, GatewayDispatchPayload, GatewayGuildCreateDispatchData, GatewayIntentBits, GatewayMessageCreateDispatchData, InteractionType } from "../types/types";
+import { APIChannel, APIInteraction, APIPingInteraction, APIUnavailableGuild, GatewayGuildCreateDispatchData, GatewayIntentBits, GatewayMessageCreateDispatchData } from "../../types/types";
 import { REST } from "@discordjs/rest";
 import { WebSocketShardEvents, WebSocketManager } from "@discordjs/ws";
 import { EventEmitter } from "node:events";
-import { ClientOptions } from "../types/interfaces";
-import { ClientEvents } from "../types/enum";
-import { GuildManager } from ".";
+import { ClientOptions } from "../../types/interfaces";
+import { ClientEvents } from "../../types/enum";
+import { GuildManager } from "..";
+import { ActionManager } from "./ActionManager";
 
 export type ClientEventsMap = {
   [ClientEvents.Ready]: [shardId: number];
@@ -24,6 +25,7 @@ export class Client extends EventEmitter {
   public rest: REST;
   public ws: WebSocketManager;
 
+  public actions: ActionManager;
   public guilds: GuildManager;
 
   constructor(options: ClientOptions) {
@@ -42,13 +44,13 @@ export class Client extends EventEmitter {
     });
 
     this.onReady = this.onReady.bind(this);
-    this.onDispatch = this.onDispatch.bind(this);
 
+    this.actions = new ActionManager(this);
     this.guilds = new GuildManager(this);
   }
 
   public async login(): Promise<void> {
-    this.ws.on(WebSocketShardEvents.Dispatch, this.onDispatch);
+    this.ws.on(WebSocketShardEvents.Dispatch, this.actions.handle);
     this.ws.on(WebSocketShardEvents.Ready, this.onReady);
   
     try {
@@ -68,50 +70,6 @@ export class Client extends EventEmitter {
 
   private onReady(param: { shardId: number }): void {
     this.emit(ClientEvents.Ready, param.shardId);
-  }
-
-  private onDispatch(payload: { data: GatewayDispatchPayload } & { shardId: number }): void {
-    const { t: event, d: data } = payload.data;
-
-    switch (event) {
-      case GatewayDispatchEvents.MessageCreate:
-        this.emit(ClientEvents.MessageCreate, data);
-        break;
-
-      case GatewayDispatchEvents.ChannelDelete:
-        this.emit(ClientEvents.ChannelDelete, data);
-        break;
-
-      case GatewayDispatchEvents.ThreadDelete:
-        this.emit(ClientEvents.ThreadDelete, data);
-        break;
-
-      case GatewayDispatchEvents.GuildCreate:
-        if (data.unavailable) break;
-
-        const guild = this.guilds.get(data.id);
-        if (guild) {
-          guild.patch(data);
-          break;
-        }
-
-        this.guilds.add(data);
-        this.emit(ClientEvents.GuildCreate, data);
-        break;
-
-      case GatewayDispatchEvents.GuildDelete:
-        this.emit(ClientEvents.GuildDelete, data);
-        break;
-      
-      case GatewayDispatchEvents.InteractionCreate: 
-        if (data.type === InteractionType.Ping) break;
-        this.emit(ClientEvents.InteractionCreate, data);
-        break;
-
-      case GatewayDispatchEvents.Ready:
-        console.log('hi');
-        data.guilds.forEach(g => this.guilds.add(g));
-    }
   }
 
   public override emit<K extends keyof ClientEventsMap>(event: K, ...args: ClientEventsMap[K]): boolean {

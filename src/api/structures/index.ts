@@ -1,4 +1,5 @@
-export * from "./Client";
+export * from "./Client/Client";
+
 export * from "./Guild";
 export * from "./Message";
 export * from "./Permissions";
