@@ -42,12 +42,8 @@ export abstract class ChannelBase<T extends ChannelType> {
   }
 
   public patch(data: ChannelBasePatchOptions): this {
-    if (data.type) {
-      this.type = data.type
-    }
-    if (data.id) {
-      this.id = data.id
-    }
+    this.type = data.type
+    this.id = data.id
     return this;
   }
 }

@@ -1,4 +1,4 @@
-import { APIAllowedMentions, APIEmbed, APIMessage, APIMessageComponent, APIMessageReference, APIOverwrite, Awaitable, ChannelType, GatewayIntentBits, MessageFlags, VideoQualityMode } from "./types";
+import { APIAllowedMentions, APIEmbed, APIMessage, APIMessageComponent, APIMessageReference, APIOverwrite, APIThreadMember, APIThreadMetadata, Awaitable, ChannelType, GatewayIntentBits, MessageFlags } from "./types";
 import { Client, Message, MessageCollector } from "../structures";
 
 
@@ -9,8 +9,8 @@ export interface ClientOptions {
 }
 
 export interface ChannelBasePatchOptions {
-  type?: ChannelType;
-  id?: string;
+  type: ChannelType;
+  id: string;
 }
 
 export interface GuildChannelPatchOptions extends ChannelBasePatchOptions {
@@ -24,20 +24,11 @@ export interface GuildTextChannelPatchOptions extends GuildChannelPatchOptions {
   topic?: string | null;
 }
 
-
-export interface GuildChannelEditOptions {
-  name: string;
-  type: ChannelType;
-  topic?: string | null;
-  rateLimitPerUser?: number;
-  bitrate?: number;
-  userLimit?: number;
-  permissionOverwrite?: APIOverwrite[];
-  parentId?: string;
-  rtcRegion?: string;
-  videoQualityMode?: VideoQualityMode;
-  reason?: string;
+export interface ThreadChannelPatchOptions extends GuildChannelPatchOptions {
+  member?: APIThreadMember | null;
+  thread_metadata ?: APIThreadMetadata | null;
 }
+
 
 export interface FileOptions {
   attachment: string | Buffer;

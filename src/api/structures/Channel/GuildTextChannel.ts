@@ -4,11 +4,11 @@ import { APIGuildTextChannel, GuildTextChannelType } from "../../types/types";
 import { ChannelUtil } from "../../utils";
 
 export abstract class GuildTextChannel<T extends GuildTextChannelType> extends ChannelUtil.ApplyTextBased(GuildChannel)<T> {
-  public topic?: string | null;
+  public topic: string | null;
 
   constructor(client: Client, data: APIGuildTextChannel<T>) {
     super(client, data);
-    this.topic = data.topic;
+    this.topic = data.topic ?? null;
   }
 
   // public async bulkDelete(messages, filterOld = false) {}
@@ -18,8 +18,8 @@ export abstract class GuildTextChannel<T extends GuildTextChannelType> extends C
   public patch(data: GuildTextChannelPatchOptions): this {
     super.patch(data);
 
-    if (data.topic) {
-      this.topic = data.topic;
+    if ('topic' in data) {
+      this.topic = data.topic ?? null;
     }
     return this;
   }

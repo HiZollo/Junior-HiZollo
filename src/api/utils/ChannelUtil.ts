@@ -41,7 +41,7 @@ export class ChannelUtil extends null {
     return undefined;
   }
 
-  static ApplyTextBased<T extends abstract new (...args: any[]) => { client: Client, id: string, guildId?: string }>(Base: T) {
+  static ApplyTextBased<T extends abstract new (...args: any[]) => { client: Client, id: string, guildId?: string | null }>(Base: T) {
     abstract class BaseWithTextBased extends Base implements TextBasedChannel {
       public async send(message: TextBasedChannelSendOptions | string): Promise<Message> {
         const body = typeof message === 'string' ? { content: message } : MessageUtil.resolveBody(message);
@@ -52,7 +52,7 @@ export class ChannelUtil extends null {
       }
 
       public createMessageCollector(options: CollectorOptions): MessageCollector {
-        return new MessageCollector({ channelId: this.id, guildId: this.guildId, ...options });
+        return new MessageCollector({ channelId: this.id, guildId: this.guildId ?? undefined, ...options });
       }
 
       public awaitMessages(options: CollectorOptions): Promise<Map<string, APIMessage>> {
