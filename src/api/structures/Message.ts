@@ -8,7 +8,7 @@ export class Message<InGuild extends boolean = boolean> {
   public client!: Client;
   public id: Snowflake;
   public channelId: Snowflake;
-  public user: APIUser;
+  public user: User;
   public timestamp: string;
 
   public content: string;
@@ -18,7 +18,7 @@ export class Message<InGuild extends boolean = boolean> {
   public components?: APIActionRowComponent<APIMessageActionRowComponent>[];
   public stickerItems?: APIStickerItem[];
 
-  public mentions: User[];
+  public mentions: APIUser[];
   public mentionEveryone: boolean;
 
   public nonce?: number | string;
@@ -42,7 +42,7 @@ export class Message<InGuild extends boolean = boolean> {
 
     this.id = data.id;
     this.channelId = data.channel_id;
-    this.user = data.author;
+    this.user = new User(this.client, data.author);
     this.timestamp = data.timestamp;
 
     this.content = data.content;
@@ -52,7 +52,7 @@ export class Message<InGuild extends boolean = boolean> {
     this.components = data.components;
     this.stickerItems = data.sticker_items;
 
-    this.mentions = data.mentions.map(m => new User(this.client, m));
+    this.mentions = data.mentions;
     this.mentionEveryone = data.mention_everyone;
 
     this.nonce = data.nonce;
@@ -81,7 +81,6 @@ export class Message<InGuild extends boolean = boolean> {
     if (this.user.id === guild.ownerId) return new Permissions(Permissions.All);
 
     const member = this.member;
-
     const roles = guild.roles.filter(r => member.roles.includes(r.id));
     return new Permissions(roles.reduce((acc, cur) => acc | BigInt(cur.permissions), 0n));
   }

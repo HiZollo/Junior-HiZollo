@@ -1,6 +1,6 @@
 import config from "../../config";
 import { GatewayIntentBits } from "./types/types";
-import { Client, Message } from "./structures";
+import { Client, Message, Permissions } from "./structures";
 import { ClientEvents } from "./types/enum";
 import { InteractionUtil } from "./utils";
 
@@ -31,7 +31,8 @@ client.on(ClientEvents.GuildCreate, rawGuild => {
 client.on(ClientEvents.InteractionCreate, async rawInteraction => {
   const interaction = InteractionUtil.createInteraction(client, rawInteraction);
 
-  if (interaction.isCommand()) {
+  if (interaction.isCommand() && interaction.inGuild()) {
+    console.log(Permissions.resolve(interaction.member.permissions).toArray());
   }
 });
 

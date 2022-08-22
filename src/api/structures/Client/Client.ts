@@ -4,17 +4,18 @@ import { WebSocketShardEvents, WebSocketManager } from "@discordjs/ws";
 import { EventEmitter } from "node:events";
 import { ClientOptions } from "../../types/interfaces";
 import { ClientEvents } from "../../types/enum";
-import { GuildManager } from "..";
+import { ChannelManager, GuildManager } from "..";
 import { ActionManager } from "./ActionManager";
 
 export type ClientEventsMap = {
-  [ClientEvents.Ready]: [shardId: number];
-  [ClientEvents.MessageCreate]: [rawMessage: GatewayMessageCreateDispatchData];
-  [ClientEvents.InteractionCreate]: [rawInteraction: Exclude<APIInteraction, APIPingInteraction>];
-  [ClientEvents.GuildCreate]: [rawGuild: GatewayGuildCreateDispatchData];
+  [ClientEvents.ChannelUpdate]: [rawChannel: APIChannel];
   [ClientEvents.ChannelDelete]: [rawChannel: APIChannel];
-  [ClientEvents.ThreadDelete]: [rawThread: APIChannel];
+  [ClientEvents.GuildCreate]: [rawGuild: GatewayGuildCreateDispatchData];
   [ClientEvents.GuildDelete]: [rawGuild: APIUnavailableGuild];
+  [ClientEvents.InteractionCreate]: [rawInteraction: Exclude<APIInteraction, APIPingInteraction>];
+  [ClientEvents.MessageCreate]: [rawMessage: GatewayMessageCreateDispatchData];
+  [ClientEvents.Ready]: [shardId: number];
+  [ClientEvents.ThreadDelete]: [rawThread: APIChannel];
 }
 
 export class Client extends EventEmitter {
@@ -26,6 +27,7 @@ export class Client extends EventEmitter {
   public ws: WebSocketManager;
 
   public actions: ActionManager;
+  public channels: ChannelManager;
   public guilds: GuildManager;
 
   constructor(options: ClientOptions) {
@@ -46,6 +48,7 @@ export class Client extends EventEmitter {
     this.onReady = this.onReady.bind(this);
 
     this.actions = new ActionManager(this);
+    this.channels = new ChannelManager(this);
     this.guilds = new GuildManager(this);
   }
 

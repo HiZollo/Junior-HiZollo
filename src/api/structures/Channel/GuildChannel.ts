@@ -1,5 +1,5 @@
 import { ChannelBase, Client } from "..";
-import { GuildChannelEditOptions } from "../../types/interfaces";
+import { GuildChannelEditOptions, GuildChannelPatchOptions } from "../../types/interfaces";
 import { APIGuildChannel, APIOverwrite, ChannelType, Routes } from "../../types/types";
 
 export abstract class GuildChannel<T extends ChannelType> extends ChannelBase<T> {
@@ -12,11 +12,16 @@ export abstract class GuildChannel<T extends ChannelType> extends ChannelBase<T>
 
   constructor(client: Client, data: APIGuildChannel<T>) {
     super(client, data);
-    this.patch(data);
+    this.name = data.name;
+    this.guildId = data.guild_id;
+    this.nsfw = data.nsfw;
+    this.parentId = data.parent_id;
+    this.permissionOverwrites = data.permission_overwrites;
+    this.position = data.position;
   }
 
   public async edit(options: GuildChannelEditOptions): Promise<this> {
-    const data = await this.client.rest.patch(Routes.channel(this.id), {
+    await this.client.rest.patch(Routes.channel(this.id), {
       body: {
         name: options.name ?? this.name, 
         type: options.type ?? this.type, 
@@ -34,22 +39,32 @@ export abstract class GuildChannel<T extends ChannelType> extends ChannelBase<T>
       }, 
       reason: options.reason
     }) as APIGuildChannel<T>;
-
-    this.patch(data);
     return this;
   }
 
   // public async permissionsFor(member: GuildMember): PermissionsBitField {} // TODO: GuildMember, PermissionsBitField
 
-  protected patch(data: APIGuildChannel<T>): this {
+  public patch(data: GuildChannelPatchOptions): this {
     super.patch(data);
-    this.type = data.type;
-    this.name = data.name;
-    this.guildId = data.guild_id;
-    this.nsfw = data.nsfw;
-    this.parentId = data.parent_id;
-    this.permissionOverwrites = data.permission_overwrites;
-    this.position = data.position;
+
+    if (data.name) {
+      this.name = data.name;
+    }
+    if (data.guild_id) {
+      this.guildId = data.guild_id;
+    }
+    if (data.nsfw) {
+      this.nsfw = data.nsfw;
+    }
+    if (data.parent_id) {
+      this.parentId = data.parent_id;
+    }
+    if (data.permission_overwrites) {
+      this.permissionOverwrites = data.permission_overwrites;
+    }
+    if (data.position) {
+      this.position = data.position;
+    }
     return this;
   }
 }

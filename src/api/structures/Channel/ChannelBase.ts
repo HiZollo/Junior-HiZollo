@@ -1,5 +1,5 @@
 import { Client } from "..";
-import { TextBasedChannel } from "../../types/interfaces";
+import { ChannelBasePatchOptions, TextBasedChannel } from "../../types/interfaces";
 import { APIChannelBase, ChannelFlags, ChannelType, Routes, Snowflake } from "../../types/types";
 import { SnowflakeUtil } from "../../utils";
 
@@ -14,7 +14,7 @@ export abstract class ChannelBase<T extends ChannelType> {
 
     this.type = data.type;
     this.id = data.id;
-    this.patch(data);
+    this.flags = data.flags
   }
 
   public get createdTimestamp(): number {
@@ -43,10 +43,16 @@ export abstract class ChannelBase<T extends ChannelType> {
     return `<#${this.id}>`;
   }
 
-  protected patch(data: APIChannelBase<T>): this {
-    this.type = data.type;
-    this.id = data.id;
-    this.flags = data.flags;
+  public patch(data: ChannelBasePatchOptions): this {
+    if (data.type) {
+      this.type = data.type
+    }
+    if (data.id) {
+      this.id = data.id
+    }
+    if (data.flags) {
+      this.flags = data.flags
+    }
     return this;
   }
 }

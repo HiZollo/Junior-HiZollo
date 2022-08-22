@@ -41,4 +41,5 @@ export * from "./Interaction/SelectMenuInteraction";
 export * from "./Interaction/MessageInteraction";
 export * from "./Interaction/UserInteraction";
 
+export * from "./Manager/ChannelManager";
 export * from "./Manager/GuildManager";

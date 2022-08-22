@@ -1,4 +1,5 @@
 import { Client } from "..";
+import { TextChannelPatchOptions } from "../../types/interfaces";
 import { APITextChannel, ChannelType } from "../../types/types";
 import { GuildTextChannel } from "./GuildTextChannel";
 
@@ -7,12 +8,15 @@ export class TextChannel extends GuildTextChannel<ChannelType.GuildText> {
 
   constructor(client: Client, data: APITextChannel) {
     super(client, data);
-    this.patch(data);
+    this.rateLimitPerUser = data.rate_limit_per_user;
   }
 
-  protected patch(data: APITextChannel): this {
+  public patch(data: TextChannelPatchOptions): this {
     super.patch(data);
-    this.rateLimitPerUser = data.rate_limit_per_user;
+
+    if (data.rate_limit_per_user) {
+      this.rateLimitPerUser = data.rate_limit_per_user;
+    }
     return this;
   }
 }
