@@ -1,4 +1,4 @@
-import { APIAllowedMentions, APIEmbed, APIMessage, APIMessageComponent, APIMessageReference, APIOverwrite, Awaitable, ChannelFlags, ChannelType, GatewayIntentBits, MessageFlags, ThreadAutoArchiveDuration, VideoQualityMode } from "./types";
+import { APIAllowedMentions, APIEmbed, APIMessage, APIMessageComponent, APIMessageReference, APIOverwrite, Awaitable, ChannelType, GatewayIntentBits, MessageFlags, VideoQualityMode } from "./types";
 import { Client, Message, MessageCollector } from "../structures";
 
 
@@ -11,34 +11,24 @@ export interface ClientOptions {
 export interface ChannelBasePatchOptions {
   type?: ChannelType;
   id?: string;
-  flags?: ChannelFlags;
 }
 
 export interface GuildChannelPatchOptions extends ChannelBasePatchOptions {
   name?: string | null;
   guild_id?: string;
-  nsfw?: boolean;
   parent_id?: string | null;
   permission_overwrites?: APIOverwrite[];
-  position?: number;
 }
 
 export interface GuildTextChannelPatchOptions extends GuildChannelPatchOptions {
-  default_auto_archive_duration?: ThreadAutoArchiveDuration;
   topic?: string | null;
-}
-
-export interface TextChannelPatchOptions extends GuildTextChannelPatchOptions{
-  rate_limit_per_user?: number;
 }
 
 
 export interface GuildChannelEditOptions {
   name: string;
   type: ChannelType;
-  position?: number;
   topic?: string | null;
-  nsfw?: boolean | null;
   rateLimitPerUser?: number;
   bitrate?: number;
   userLimit?: number;
@@ -46,7 +36,6 @@ export interface GuildChannelEditOptions {
   parentId?: string;
   rtcRegion?: string;
   videoQualityMode?: VideoQualityMode;
-  defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   reason?: string;
 }
 

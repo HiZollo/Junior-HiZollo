@@ -1,20 +1,18 @@
 import { Client } from "..";
 import { ChannelBasePatchOptions, TextBasedChannel } from "../../types/interfaces";
-import { APIChannelBase, ChannelFlags, ChannelType, Routes, Snowflake } from "../../types/types";
+import { APIChannelBase, ChannelType, Routes, Snowflake } from "../../types/types";
 import { SnowflakeUtil } from "../../utils";
 
 export abstract class ChannelBase<T extends ChannelType> {
   public client!: Client;
   public type: ChannelType;
   public id: Snowflake;
-  public flags?: ChannelFlags;
 
   constructor(client: Client, data: APIChannelBase<T>) {
     Object.defineProperty(this, 'client', { value: client });
 
     this.type = data.type;
     this.id = data.id;
-    this.flags = data.flags
   }
 
   public get createdTimestamp(): number {
@@ -49,9 +47,6 @@ export abstract class ChannelBase<T extends ChannelType> {
     }
     if (data.id) {
       this.id = data.id
-    }
-    if (data.flags) {
-      this.flags = data.flags
     }
     return this;
   }
