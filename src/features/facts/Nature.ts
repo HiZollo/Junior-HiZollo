@@ -1,3 +1,23 @@
+/*
+ * 
+ * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
+ * 
+ * This file is a part of Junior HiZollo.
+ * 
+ * Junior HiZollo is free software: you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Junior HiZollo is distributed in the hope that it will be useful, 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 export const Nature = [
   '河馬的奶水與汗水都是粉紅色的', '殺死最多人的生物是蚊子', '木星的質量是太陽系中所有行星總質量的兩倍以上', '河馬是可以跑得比人還快的', '草莓不是梅果的一種',
   '跳蚤可以跳過 350 倍身長的距離，相當於一個人跳過一個美式足球場', '鴕鳥的眼睛比大腦還大', '太陽其實也會發出綠光與藍光，只是黃光太強了所以你看不到', '大象跳不起來',

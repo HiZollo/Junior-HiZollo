@@ -1,3 +1,23 @@
+/*
+ * 
+ * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
+ * 
+ * This file is a part of Junior HiZollo.
+ * 
+ * Junior HiZollo is free software: you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Junior HiZollo is distributed in the hope that it will be useful, 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 export default {
   hz: [
     'HiZollo 的右手轉化成了鋼製乒乓球拍，使出一記殺球把你擊暈', '你難得打中 HiZollo，為了獎勵你就給你一個乒吧 @p', '你好爛喔，給你用丟的都沒過網',

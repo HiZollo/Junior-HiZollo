@@ -1,3 +1,23 @@
+/*
+ * 
+ * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
+ * 
+ * This file is a part of Junior HiZollo.
+ * 
+ * Junior HiZollo is free software: you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Junior HiZollo is distributed in the hope that it will be useful, 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 export const Human = [
   '如果把地球的整個歷史壓縮成一年的話，那麼人類相當是在 12/31 23:58 誕生的', '現在大約有 1600 萬人是成吉思汗的直系後裔', '成年人體內的血管長度大約可以環繞地球兩圈半',
   '慣用手上的指甲長得比非慣用手還快', '因為心臟的血流極快，所以癌細胞來不及感染心臟就被沖走了，這也是為什麼「心臟癌」發生機率這麼低的原因之一',

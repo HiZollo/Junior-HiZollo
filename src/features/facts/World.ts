@@ -1,3 +1,23 @@
+/*
+ * 
+ * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
+ * 
+ * This file is a part of Junior HiZollo.
+ * 
+ * Junior HiZollo is free software: you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Junior HiZollo is distributed in the hope that it will be useful, 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 export const World = [
   '自由女神的皇冠上一共有七個尖角', '艾菲爾鐵塔在天氣冷的時候會縮短約 15 公分', '柏林圍牆是不小心被推倒的', '北極的冰是浮在海上，而南極的冰是積在高原上的',
   '劃卡時不一定要用 2B 鉛筆，像美國劃卡統一使用 2 號鉛筆，就相當於我們的 HB 鉛筆', '南極是地球上最廣大的無人領地', '全世界降水量最少的地方不是沙漠，而是南極',
