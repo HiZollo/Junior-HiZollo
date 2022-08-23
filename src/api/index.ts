@@ -23,7 +23,7 @@ client.on(ClientEvents.MessageCreate, async rawMessage => {
   const message = new Message(client, rawMessage);
   if (!message.inGuild()) return;
   const channel = await message.fetchChannel();
-  if ('permissionsFor' in channel) {
+  if (channel.inGuild()) {
     console.log(channel.permissionsFor(message.member)?.toArray());
   }
 });
