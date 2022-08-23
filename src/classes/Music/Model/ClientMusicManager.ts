@@ -173,11 +173,8 @@ export class ClientMusicManager {
    */
   public leave(guildId: string): void {
     const manager = this.guilds.get(guildId);
-    if (manager?.connection) {
-      manager.player.stop(true);
-      manager.connection.destroy();
-      this.guilds.delete(guildId);
-    }
+    manager?.destroyAll();
+    this.guilds.delete(guildId);
   }
 
   /**

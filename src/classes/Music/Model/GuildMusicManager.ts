@@ -79,6 +79,11 @@ export class GuildMusicManager {
   public paused: boolean;
 
   /**
+   * 這個管家是否被摧毀
+   */
+  public destroyed: boolean;
+
+  /**
    * 這個伺服器的音樂遙控器
    */
   public controller: GuildMusicController;
@@ -104,6 +109,7 @@ export class GuildMusicManager {
     this.nowPlaying = null;
     this.working = false;
     this.paused = false;
+    this.destroyed = false;
 
     this.controller = new GuildMusicController({
       client: this.client, 
@@ -195,6 +201,16 @@ export class GuildMusicManager {
   }
 
   /**
+   * 抹除這個伺服器中的所有音樂記錄
+   */
+  public destroyAll(): void {
+    this.destroyed = true;
+    this.queue = [];
+    this.player.stop(true);
+    this.connection.destroy();
+  }
+
+  /**
    * 實際播放一首歌曲
    * @param track 歌曲
    */
@@ -221,14 +237,16 @@ export class GuildMusicManager {
         }
         const next = this.queue.shift();
         if (!next) {
+          this.nowPlaying = null;
+          this.working = false;
+
           await this.controller.clear();
           if (this.voiceChannel.type === ChannelType.GuildStageVoice && !this.voiceState.suppress && this.autoSuppress) {
             this.voiceState.setSuppressed(true);
           }
-
-          this.nowPlaying = null;
-          this.working = false;
-          await this.view.endOfTheQueue(this.textChannel);
+          if (!this.destroyed) {
+            await this.view.endOfTheQueue(this.textChannel);
+          }
           return;
         }
         this._play(next);
@@ -274,7 +292,7 @@ export class GuildMusicManager {
    * @returns 這部影片的相關資料
    */
   private async parseVideoUrl(source: Source, url: string): Promise<{ stream: YouTubeStream, info: InfoData } | void> {
-    const result = await this.fetchVideo(url);
+    const result = await this.fetchVideo(url).catch(console.error);
     if (!result) {
       await this.view.invalidVideoUrl(source);
       return;
