@@ -3,6 +3,7 @@ import { APIGuildMember, APIRole, GatewayGuildCreateDispatchData, Routes } from 
 
 export class Guild {
   public client!: Client;
+  public name!: string;
   public id!: string;
   public ownerId!: string;
   public roles!: APIRole[];
@@ -28,8 +29,8 @@ export class Guild {
   }
 
   public patch(data: Partial<GatewayGuildCreateDispatchData>): this {
-    if (data.id) {
-      this.id = data.id;
+    if (data.name) {
+      this.name = data.name;
     }
     if (data.roles) {
       this.roles = data.roles;
@@ -37,7 +38,7 @@ export class Guild {
     if (data.owner_id) {
       this.ownerId = data.owner_id;
     }
-    this.available ||= !!data.roles;
+    this.available ||= Boolean(data.roles);
     return this;
   }
 }

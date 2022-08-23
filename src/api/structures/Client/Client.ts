@@ -1,4 +1,4 @@
-import { APIChannel, APIInteraction, APIPingInteraction, APIUnavailableGuild, GatewayGuildCreateDispatchData, GatewayIntentBits, GatewayMessageCreateDispatchData } from "../../types/types";
+import { ClientEventsMap, GatewayIntentBits } from "../../types/types";
 import { REST } from "@discordjs/rest";
 import { WebSocketShardEvents, WebSocketManager } from "@discordjs/ws";
 import { EventEmitter } from "node:events";
@@ -6,17 +6,6 @@ import { ClientOptions } from "../../types/interfaces";
 import { ClientEvents } from "../../types/enum";
 import { ChannelManager, GuildManager } from "..";
 import { ActionManager } from "./ActionManager";
-
-export type ClientEventsMap = {
-  [ClientEvents.ChannelUpdate]: [rawChannel: APIChannel];
-  [ClientEvents.ChannelDelete]: [rawChannel: APIChannel];
-  [ClientEvents.GuildCreate]: [rawGuild: GatewayGuildCreateDispatchData];
-  [ClientEvents.GuildDelete]: [rawGuild: APIUnavailableGuild];
-  [ClientEvents.InteractionCreate]: [rawInteraction: Exclude<APIInteraction, APIPingInteraction>];
-  [ClientEvents.MessageCreate]: [rawMessage: GatewayMessageCreateDispatchData];
-  [ClientEvents.Ready]: [shardId: number];
-  [ClientEvents.ThreadDelete]: [rawThread: APIChannel];
-}
 
 export class Client extends EventEmitter {
   public id: string;
