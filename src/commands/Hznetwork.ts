@@ -42,7 +42,7 @@ export default class Hznetwork extends Command<[string]> {
   private async getEmbedForAllPorts(source: Source): Promise<EmbedBuilder> {
     const embed = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo Network 中心');
 
-    let description = '';
+    let description = this.networkDescription;
     for (const portNo of source.client.network.publicPortNo) {
       const channelCounts = await source.client.shard?.broadcastEval((client, {portNo}) => {
         return client.network.ports.get(portNo)?.size ?? 0;
@@ -79,4 +79,15 @@ export default class Hznetwork extends Command<[string]> {
       )
       .setFooter({ text: `${source.user.tag}．新增名稱格式為 #${config.bot.network.portPrefix}${portNo} 的頻道以加入此網絡！`, iconURL: source.user.displayAvatarURL() });
   }
+
+  private networkDescription = 
+`**HiZollo Network** 是一個大型聊天室，你可以與伺服器以外的成員聊天互動
+你只要建立一個名為 __#hz-network-[埠號]__ 的頻道，就能加入 HiZollo Network 了
+目前可用的埠號有 \`1\`、\`8\`、\`9\`、\`27\`，注意埠號不含方括號 \`[]\`
+
+在 HiZollo Network 中，每一條訊息都會被發送到所有相同埠號的頻道
+也因為訊息會被發送到整個聯絡網中，請勿發送任何惡意攻擊、釣魚連結等不當的訊息內容
+
+以下是當前 HiZollo Network 的狀態：
+`
 }
