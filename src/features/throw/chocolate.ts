@@ -1,3 +1,23 @@
+/*
+ * 
+ * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
+ * 
+ * This file is a part of Junior HiZollo.
+ * 
+ * Junior HiZollo is free software: you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Junior HiZollo is distributed in the hope that it will be useful, 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 export default {
   hz: [
     '不是 HiZollo 牌的巧克力，我可是不吃的喔', '巧克力球擊中 HiZollo 身上的金屬鎧甲後，反彈到你臉上了，HiZollo 毫髮無損', '憑你的爛巧克力也想取悅我？',

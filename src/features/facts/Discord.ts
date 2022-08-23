@@ -1,3 +1,23 @@
+/*
+ * 
+ * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
+ * 
+ * This file is a part of Junior HiZollo.
+ * 
+ * Junior HiZollo is free software: you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Junior HiZollo is distributed in the hope that it will be useful, 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 export const Discord = [
   '在 Discord 電腦版中，按下 \`Ctrl + /\` 後會出現快捷鍵選單，在這個選單中按下任何方向鍵，都會播放相對應的音效',
   '當你收到 Discord 某位使用者的來電時，你有 0.001 的機率會聽到電子混音的鈴聲',
