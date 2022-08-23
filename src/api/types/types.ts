@@ -11,7 +11,7 @@ export type Interaction = AutocompleteInteraction | ChatInputInteraction | Messa
 
 export type CollectorEndReason = 'time' | 'idle' | 'max' | 'user' | 'channelDelete' | 'guildDelete' | 'threadDelete';
 
-export type PermissionResolvable = bigint | string | PermissionStrings[];
+export type PermissionResolvable = bigint | string | PermissionStrings | PermissionResolvable[];
 
 export type PermissionStrings = keyof typeof PermissionFlagsBits;
 

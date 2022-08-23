@@ -1,6 +1,5 @@
-import { APIActionRowComponent, APIApplication, APIAttachment, APIChannel, APIEmbed, APIGuildMember, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, APIUser, Channel, GatewayMessageCreateDispatchData, If, MessageFlags, MessageType, Routes, Snowflake } from "../types/types";
-import { Client, Permissions, User } from ".";
-import { ChannelUtil } from "../utils/ChannelUtil";
+import { APIActionRowComponent, APIApplication, APIAttachment, APIChannel, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, APIUser, Channel, GatewayMessageCreateDispatchData, If, MessageFlags, MessageType, Routes, Snowflake } from "../types/types";
+import { Client, GuildMember, User } from ".";
 import { BaseMessageOptions, TextBasedChannelSendOptions } from "../types/interfaces";
 import { MessageUtil } from "../utils";
 
@@ -32,10 +31,10 @@ export class Message<InGuild extends boolean = boolean> {
   public flags?: MessageFlags;
   public referencedMessage?: Message | null;
   public interaction?: APIMessageInteraction;
-  public thread?: Channel;
+  public thread?: APIChannel;
 
   public guildId: If<InGuild, string>;
-  public member: If<InGuild, APIGuildMember>;
+  public member: If<InGuild, GuildMember>;
 
   constructor(client: Client, data: GatewayMessageCreateDispatchData) {
     Object.defineProperty(this, 'client', { value: client });
@@ -66,27 +65,36 @@ export class Message<InGuild extends boolean = boolean> {
     this.flags = data.flags;
     this.referencedMessage = data.referenced_message ? new Message(this.client, data.referenced_message) : null;
     this.interaction = data.interaction;
-    this.thread = data.thread ? ChannelUtil.createChannel(this.client, data.thread) : undefined;
+    this.thread = data.thread ?? undefined;
 
     this.guildId = (data.guild_id ?? null) as If<InGuild, string>;
-    this.member = (data.member ?? null) as If<InGuild, APIGuildMember>;
+    this.member = (data.member && data.guild_id ? 
+      new GuildMember(client, { ...data.member, user: data.author, guildId: data.guild_id }) :
+      null) as If<InGuild, GuildMember>;
   }
 
-  public get memberPermissions(): Permissions | null {
-    if (!this.inGuild()) return null;
-
-    const guild = this.client.guilds.get(this.guildId);
-    if (!guild) return null;
-
-    if (this.user.id === guild.ownerId) return new Permissions(Permissions.All);
-
-    const member = this.member;
-    const roles = guild.roles.filter(r => member.roles.includes(r.id));
-    return new Permissions(roles.reduce((acc, cur) => acc | BigInt(cur.permissions), 0n));
+  /**
+   * 從快取中取得這則訊息所在的頻道。
+   */
+  public get channel(): Channel | null {
+    return this.client.channels.get(this.channelId) ?? null;
   }
 
   public inGuild(): this is Message<true> {
     return Boolean(this.guildId && this.member);
+  }
+
+  /**
+   * 取得頻道的即時資訊，並把頻道加入快取。
+   * @param force 是否強制敲 API，預設為否，此時會回傳快取內的資料
+   * @returns 訊息所在的頻道
+   */
+  public async fetchChannel(force: boolean = false): Promise<Channel> {
+    if (!force && this.channel) return this.channel;
+    
+    const data = await this.client.rest.get(Routes.channel(this.channelId)) as APIChannel;
+    this.client.channels.add(data);
+    return this.client.channels.get(this.channelId)!;
   }
 
   public async send(message: TextBasedChannelSendOptions | string): Promise<Message> {
@@ -141,18 +149,6 @@ export class Message<InGuild extends boolean = boolean> {
 
   // public async awaitMessageComponent() {}
   // public async createMessageComponentCollector() {}
-
-  public async fetchChannel(force: boolean = false): Promise<Channel> {
-    let channel = this.client.channels.get(this.channelId);
-
-    if (force || !channel) {
-      const data = await this.client.rest.get(Routes.channel(this.channelId)) as APIChannel;
-      this.client.channels.add(data);
-      channel = this.client.channels.get(this.channelId)!;
-    }
-
-    return channel;
-  }
 
   public toString(): string {
     return this.content;

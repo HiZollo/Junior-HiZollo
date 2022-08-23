@@ -2,34 +2,50 @@ import { PermissionFlagsBits, PermissionResolvable, PermissionStrings } from "..
 import { Util } from "../utils";
 
 export class Permissions {
-  public bitfields: bigint;
+  public bitfield: bigint;
 
-  constructor(perm: bigint) {
-    this.bitfields = perm;
+  constructor(perm: PermissionResolvable) {
+    this.bitfield = Permissions.resolve(perm);
   }
 
   static All = Util.valuesOf(PermissionFlagsBits).reduce((acc, cur) => acc | cur, 0n);
 
-  static resolve(perm: PermissionResolvable): Permissions {
+  static resolve(perm: PermissionResolvable): bigint {
     if (Array.isArray(perm)) {
-      perm = perm.reduce((acc, cur) => acc | PermissionFlagsBits[cur], 0n);
+      perm = perm.map(p => Permissions.resolve(p)).reduce((acc, cur) => acc | cur, 0n);
     }
     else if (typeof perm === 'string') {
-      perm = BigInt(perm);
+      if (typeof PermissionFlagsBits[perm as keyof typeof PermissionFlagsBits] === 'bigint') {
+        perm = PermissionFlagsBits[perm as keyof typeof PermissionFlagsBits];
+      }
+      else if (/\d+/.test(perm)) {
+        perm = BigInt(perm);
+      }
+      else {
+        throw new Error(`${perm} cannot be parsed as Permissions.`);
+      }
     }
-    return new Permissions(perm);
+    return perm;
   }
 
-  public exclude(perm: Permissions): Permissions {
-    return new Permissions(~this.bitfields & perm.bitfields);
+  public add(perm: PermissionResolvable): this {
+    perm = Permissions.resolve(perm);
+    this.bitfield |= perm;
+    return this;
+  }
+
+  public remove(perm: PermissionResolvable): this {
+    perm = Permissions.resolve(perm);
+    this.bitfield &= ~perm;
+    return this;
   }
 
   public missing(perm: PermissionResolvable): PermissionStrings[] {
     const against = Permissions.resolve(perm);
-    return this.exclude(against).toArray();
+    return this.remove(against).toArray();
   }
 
   public toArray(): PermissionStrings[] {
-    return Util.keysOf(PermissionFlagsBits).filter(k => this.bitfields & PermissionFlagsBits[k]);
+    return Util.keysOf(PermissionFlagsBits).filter(k => this.bitfield & PermissionFlagsBits[k]);
   }
 }

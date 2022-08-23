@@ -1,3 +1,4 @@
+import { CHANNEL_UPDATE } from "./CHANNEL_UPDATE";
 import { CHANNEL_DELETE } from "./CHANNEL_DELETE";
 import { GUILD_CREATE } from "./GUILD_CREATE";
 import { GUILD_DELETE } from "./GUILD_DELETE";
@@ -6,6 +7,7 @@ import { MESSAGE_CREATE } from "./MESSAGE_CREATE";
 import { THREAD_DELETE } from "./THREAD_DELETE";
 
 export const Actions = {
+  CHANNEL_UPDATE, 
   CHANNEL_DELETE, 
   GUILD_CREATE, 
   GUILD_DELETE, 

@@ -21,7 +21,11 @@ client.on(ClientEvents.Ready, shardId => {
 
 client.on(ClientEvents.MessageCreate, async rawMessage => {
   const message = new Message(client, rawMessage);
-  message.send('Hi');
+  if (!message.inGuild()) return;
+  const channel = await message.fetchChannel();
+  if ('permissionsFor' in channel) {
+    console.log(channel.permissionsFor(message.member)?.toArray());
+  }
 });
 
 client.on(ClientEvents.GuildCreate, rawGuild => {
@@ -32,7 +36,7 @@ client.on(ClientEvents.InteractionCreate, async rawInteraction => {
   const interaction = InteractionUtil.createInteraction(client, rawInteraction);
 
   if (interaction.isCommand() && interaction.inGuild()) {
-    console.log(Permissions.resolve(interaction.member.permissions).toArray());
+    console.log(new Permissions(interaction.member.permissions).toArray());
   }
 });
 

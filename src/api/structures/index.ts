@@ -1,6 +1,7 @@
 export * from "./Client/Client";
 
 export * from "./Guild";
+export * from "./GuildMember";
 export * from "./Message";
 export * from "./Permissions";
 export * from "./User";
