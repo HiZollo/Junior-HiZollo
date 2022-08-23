@@ -3,7 +3,7 @@ import { ButtonInteraction } from "discord.js";
 import { YouTubeVideo } from "play-dl";
 import { HZClient } from "../../../classes/HZClient";
 import { Source } from "../../../classes/Source";
-import { MusicControllerActions, PageSystemMode } from "../../../utils/enums";
+import { MusicControllerActions, MusicLoopState, PageSystemMode } from "../../../utils/enums";
 import { PageSystemPagesOptions } from "../../../utils/interfaces";
 import fixedDigits from "../../../features/utils/fixedDigits";
 import pageSystem from "../../../features/utils/pageSystem";
@@ -210,6 +210,9 @@ export class MusicViewRenderer {
       case MusicControllerActions.Repeat:
         description = `${interaction.member}，已將重複狀態設為循環播放`;
         break;
+      case MusicControllerActions.Again:
+        description = `${interaction.member}，已將重複狀態設為重播一次`;
+        break;
       case MusicControllerActions.NoRepeat:
         description = `${interaction.member}，已將重複狀態設為正常播放`;
         break;
@@ -218,11 +221,13 @@ export class MusicViewRenderer {
         break;
       
       case MusicControllerActions.Info:
+        const state = nowPlaying.loopState === MusicLoopState.Normal ? '➡️ 正常播放' : 
+          nowPlaying.loopState === MusicLoopState.Again ? '🔂 重播一次' : '🔁 循環播放'
         const embed = this.baseEmbed
           .setDescription(this.getTrackDescription(nowPlaying))
           .setThumbnail(nowPlaying?.thumbnailUrl ?? null)
           .setFooter({
-            text: `由 ${nowPlaying.requester.displayName} 指定的歌曲｜${nowPlaying.looping ? '🔁 循環播放中' : '➡️ 無重複播放'}`,
+            text: `由 ${nowPlaying.requester.displayName} 指定的歌曲｜${state}`,
             iconURL: nowPlaying.requester.displayAvatarURL()
           });
           await interaction.reply({ embeds: [embed], ephemeral: true });

@@ -62,5 +62,9 @@ export enum PlayMusicResultType {
 }
 
 export enum MusicControllerActions {
-  Pause, Resume, Repeat, NoRepeat, Skip, Info
+  Pause, Resume, Repeat, Again, NoRepeat, Skip, Info
+}
+
+export enum MusicLoopState {
+  Normal, Again, Loop
 }

@@ -1,6 +1,7 @@
 import { AudioResource, createAudioResource } from "@discordjs/voice";
 import { GuildMember } from "discord.js";
 import ytpl, { InfoData } from "play-dl";
+import { MusicLoopState } from "../../../utils/enums";
 import { TrackOptions } from "../../../utils/interfaces";
 
 /**
@@ -25,7 +26,7 @@ export class Track {
   /**
    * 歌曲是否正在重複播放
    */
-  public looping: boolean;
+  public loopState: MusicLoopState;
 
   /**
    * 歌曲的標題
@@ -80,7 +81,7 @@ export class Track {
     this.info = info;
     this.resource = createAudioResource(stream.stream, { inputType: stream.type });
     this.requester = requester;
-    this.looping = false;
+    this.loopState = MusicLoopState.Normal;
 
     this.title = info.video_details.title ?? '[無法取得標題內容]';
     this.url = info.video_details.url;
@@ -107,8 +108,18 @@ export class Track {
   /**
    * 切換歌曲的重播狀態
    */
-  public toggleLoop() {
-    this.looping = !this.looping;
+  public toggleLoopState() {
+    this.loopState = 
+      this.loopState === MusicLoopState.Normal ? MusicLoopState.Again :
+      this.loopState === MusicLoopState.Again ? MusicLoopState.Loop :
+      MusicLoopState.Normal;
+  }
+
+  /**
+   * 設定歌曲的重播狀態
+   */
+  public setLoopState(state: MusicLoopState) {
+    this.loopState = state;
   }
 
   /**

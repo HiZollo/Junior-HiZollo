@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, GuildMember, GuildTextBasedChannel, InteractionCollector, Message, MessageOptions } from "discord.js";
 import { HZClient } from "../../HZClient";
-import { MusicControllerActions } from "../../../utils/enums";
+import { MusicControllerActions, MusicLoopState } from "../../../utils/enums";
 import { GuildMusicControllerOptions } from "../../../utils/interfaces";
 import { GuildMusicManager } from "../Model/GuildMusicManager";
 import { MusicViewRenderer } from "../View/MusicViewRenderer";
@@ -40,16 +40,6 @@ export class GuildMusicController {
   public collector: InteractionCollector<ButtonInteraction> | null;
 
   /**
-   * 切換播放／暫停狀態的迭代器
-   */
-  private playButtonsItr: Iterator<ButtonBuilder, ButtonBuilder>;
-  
-  /**
-   * 切換重播狀態的迭代器
-   */
-  private repeatButtonsItr: Iterator<ButtonBuilder, ButtonBuilder>;
-
-  /**
    * 遙控器上負責控制音樂系統的按鈕
    */
   private controllerButtons: ButtonBuilder[];
@@ -71,12 +61,9 @@ export class GuildMusicController {
     this.message = null;
     this.collector = null;
 
-    this.playButtonsItr = this.playButtons();
-    this.repeatButtonsItr = this.repeatButtons();
-
     this.controllerButtons = [
-      this.playButtonsItr.next().value, 
-      this.repeatButtonsItr.next().value, 
+      this.getPlayButton(0), 
+      this.getRepeatButton(0), 
       new ButtonBuilder()
         .setCustomId('music_ctrl_skip')
         .setStyle(ButtonStyle.Danger)
@@ -122,6 +109,9 @@ export class GuildMusicController {
    * 取得新的遙控器按鈕
    */
   private get newComponents(): ActionRowBuilder<ButtonBuilder>[] {
+    this.controllerButtons[0] = this.getPlayButton(1 - +this.manager.paused);
+    this.controllerButtons[1] = this.getRepeatButton(this.manager.nowPlaying!.loopState);
+    
     return [
       new ActionRowBuilder<ButtonBuilder>().addComponents(...this.controllerButtons), 
       new ActionRowBuilder<ButtonBuilder>().addComponents(...this.dataButtons), 
@@ -158,19 +148,23 @@ export class GuildMusicController {
       const args = interaction.customId.split('_');
       switch (args[2]) {
         case 'play':
-          this.controllerButtons[0] = this.playButtonsItr.next().value;
-          this.manager.togglePlay();
-          this.controllerButtons[0].data.emoji?.id === this.emojis.play[0] ?
-            await this.view.controllerAction(MusicControllerActions.Resume, interaction, nowPlaying) : 
-            await this.view.controllerAction(MusicControllerActions.Pause, interaction, nowPlaying);
+          this.manager.togglePlayState();
+          this.controllerButtons[0] = this.getPlayButton(1 - +this.manager.paused);
+          await this.view.controllerAction(
+            this.manager.paused ? MusicControllerActions.Resume : MusicControllerActions.Pause, 
+            interaction, nowPlaying
+          );
           break;
         
         case 'repeat':
-          this.controllerButtons[1] = this.repeatButtonsItr.next().value;
-          this.manager.toggleLoop();
-          this.controllerButtons[1].data.emoji?.name === this.emojis.repeat[0] ?
-            await this.view.controllerAction(MusicControllerActions.NoRepeat, interaction, nowPlaying) :
-            await this.view.controllerAction(MusicControllerActions.Repeat, interaction, nowPlaying);
+          this.manager.toggleLoopState();
+          this.controllerButtons[1] = this.getRepeatButton(this.manager.nowPlaying!.loopState);
+          await this.view.controllerAction(
+            this.manager.nowPlaying!.loopState === MusicLoopState.Normal ? MusicControllerActions.NoRepeat :
+            this.manager.nowPlaying!.loopState === MusicLoopState.Again ? MusicControllerActions.Again :
+            MusicControllerActions.Repeat, 
+            interaction, nowPlaying
+          );
           break;
         
         case 'skip':
@@ -190,30 +184,25 @@ export class GuildMusicController {
     return collector;
   }
 
+  private playButton = new ButtonBuilder()
+    .setCustomId('music_ctrl_play')
+    .setStyle(ButtonStyle.Primary);
+  private repeatButton = new ButtonBuilder()
+    .setCustomId('music_ctrl_repeat')
+    .setStyle(ButtonStyle.Secondary);
+  
   /**
-   * 回傳一個切換播放／暫停狀態的迭代器
+   * 取得播放狀態的按鈕
    */
-  private *playButtons(): Generator<ButtonBuilder, ButtonBuilder, void> {
-    let index = 0;
-    const button = new ButtonBuilder()
-      .setCustomId('music_ctrl_play')
-      .setStyle(ButtonStyle.Primary);
-    while (true) {
-      yield button.setEmoji(this.emojis.play[(index++) % 2]);
-    }
+  private getPlayButton(index: number): ButtonBuilder {
+    return this.playButton.setEmoji(this.emojis.play[index]);
   }
 
   /**
-   * 回傳一個切換重播狀態的迭代器
+   * 取得重播狀態的按鈕
    */
-  private *repeatButtons(): Generator<ButtonBuilder, ButtonBuilder, void> {
-    let index = 0;
-    const button = new ButtonBuilder()
-      .setCustomId('music_ctrl_repeat')
-      .setStyle(ButtonStyle.Secondary);
-    while (true) {
-      yield button.setEmoji(this.emojis.repeat[(index++) % 2]);
-    }
+  private getRepeatButton(index: number): ButtonBuilder {
+    return this.repeatButton.setEmoji(this.emojis.repeat[index]);
   }
 
   /**
@@ -221,7 +210,7 @@ export class GuildMusicController {
    */
   private emojis = Object.freeze({
     play: ['1002969357980270642', '880450475202314300'], 
-    repeat: ['➡️', '🔂'], 
+    repeat: ['➡️', '🔂', '🔁'], 
     skip: '880450475156176906', 
     info: '🎵'
   });

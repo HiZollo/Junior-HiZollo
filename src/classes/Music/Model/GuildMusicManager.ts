@@ -8,6 +8,7 @@ import { Track } from "./Track";
 import { GuildMusicController } from "../Controller/GuildMusicController";
 import { MusicViewRenderer } from "../View/MusicViewRenderer";
 import { Source } from "../../../classes/Source";
+import { MusicLoopState } from "@root/src/utils/enums";
 
 /**
  * 掌管單個伺服器下的音樂系統
@@ -173,7 +174,7 @@ export class GuildMusicManager {
   /**
    * 切換播放器的播放／暫停狀態
    */
-  public togglePlay(): void {
+  public togglePlayState(): void {
     if (this.paused) this.player.unpause();
     else this.player.pause();
     this.paused = !this.paused;
@@ -182,8 +183,8 @@ export class GuildMusicManager {
   /**
    * 切換播放器的重播狀態
    */
-  public toggleLoop(): void {
-    this.nowPlaying?.toggleLoop();
+  public toggleLoopState(): void {
+    this.nowPlaying?.toggleLoopState();
   }
 
   /**
@@ -230,11 +231,15 @@ export class GuildMusicManager {
 
     await new Promise(() => {
       this.player.once(AudioPlayerStatus.Idle, async () => {
-        if (this.nowPlaying?.looping) {
+        if (this.nowPlaying && this.nowPlaying?.loopState !== MusicLoopState.Normal) {
           await this.nowPlaying.renewResource();
           this._play(this.nowPlaying);
+          if (this.nowPlaying.loopState === MusicLoopState.Again) {
+            this.nowPlaying.setLoopState(MusicLoopState.Normal);
+          }
           return;
         }
+
         const next = this.queue.shift();
         if (!next) {
           this.nowPlaying = null;
