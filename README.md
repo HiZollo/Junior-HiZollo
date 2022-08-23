@@ -6,13 +6,16 @@
     <img src="https://img.shields.io/discord/572733182412193792.svg?style=for-the-badge&logo=Discord&colorB=7289da" />
   </a>
   <a href="https://github.com/hizollo/junior-hizollo">
-    <img src="https://img.shields.io/github/issues/hizollo/junior-hizollo?style=for-the-badge&logo=Github" />
+    <img src="https://img.shields.io/github/license/hizollo/junior-hizollo?style=for-the-badge" />
   </a>
+  
+  <br />
+  
   <a href="https://github.com/hizollo/junior-hizollo">
     <img src="https://img.shields.io/github/issues-pr/hizollo/junior-hizollo?style=for-the-badge&logo=Github" />
   </a>
   <a href="https://github.com/hizollo/junior-hizollo">
-    <img src="https://img.shields.io/github/license/hizollo/junior-hizollo?style=for-the-badge" />
+    <img src="https://img.shields.io/github/issues/hizollo/junior-hizollo?style=for-the-badge&logo=Github" />
   </a>
   <br /><br />
   <p>用 TypeScript 寫出來的爛 bot。</p>
