@@ -1,4 +1,5 @@
 import { PermissionFlagsBits } from "discord.js";
+import { ButtonBuilder, LinkButtonBuilder, SelectMenuBuilder, TextInputBuilder } from "../builder";
 import { AutocompleteInteraction, ButtonInteraction, CategoryChannel, ChatInputInteraction, DMChannel, GroupDMChannel, MessageInteraction, ModalSubmitInteraction, NewsChannel, SelectMenuInteraction, TextChannel, ThreadChannel, UserInteraction } from "../structures";
 
 export type Awaitable<T> = T | Promise<T>;
@@ -14,5 +15,7 @@ export type CollectorEndReason = 'time' | 'idle' | 'max' | 'user' | 'channelDele
 export type PermissionResolvable = bigint | string | PermissionStrings | PermissionResolvable[];
 
 export type PermissionStrings = keyof typeof PermissionFlagsBits;
+
+export type ActionRowComponentBuilder = ButtonBuilder | LinkButtonBuilder | SelectMenuBuilder | TextInputBuilder;
 
 export * from "discord-api-types/v10";
