@@ -49,13 +49,11 @@ export default class Vote extends Command<string[]> {
     }
     
     await source.defer();
-    const nowTime = new Date();
-    const nowTimeString = `${nowTime.getFullYear()}年${nowTime.getMonth()+1}月${nowTime.getDate()}日 `+
-                          `${nowTime.getHours()}:${nowTime.getMinutes()}:${nowTime.getSeconds()}`;
+    const nowTime = Math.trunc(Date.now() / 1000);
 
     const helper = new EmbedBuilder()
-      .applyHiZolloSettings(source.member, 'HiZollo 的投票中心', `由 ${source.user.tag} 在 ${nowTimeString} 時所發起的投票`)
-      .setDescription(options.join('\n'))
+      .applyHiZolloSettings(source.member, 'HiZollo 的投票中心')
+      .setDescription(options.join('\n') + `\n\n${source.member} 在 <t:${nowTime}> 發起的投票`)
       .setTitle(topic);
 
     await source.update({ embeds: [helper] }).then(async msg => {
