@@ -12,6 +12,9 @@ export type ClientEventsMap = {
   [ClientEvents.ChannelUpdate]: [rawChannel: API.GatewayChannelUpdateDispatchData];
   [ClientEvents.GuildCreate]: [rawGuild: API.GatewayGuildCreateDispatchData];
   [ClientEvents.GuildDelete]: [rawGuild: API.GatewayGuildDeleteDispatchData];
+  [ClientEvents.GuildRoleCreate]: [rawRole: API.GatewayGuildRoleCreateDispatchData];
+  [ClientEvents.GuildRoleDelete]: [rawRole: API.GatewayGuildRoleDeleteDispatchData];
+  [ClientEvents.GuildRoleUpdate]: [rawRole: API.GatewayGuildRoleUpdateDispatchData];
   [ClientEvents.GuildUpdate]: [rawGuild: API.GatewayGuildUpdateDispatchData];
   [ClientEvents.InteractionCreate]: [rawInteraction: Exclude<API.GatewayInteractionCreateDispatchData, API.APIPingInteraction>];
   [ClientEvents.MessageCreate]: [rawMessage: API.GatewayMessageCreateDispatchData];
