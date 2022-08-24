@@ -6,7 +6,7 @@ import { Awaitable, CollectorEndReason } from "../../types/types";
 export abstract class Collector<K, V> extends EventEmitter {
   public client: Client;
   public filter: (...args: unknown[]) => Awaitable<boolean>;
-  public max?: number;
+  public max: number;
   public time?: number;
   public idle?: number;
 
@@ -21,17 +21,20 @@ export abstract class Collector<K, V> extends EventEmitter {
 
     this.client = options.client;
     this.filter = options.filter ?? (() => true);
-    this.max = options.max;
+    this.max = options.max ?? Infinity;
     this.time = options.time;
     this.idle = options.idle;
 
     this.collected = new Map();
     if (this.time) this.timeout = setTimeout(() => this.end('time'), this.time).unref();
     if (this.idle) this.idleTimeout = setTimeout(() => this.end('idle'), this.idle).unref();
+
+    this.onCollect = this.onCollect.bind(this);
+    this.end = this.end.bind(this);
   }
 
-  public onCollect(...args: unknown[]): void {
-    if (this.filter(...args)) {
+  public async onCollect(...args: unknown[]): Promise<void> {
+    if (await this.filter(...args)) {
       const result = this.collect(...args);
       if (result) {
         const [key, value] = result;
@@ -39,11 +42,11 @@ export abstract class Collector<K, V> extends EventEmitter {
         this.emit('collect', value, key);
   
         clearTimeout(this.idleTimeout);
-        this.idleTimeout = setTimeout(() => this.end('idle'), this.idle).unref();
+        if (this.idle) this.idleTimeout = setTimeout(() => this.end('idle'), this.idle).unref();
       }
     }
 
-    if (this.max && this.collected.size >= this.max) {
+    if (this.collected.size >= this.max) {
       this.end('max');
     }
   }

@@ -1,5 +1,6 @@
-import { APIAllowedMentions, APIEmbed, APIMessage, APIMessageComponent, APIMessageReference, APIOverwrite, APIThreadMember, APIThreadMetadata, Awaitable, ChannelType, CollectorComponentTypes, CollectorInteractionTypes, GatewayIntentBits, MessageFlags } from "./types";
-import { Client, Message, MessageCollector } from "../structures";
+import { ActionRowComponentBuilder, APIActionRowComponent, APIAllowedMentions, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageComponent, APIMessageReference, APIOverwrite, APIThreadMember, APIThreadMetadata, Awaitable, ChannelType, CollectorComponentTypes, CollectorInteractionTypes, ComponentType, GatewayIntentBits, MessageFlags } from "./types";
+import { ButtonInteraction, Client, InteractionCollector, Message, MessageCollector, SelectMenuInteraction } from "../structures";
+import { ActionRowBuilder } from "../builder";
 
 
 export interface ClientOptions {
@@ -39,7 +40,7 @@ export interface FileOptions {
 export interface BaseMessageOptions {
   content?: string;
   embeds?: APIEmbed[];
-  components?: APIMessageComponent[];
+  components?: (APIActionRowComponent<APIMessageActionRowComponent> | ActionRowBuilder<ActionRowComponentBuilder>)[];
   allowedMentions?: APIAllowedMentions;
   files?: FileOptions[];
 }
@@ -90,17 +91,24 @@ export interface MessageCollectorOptions extends CollectorOptions {
 }
 
 export interface InteractionCollectorOptions extends CollectorOptions {
-  interactionTypes: CollectorInteractionTypes[];
-  componentTypes?: CollectorComponentTypes[];
+  interactionType: CollectorInteractionTypes;
+  componentType?: CollectorComponentTypes;
   messageId?: string;
   channelId?: string;
   guildId?: string;
+}
+
+export interface CollectorInteractionTypeMap {
+  [ComponentType.Button]: ButtonInteraction;
+  [ComponentType.SelectMenu]: SelectMenuInteraction;
 }
 
 export interface TextBasedChannel {
   send(options: TextBasedChannelSendOptions | string): Promise<Message>;
   createMessageCollector(options: CollectorOptions): MessageCollector;
   awaitMessages(options: CollectorOptions): Promise<Map<string, APIMessage>>;
+  createComponentCollector<T extends CollectorComponentTypes>(options: Omit<InteractionCollectorOptions, 'messageId' | 'channelId' | 'guildId'> & { componentType: CollectorComponentTypes }): InteractionCollector<CollectorInteractionTypeMap[T]>;
+  awaitComponents<T extends CollectorComponentTypes>(options: Omit<InteractionCollectorOptions, 'messageId' | 'channelId' | 'guildId'> & { componentType: CollectorComponentTypes }): Promise<Map<string, CollectorInteractionTypeMap[T]>>;
 }
 
 export interface RepliableInteraction {

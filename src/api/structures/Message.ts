@@ -1,6 +1,6 @@
-import { APIActionRowComponent, APIApplication, APIAttachment, APIChannel, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, APIUser, Channel, GatewayMessageCreateDispatchData, If, MessageFlags, MessageType, Routes, Snowflake } from "../types/types";
-import { Client, GuildMember, User } from ".";
-import { BaseMessageOptions, TextBasedChannelSendOptions } from "../types/interfaces";
+import { APIActionRowComponent, APIApplication, APIAttachment, APIChannel, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, APIUser, Channel, CollectorComponentTypes, GatewayMessageCreateDispatchData, If, InteractionType, MessageFlags, MessageType, Routes, Snowflake } from "../types/types";
+import { Client, GuildMember, InteractionCollector, User } from ".";
+import { BaseMessageOptions, CollectorInteractionTypeMap, InteractionCollectorOptions, TextBasedChannelSendOptions } from "../types/interfaces";
 import { MessageUtil } from "../utils";
 
 export class Message<InGuild extends boolean = boolean> {
@@ -146,9 +146,16 @@ export class Message<InGuild extends boolean = boolean> {
 
     await this.client.rest.put(Routes.channelMessageOwnReaction(this.channelId, this.id, emoji));
   }
+  
+  public createComponentCollector<T extends CollectorComponentTypes>(options: Omit<InteractionCollectorOptions, "interactionType" | "messageId" | "channelId" | "guildId"> & { componentType: CollectorComponentTypes; }): InteractionCollector<CollectorInteractionTypeMap[T]> {
+    return new InteractionCollector({ messageId: this.id, channelId: this.channelId, guildId: this.guildId ?? undefined, interactionType: InteractionType.MessageComponent , ...options });
+  }
 
-  // public async awaitMessageComponent() {}
-  // public async createMessageComponentCollector() {}
+  public awaitComponents<T extends CollectorComponentTypes>(options: Omit<InteractionCollectorOptions, "interactionType" | "messageId" | "channelId" | "guildId"> & { componentType: CollectorComponentTypes; }): Promise<Map<string, CollectorInteractionTypeMap[T]>> {
+    return new Promise(resolve => {
+      this.createComponentCollector(options).on('end', resolve);
+    });
+  }
 
   public toString(): string {
     return this.content;

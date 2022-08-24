@@ -1,7 +1,7 @@
 import { MessageUtil } from ".";
-import { CategoryChannel, Client, DMChannel, GroupDMChannel /*, GuildStageVoiceChannel, GuildVoiceChannel */, Message, MessageCollector, NewsChannel, TextChannel, ThreadChannel } from "../structures";
-import { CollectorOptions, TextBasedChannel, TextBasedChannelSendOptions } from "../types/interfaces";
-import { APIChannel, APIMessage, Channel, ChannelType, Routes } from "../types/types";
+import { CategoryChannel, Client, DMChannel, GroupDMChannel /*, GuildStageVoiceChannel, GuildVoiceChannel */, InteractionCollector, Message, MessageCollector, NewsChannel, TextChannel, ThreadChannel } from "../structures";
+import { CollectorInteractionTypeMap, CollectorOptions, InteractionCollectorOptions, TextBasedChannel, TextBasedChannelSendOptions } from "../types/interfaces";
+import { APIChannel, APIMessage, Channel, ChannelType, CollectorComponentTypes, InteractionType, Routes } from "../types/types";
 
 export class ChannelUtil extends null {
   static createChannel(client: Client, data: APIChannel): Channel | undefined {
@@ -60,7 +60,18 @@ export class ChannelUtil extends null {
           this.createMessageCollector(options).on('end', resolve);
         });
       }
+      
+      public createComponentCollector<T extends CollectorComponentTypes>(options: Omit<InteractionCollectorOptions, "interactionType" | "messageId" | "channelId" | "guildId"> & { componentType: CollectorComponentTypes; }): InteractionCollector<CollectorInteractionTypeMap[T]> {
+        return new InteractionCollector({ channelId: this.id, guildId: this.guildId ?? undefined, interactionType: InteractionType.MessageComponent , ...options });
+      }
+
+      public awaitComponents<T extends CollectorComponentTypes>(options: Omit<InteractionCollectorOptions, "interactionType" | "messageId" | "channelId" | "guildId"> & { componentType: CollectorComponentTypes; }): Promise<Map<string, CollectorInteractionTypeMap[T]>> {
+        return new Promise(resolve => {
+          this.createComponentCollector(options).on('end', resolve);
+        });
+      }
     }
+
     return BaseWithTextBased;
   }
 }

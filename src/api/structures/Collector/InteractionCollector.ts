@@ -5,8 +5,8 @@ import { APIChannel, APIInteraction, APIPingInteraction, APIUnavailableGuild, Co
 import { InteractionUtil } from "../../utils";
 
 export class InteractionCollector<V extends CollectorInteraction> extends Collector<string, V> {
-  public interactionTypes: CollectorInteractionTypes[];
-  public componentTypes: CollectorComponentTypes[];
+  public interactionType: CollectorInteractionTypes;
+  public componentType?: CollectorComponentTypes;
   public messageId?: string;
   public channelId?: string;
   public guildId?: string;
@@ -14,12 +14,12 @@ export class InteractionCollector<V extends CollectorInteraction> extends Collec
   constructor(options: InteractionCollectorOptions) {
     super(options);
 
-    if (options.interactionTypes.includes(InteractionType.MessageComponent) && !options.componentTypes?.length) {
+    if (options.interactionType === InteractionType.MessageComponent && !options.componentType) {
       throw new Error('You should provide at least one component type');
     }
 
-    this.interactionTypes = options.interactionTypes;
-    this.componentTypes = options.componentTypes ?? [];
+    this.interactionType = options.interactionType;
+    this.componentType = options.componentType;
     this.messageId = options.messageId;
     this.channelId = options.channelId;
     this.guildId = options.guildId;
@@ -62,9 +62,8 @@ export class InteractionCollector<V extends CollectorInteraction> extends Collec
   }
 
   protected collect(rawInteraction: Exclude<APIInteraction, APIPingInteraction>): [key: string, value: V] | null {
-    if (rawInteraction.type === InteractionType.ApplicationCommand || rawInteraction.type === InteractionType.ApplicationCommandAutocomplete) return null;
-    if (!this.interactionTypes.includes(rawInteraction.type)) return null;
-    if (rawInteraction.type === InteractionType.MessageComponent && !this.componentTypes.includes(rawInteraction.data.component_type)) return null;
+    if (this.interactionType !== rawInteraction.type) return null;
+    if (rawInteraction.type === InteractionType.MessageComponent && this.componentType !== rawInteraction.data.component_type) return null;
     if (this.messageId && this.messageId !== rawInteraction.message?.id) return null;
     if (this.channelId && this.channelId !== rawInteraction.channel_id) return null;
     if (this.guildId && this.guildId !== rawInteraction.guild_id) return null;
