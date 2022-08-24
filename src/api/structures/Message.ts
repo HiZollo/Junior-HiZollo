@@ -2,6 +2,7 @@ import { APIActionRowComponent, APIApplication, APIAttachment, APIChannel, APIEm
 import { Client, GuildMember, InteractionCollector, User } from ".";
 import { BaseMessageOptions, CollectorInteractionTypeMap, InteractionCollectorOptions, TextBasedChannelSendOptions } from "../types/interfaces";
 import { MessageUtil } from "../utils";
+import { CollectorEvents } from "../types/enum";
 
 export class Message<InGuild extends boolean = boolean> {
   public client!: Client;
@@ -147,13 +148,17 @@ export class Message<InGuild extends boolean = boolean> {
     await this.client.rest.put(Routes.channelMessageOwnReaction(this.channelId, this.id, emoji));
   }
   
-  public createComponentCollector<T extends CollectorComponentTypes>(options: Omit<InteractionCollectorOptions, "interactionType" | "messageId" | "channelId" | "guildId"> & { componentType: CollectorComponentTypes; }): InteractionCollector<CollectorInteractionTypeMap[T]> {
+  public createComponentCollector<T extends CollectorComponentTypes>(
+    options: { componentType: T } & Omit<InteractionCollectorOptions, "interactionType" | "messageId" | "channelId" | "guildId">
+  ): InteractionCollector<CollectorInteractionTypeMap[T]> {
     return new InteractionCollector({ messageId: this.id, channelId: this.channelId, guildId: this.guildId ?? undefined, interactionType: InteractionType.MessageComponent , ...options });
   }
 
-  public awaitComponents<T extends CollectorComponentTypes>(options: Omit<InteractionCollectorOptions, "interactionType" | "messageId" | "channelId" | "guildId"> & { componentType: CollectorComponentTypes; }): Promise<Map<string, CollectorInteractionTypeMap[T]>> {
+  public awaitComponents<T extends CollectorComponentTypes>(
+    options: { componentType: T } & Omit<InteractionCollectorOptions, "interactionType" | "messageId" | "channelId" | "guildId">
+  ): Promise<Map<string, CollectorInteractionTypeMap[T]>> {
     return new Promise(resolve => {
-      this.createComponentCollector(options).on('end', resolve);
+      this.createComponentCollector(options).on(CollectorEvents.End, resolve);
     });
   }
 

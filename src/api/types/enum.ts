@@ -13,3 +13,8 @@ export enum ClientEvents {
   Ready = "Ready", 
   ThreadDelete = "ThreadDelete", 
 }
+
+export enum CollectorEvents {
+  Collect = "collect", 
+  End = "end"
+}

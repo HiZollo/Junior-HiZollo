@@ -1,7 +1,8 @@
 import { EventEmitter } from "node:events";
 import { Client } from "..";
+import { CollectorEvents } from "../../types/enum";
 import { CollectorOptions } from "../../types/interfaces";
-import { Awaitable, CollectorEndReason } from "../../types/types";
+import { Awaitable, CollectorEndReason, CollectorEventsMap } from "../../types/types";
 
 export abstract class Collector<K, V> extends EventEmitter {
   public client: Client;
@@ -39,7 +40,7 @@ export abstract class Collector<K, V> extends EventEmitter {
       if (result) {
         const [key, value] = result;
         this.collected.set(key, value);
-        this.emit('collect', value, key);
+        this.emit(CollectorEvents.Collect, value, key);
   
         clearTimeout(this.idleTimeout);
         if (this.idle) this.idleTimeout = setTimeout(() => this.end('idle'), this.idle).unref();
@@ -54,6 +55,18 @@ export abstract class Collector<K, V> extends EventEmitter {
   public end(reason: CollectorEndReason = 'user'): void {
     clearTimeout(this.timeout);
     clearTimeout(this.idleTimeout);
-    this.emit('end', this.collected, reason);
+    this.emit(CollectorEvents.End, this.collected, reason);
+  }
+
+  public override emit<T extends keyof CollectorEventsMap<K, V>>(event: T, ...args: CollectorEventsMap<K, V>[T]): boolean {
+    return super.emit(event, ...args);
+  }
+
+  public override on<T extends keyof CollectorEventsMap<K, V>>(event: T, listener: (...args: CollectorEventsMap<K, V>[T]) => void): this {
+    return super.on(event, listener as (...args: any[]) => void);
+  }
+
+  public override off<T extends keyof CollectorEventsMap<K, V>>(event: T, listener: (...args: CollectorEventsMap<K, V>[T]) => void): this {
+    return super.off(event, listener as (...args: any[]) => void);
   }
 }

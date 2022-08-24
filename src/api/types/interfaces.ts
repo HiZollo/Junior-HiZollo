@@ -107,8 +107,12 @@ export interface TextBasedChannel {
   send(options: TextBasedChannelSendOptions | string): Promise<Message>;
   createMessageCollector(options: CollectorOptions): MessageCollector;
   awaitMessages(options: CollectorOptions): Promise<Map<string, APIMessage>>;
-  createComponentCollector<T extends CollectorComponentTypes>(options: Omit<InteractionCollectorOptions, 'messageId' | 'channelId' | 'guildId'> & { componentType: CollectorComponentTypes }): InteractionCollector<CollectorInteractionTypeMap[T]>;
-  awaitComponents<T extends CollectorComponentTypes>(options: Omit<InteractionCollectorOptions, 'messageId' | 'channelId' | 'guildId'> & { componentType: CollectorComponentTypes }): Promise<Map<string, CollectorInteractionTypeMap[T]>>;
+  createComponentCollector<T extends CollectorComponentTypes>(
+    options: { componentType: T } & Omit<InteractionCollectorOptions, 'messageId' | 'channelId' | 'guildId'>
+  ): InteractionCollector<CollectorInteractionTypeMap[T]>;
+  awaitComponents<T extends CollectorComponentTypes>(
+    options: { componentType: T } & Omit<InteractionCollectorOptions, 'messageId' | 'channelId' | 'guildId'>
+  ): Promise<Map<string, CollectorInteractionTypeMap[T]>>;
 }
 
 export interface RepliableInteraction {

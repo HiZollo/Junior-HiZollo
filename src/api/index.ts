@@ -1,7 +1,7 @@
 import config from "../../config";
 import {  ButtonStyle, ComponentType, GatewayIntentBits } from "./types/types";
 import { Client, Message, Permissions } from "./structures";
-import { ClientEvents } from "./types/enum";
+import { ClientEvents, CollectorEvents } from "./types/enum";
 import { InteractionUtil } from "./utils";
 import { ActionRowBuilder, ButtonBuilder } from "./builder";
 
@@ -25,7 +25,7 @@ client.on(ClientEvents.MessageCreate, async rawMessage => {
   const message = new Message(client, rawMessage);
   if (!message.inGuild()) return;
   
-  console.log(await (await message.send({
+  (await message.send({
     content: 'Press it', 
     components: [
       new ActionRowBuilder()
@@ -36,11 +36,13 @@ client.on(ClientEvents.MessageCreate, async rawMessage => {
             .setStyle(ButtonStyle.Success)
         )
     ]
-  })).awaitComponents({
+  })).createComponentCollector({
     client: client, 
-    componentType: ComponentType.Button, 
+    componentType: ComponentType.SelectMenu, 
     max: 1
-  }));
+  }).on(CollectorEvents.End, (collected) => {
+    collected;
+  });
 });
 
 client.on(ClientEvents.GuildCreate, rawGuild => {

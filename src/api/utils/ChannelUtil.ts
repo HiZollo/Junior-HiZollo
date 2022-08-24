@@ -1,5 +1,6 @@
 import { MessageUtil } from ".";
 import { CategoryChannel, Client, DMChannel, GroupDMChannel /*, GuildStageVoiceChannel, GuildVoiceChannel */, InteractionCollector, Message, MessageCollector, NewsChannel, TextChannel, ThreadChannel } from "../structures";
+import { CollectorEvents } from "../types/enum";
 import { CollectorInteractionTypeMap, CollectorOptions, InteractionCollectorOptions, TextBasedChannel, TextBasedChannelSendOptions } from "../types/interfaces";
 import { APIChannel, APIMessage, Channel, ChannelType, CollectorComponentTypes, InteractionType, Routes } from "../types/types";
 
@@ -57,17 +58,21 @@ export class ChannelUtil extends null {
 
       public awaitMessages(options: CollectorOptions): Promise<Map<string, APIMessage>> {
         return new Promise(resolve => {
-          this.createMessageCollector(options).on('end', resolve);
+          this.createMessageCollector(options).on(CollectorEvents.End, resolve);
         });
       }
       
-      public createComponentCollector<T extends CollectorComponentTypes>(options: Omit<InteractionCollectorOptions, "interactionType" | "messageId" | "channelId" | "guildId"> & { componentType: CollectorComponentTypes; }): InteractionCollector<CollectorInteractionTypeMap[T]> {
+      public createComponentCollector<T extends CollectorComponentTypes>(
+        options: { componentType: T } & Omit<InteractionCollectorOptions, "interactionType" | "messageId" | "channelId" | "guildId">
+      ): InteractionCollector<CollectorInteractionTypeMap[T]> {
         return new InteractionCollector({ channelId: this.id, guildId: this.guildId ?? undefined, interactionType: InteractionType.MessageComponent , ...options });
       }
 
-      public awaitComponents<T extends CollectorComponentTypes>(options: Omit<InteractionCollectorOptions, "interactionType" | "messageId" | "channelId" | "guildId"> & { componentType: CollectorComponentTypes; }): Promise<Map<string, CollectorInteractionTypeMap[T]>> {
+      public awaitComponents<T extends CollectorComponentTypes>(
+        options: { componentType: T } & Omit<InteractionCollectorOptions, "interactionType" | "messageId" | "channelId" | "guildId">
+      ): Promise<Map<string, CollectorInteractionTypeMap[T]>> {
         return new Promise(resolve => {
-          this.createComponentCollector(options).on('end', resolve);
+          this.createComponentCollector(options).on(CollectorEvents.End, resolve);
         });
       }
     }

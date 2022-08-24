@@ -1,7 +1,7 @@
 import * as API from "discord-api-types/v10";
 import { ButtonBuilder, LinkButtonBuilder, SelectMenuBuilder, TextInputBuilder } from "../builder";
 import { AutocompleteInteraction, ButtonInteraction, CategoryChannel, ChatInputInteraction, DMChannel, GroupDMChannel, MessageInteraction, ModalSubmitInteraction, NewsChannel, SelectMenuInteraction, TextChannel, ThreadChannel, UserInteraction } from "../structures";
-import { ClientEvents } from "./enum";
+import { ClientEvents, CollectorEvents } from "./enum";
 
 export type Awaitable<T> = T | Promise<T>;
 
@@ -21,6 +21,11 @@ export type ClientEventsMap = {
   [ClientEvents.MessageDelete]: [rawMessage: API.GatewayMessageDeleteDispatchData];
   [ClientEvents.Ready]: [shardId: number];
   [ClientEvents.ThreadDelete]: [rawThread: API.GatewayThreadDeleteDispatchData];
+}
+
+export type CollectorEventsMap<K, V> = {
+  [CollectorEvents.Collect]: [V, K];
+  [CollectorEvents.End]: [Map<K, V>, CollectorEndReason];
 }
 
 export type Channel = CategoryChannel | DMChannel | GroupDMChannel /* | GuildStageVoiceChannel | GuildVoiceChannel */ | NewsChannel | TextChannel | ThreadChannel;
