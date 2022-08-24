@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://files.catbox.moe/7xmgnr.png" />
+  <img src="https://files.catbox.moe/3n2tv1.png" />
   <em><p><a href="https://hizollo.ddns.net">https://hizollo.ddns.net</a><p></em>
 
   <a href="https://hizollo.ddns.net/server">
@@ -20,11 +20,11 @@
   <br /><br />
   <p>用 TypeScript 寫出來的爛 bot。</p>
 
-  <img src="https://files.catbox.moe/e73gv0.png" width="500" />
+  <img src="https://files.catbox.moe/9kaz2l.png" width="500" />
 </div>
 
 ## 邀請連結
-請點[此](https://hizollo.ddns.net/invite)邀請他加入你的伺服器。
+你可以[點擊此處](https://hizollo.ddns.net/invite)邀請他加入你的伺服器。
 
 ## 功能
 - `/2048`：在 Discord 中玩一場 2048
@@ -63,16 +63,16 @@ BLOCKED_USERS="[
 ```
 在這之後，也將 `config.ts` 中的各種 ID 換成你自己的，各種 prefix 如果你有自己的也換成自己的。
 
-完成資料的設置後，請用 `npm install` 把所有依頼的套件下載完，並使用 `npm run build` 來編譯整個專案。
+完成資料的設置後，請用 `npm install` 把所有依賴的套件下載完，並使用 `npm run build` 來編譯整個專案。
 
-編譯完成後，使用 `npm run deploy` 來部署所有應用程式指令。使用 `npm start` 可以在一般模式下執行機器人，而使用 `npm test` 則是在在測試模式下執行。在測試模式中：
+編譯完成後，使用 `npm run deploy` 來部署所有應用程式指令。使用 `npm start` 可以在一般模式下執行機器人，而使用 `npm test` 則是在測試模式下執行。在測試模式中：
 - HiZollo Network 無效
 - 測試頻道以外使用的指令不會被回應
 
 在複製或使用 HiZollo 的原始碼時，請注意[我們的授權方式](#授權)。
 
-## 支援伺服器
-如果有碰到任何使用上的問題，你都可以加入我們的[支援伺服器](https://hizollo.ddns.net/server)中訊問。
+## 官方伺服器
+如果有碰到任何使用上的問題，你都可以到我們的[官方伺服器](https://hizollo.ddns.net/server)中訊問。
 
 ## 授權
 Junior HiZollo 的原始碼是以 GPL-3.0-or-later 條款授權給所有人使用，你可以在該條款之下對其做任意的分發、修改。對於更詳細的說明，請參見 [COPYING](https://github.com/HiZollo/Junior-HiZollo/blob/main/COPYING) 或 [Google](https://www.google.com/search?q=gpl-3.0-or-later)。
