@@ -38,9 +38,9 @@ export class GuildMember {
     const guild = this.client.guilds.get(this.guildId);
     if (!guild) return null;
 
-    // if (this.user.id === guild.ownerId) return new Permissions(Permissions.All);
+    if (this.user.id === guild.ownerId) return new Permissions(Permissions.All);
 
-    const roles = guild.roles.filter(r => this.roleIds.includes(r.id));
+    const roles = [...guild.roles.values()].filter(r => this.roleIds.includes(r.id));
     return new Permissions(roles.reduce((acc, cur) => acc | BigInt(cur.permissions), 0n));
   }
 }

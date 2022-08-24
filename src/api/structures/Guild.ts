@@ -6,7 +6,7 @@ export class Guild {
   public name!: string;
   public id!: string;
   public ownerId!: string;
-  public roles!: APIRole[];
+  public roles!: Map<string, APIRole>;
   public available!: boolean;
 
   constructor(client: Client, data: Partial<GatewayGuildCreateDispatchData>) {
@@ -33,7 +33,7 @@ export class Guild {
       this.name = data.name;
     }
     if (data.roles) {
-      this.roles = data.roles;
+      this.roles = new Map(data.roles.map(r => [r.id, r]));
     }
     if (data.owner_id) {
       this.ownerId = data.owner_id;

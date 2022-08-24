@@ -6,6 +6,6 @@ export function GUILD_ROLE_CREATE(client: Client, data: GatewayGuildRoleCreateDi
   const guild = client.guilds.get(data.guild_id);
   if (!guild) return;
 
-  guild.roles.push(data.role);
+  guild.roles.set(data.role.id, data.role);
   client.emit(ClientEvents.GuildRoleCreate, data);
 }
