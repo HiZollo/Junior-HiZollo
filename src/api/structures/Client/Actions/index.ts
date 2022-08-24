@@ -8,6 +8,7 @@ import { GUILD_ROLE_UPDATE } from "./GUILD_ROLE_UPDATE";
 import { GUILD_UPDATE } from "./GUILD_UPDATE";
 import { INTERACTION_CREATE } from "./INTERACTION_CREATE";
 import { MESSAGE_CREATE } from "./MESSAGE_CREATE";
+import { MESSAGE_DELETE } from "./MESSAGE_DELETE";
 import { THREAD_DELETE } from "./THREAD_DELETE";
 
 export const Actions = {
@@ -21,5 +22,6 @@ export const Actions = {
   GUILD_UPDATE, 
   INTERACTION_CREATE, 
   MESSAGE_CREATE, 
+  MESSAGE_DELETE, 
   THREAD_DELETE
 };

@@ -18,6 +18,7 @@ export type ClientEventsMap = {
   [ClientEvents.GuildUpdate]: [rawGuild: API.GatewayGuildUpdateDispatchData];
   [ClientEvents.InteractionCreate]: [rawInteraction: Exclude<API.GatewayInteractionCreateDispatchData, API.APIPingInteraction>];
   [ClientEvents.MessageCreate]: [rawMessage: API.GatewayMessageCreateDispatchData];
+  [ClientEvents.MessageDelete]: [rawMessage: API.GatewayMessageDeleteDispatchData];
   [ClientEvents.Ready]: [shardId: number];
   [ClientEvents.ThreadDelete]: [rawThread: API.GatewayThreadDeleteDispatchData];
 }
@@ -26,7 +27,13 @@ export type Channel = CategoryChannel | DMChannel | GroupDMChannel /* | GuildSta
 
 export type Interaction = AutocompleteInteraction | ChatInputInteraction | MessageInteraction | UserInteraction | ButtonInteraction | SelectMenuInteraction | ModalSubmitInteraction;
 
-export type CollectorEndReason = 'time' | 'idle' | 'max' | 'user' | 'channelDelete' | 'guildDelete' | 'threadDelete';
+export type CollectorInteraction = ButtonInteraction | SelectMenuInteraction | ModalSubmitInteraction;
+
+export type CollectorInteractionTypes = API.InteractionType.MessageComponent | API.InteractionType.ModalSubmit;
+
+export type CollectorComponentTypes = API.ComponentType.Button | API.ComponentType.SelectMenu;
+
+export type CollectorEndReason = 'time' | 'idle' | 'max' | 'user' | 'messageDelete' | 'channelDelete' | 'guildDelete' | 'threadDelete';
 
 export type PermissionResolvable = bigint | string | PermissionStrings | PermissionResolvable[];
 

@@ -9,6 +9,7 @@ export enum ClientEvents {
   GuildUpdate = "GuildUpdate", 
   InteractionCreate = "InteractionCreate", 
   MessageCreate = "MessageCreate", 
+  MessageDelete = "MessageDelete", 
   Ready = "Ready", 
   ThreadDelete = "ThreadDelete", 
 }

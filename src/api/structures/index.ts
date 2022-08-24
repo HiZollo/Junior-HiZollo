@@ -25,6 +25,7 @@ export * from "./Channel/TextChannel";
 
 
 export * from "./Collector/Collector";
+export * from "./Collector/InteractionCollector";
 export * from "./Collector/MessageCollector";
 
 export * from "./Interaction/BaseInteraction";

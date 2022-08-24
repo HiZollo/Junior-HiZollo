@@ -1,4 +1,4 @@
-import { APIAllowedMentions, APIEmbed, APIMessage, APIMessageComponent, APIMessageReference, APIOverwrite, APIThreadMember, APIThreadMetadata, Awaitable, ChannelType, GatewayIntentBits, MessageFlags } from "./types";
+import { APIAllowedMentions, APIEmbed, APIMessage, APIMessageComponent, APIMessageReference, APIOverwrite, APIThreadMember, APIThreadMetadata, Awaitable, ChannelType, CollectorComponentTypes, CollectorInteractionTypes, GatewayIntentBits, MessageFlags } from "./types";
 import { Client, Message, MessageCollector } from "../structures";
 
 
@@ -90,6 +90,8 @@ export interface MessageCollectorOptions extends CollectorOptions {
 }
 
 export interface InteractionCollectorOptions extends CollectorOptions {
+  interactionTypes: CollectorInteractionTypes[];
+  componentTypes?: CollectorComponentTypes[];
   messageId?: string;
   channelId?: string;
   guildId?: string;

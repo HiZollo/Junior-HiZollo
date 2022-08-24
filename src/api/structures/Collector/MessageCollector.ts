@@ -17,19 +17,23 @@ export class MessageCollector extends Collector<string, APIMessage> {
     this.client.on(ClientEvents.MessageCreate, this.onCollect);
     this.client.on(ClientEvents.ChannelDelete, this.onChannelDelete);
     this.client.on(ClientEvents.ThreadDelete, this.onThreadDelete);
+    
     if (this.guildId) {
       this.client.on(ClientEvents.GuildDelete, this.onGuildDelete);
     }
   }
 
   public end(reason?: CollectorEndReason): void {
-    super.end(reason);
-
     this.client.off(ClientEvents.MessageCreate, this.onCollect);
     this.client.off(ClientEvents.ChannelDelete, this.onChannelDelete);
-    this.client.off(ClientEvents.GuildDelete, this.onGuildDelete);
     this.client.off(ClientEvents.ThreadDelete, this.onThreadDelete);
+
+    if (this.guildId) {
+      this.client.off(ClientEvents.GuildDelete, this.onGuildDelete);
+    }
+
     this.client.adjustMaxListener(-1);
+    super.end(reason);
   }
 
   protected collect(rawMessage: APIMessage): [key: string, value: APIMessage] | null {
