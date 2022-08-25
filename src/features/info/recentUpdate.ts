@@ -18,18 +18,19 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import config from "@root/config";
-const { prefix } = config.bot;
-
 export default `
-● 修復了一些 bug
-　● \`${prefix}addrole\` 與 \`${prefix}removerole\` 不提供身分組時無法觸發指令
-　● \`${prefix}bullsandcows\` 的指令用法沒有跟著改名
-　● \`/gomoku\` 只 tag 自己時無法觸發指令
-　● \`/react\` 就算成功反應表情，也會顯示反應失敗
-　● \`/think\` 不提供參數時無法觸發指令
-　● \`/tictactoe\` 不提供版面大小時無法觸發指令
-　● 當 HiZollo 被球丟到生氣時，使用者仍然可以執行指令
-● 現在創建新的討論串時 HiZollo 不會自動加入了，如果你需要他進到討論串裡，只需要在討論串 tag 他就可以了
-● 移除部分過時的隱藏指令
+● 修復了一些 bug，但可能會多出更多的 bug
+● HiZollo 開源了，原始碼在這：https://github.com/HiZollo/Junior-HiZollo
+● 新增兩個遊戲：\`bigtwo\`（大老二）與 \`2048\`（2048），詳細玩法可以使用 \`help\` 指令查看
+● 新增 \`sponsor\` 指令，期待乾爹贊助 Nitro
+● 音樂系統的更新：
+　● 新增 \`music resend\` 指令，可以重新發送音樂遙控器
+　● \`music join\` 指令多了 \`j\` 的替代用法
+　● 當語音頻道沒有真人，而且 HiZollo 沒有在播歌時，HiZollo 會自動退出語音頻道
+● 現在訊息指令也有 z 指令的捷徑用法了
+● 現在使用者、身分組等參數都可以只提供 id，不需要 tag 就可以執行了
+● \`help\` 指令改使用選單互動的方式呈現，以顯示更多資訊
+● 現在 \`avatar\`、\`fact\` 都只會接受一個參數
+● 現在 \`botinfo\` 會多顯示一欄上線時間的資訊
+● \`bullsandcows\` 改成使用布林值（是或否）來決定是否開啟困難模式
 `;
