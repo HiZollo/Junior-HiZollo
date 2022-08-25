@@ -1,6 +1,6 @@
 import { ActionRowComponentBuilder, APIActionRowComponent, APIAllowedMentions, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageComponent, APIMessageReference, APIOverwrite, APIThreadMember, APIThreadMetadata, Awaitable, ChannelType, CollectorComponentTypes, CollectorInteractionTypes, ComponentType, GatewayIntentBits, MessageFlags } from "./types";
 import { ButtonInteraction, Client, InteractionCollector, Message, MessageCollector, SelectMenuInteraction } from "../structures";
-import { ActionRowBuilder } from "../builder";
+import { ActionRowBuilder, EmbedBuilder } from "../builder";
 
 
 export interface ClientOptions {
@@ -39,7 +39,7 @@ export interface FileOptions {
 
 export interface BaseMessageOptions {
   content?: string;
-  embeds?: APIEmbed[];
+  embeds?: (APIEmbed | EmbedBuilder)[];
   components?: (APIActionRowComponent<APIMessageActionRowComponent> | ActionRowBuilder<ActionRowComponentBuilder>)[];
   allowedMentions?: APIAllowedMentions;
   files?: FileOptions[];

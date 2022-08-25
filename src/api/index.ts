@@ -1,9 +1,9 @@
 import config from "../../config";
-import {  ButtonStyle, ComponentType, GatewayIntentBits } from "./types/types";
+import { GatewayIntentBits } from "./types/types";
 import { Client, Message, Permissions } from "./structures";
-import { ClientEvents, CollectorEvents } from "./types/enum";
+import { ClientEvents } from "./types/enum";
 import { InteractionUtil } from "./utils";
-import { ActionRowBuilder, ButtonBuilder } from "./builder";
+import { EmbedBuilder } from "./builder";
 
 const client = new Client({
   id: config.bot.id, 
@@ -25,23 +25,12 @@ client.on(ClientEvents.MessageCreate, async rawMessage => {
   const message = new Message(client, rawMessage);
   if (!message.inGuild()) return;
   
-  (await message.send({
-    content: 'Press it', 
-    components: [
-      new ActionRowBuilder()
-        .addComponents(
-          new ButtonBuilder()
-            .setCustomId('aaa')
-            .setLabel('Press')
-            .setStyle(ButtonStyle.Success)
-        )
+  await message.send({
+    embeds: [
+      new EmbedBuilder()
+        .setTitle('Title')
+        .setTimestamp()
     ]
-  })).createComponentCollector({
-    client: client, 
-    componentType: ComponentType.SelectMenu, 
-    max: 1
-  }).on(CollectorEvents.End, (collected) => {
-    collected;
   });
 });
 

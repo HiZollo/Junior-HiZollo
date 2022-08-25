@@ -1,4 +1,5 @@
 export * from "./ComponentBuilder";
+export * from "./EmbedBuilder";
 
 export * from "./ActionRowBuilder";
 export * from "./BaseButtonBuilder";
