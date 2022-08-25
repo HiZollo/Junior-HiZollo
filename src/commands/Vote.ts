@@ -69,11 +69,11 @@ export default class Vote extends Command<string[]> {
     }
     
     await source.defer();
-    const nowTime = Math.trunc(Date.now() / 1000);
 
     const helper = new EmbedBuilder()
       .applyHiZolloSettings(source.member, 'HiZollo 的投票中心')
-      .setDescription(options.join('\n') + `\n\n${source.member} 在 <t:${nowTime}> 發起的投票`)
+      .setDescription(options.join('\n'))
+      .setTimestamp()
       .setTitle(topic);
 
     await source.update({ embeds: [helper] }).then(async msg => {
