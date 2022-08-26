@@ -42,7 +42,6 @@ export default class Respawn extends Command<[number]> {
   public async execute(source: Source, [shardId]: [number]): Promise<void> {
     await source.hide();
 
-    console.log(source.client.shard?.mode);
     if (shardId === null) {
       await source.update(`已開始重生所有分支`);
       await source.client.shard?.respawnAll();
