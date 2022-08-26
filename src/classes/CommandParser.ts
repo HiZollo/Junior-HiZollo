@@ -159,7 +159,7 @@ export class CommandParser extends null {
   static ParseMessageOption: ParseMessageOptionFunctions = {
     async [ApplicationCommandOptionType.Attachment]({ data, attachments }) {
       const argument = attachments.shift() ?? null;
-      return { arg: argument, status: CommandParserOptionResultStatus[!argument && data.required ? "Required" : "Pass"] };
+      return { arg: null, status: CommandParserOptionResultStatus[!argument && data.required ? "Required" : "Pass"] };
     },
 
     async [ApplicationCommandOptionType.Boolean]({ data, preParsedArgs }) {
@@ -167,7 +167,7 @@ export class CommandParser extends null {
       const original = preParsedArgs.shift();
       const argument = original ?? null;
       if (!argument) {
-        return { arg: original, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
+        return { arg: null, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
       }
 
       if (trues.includes(argument)) {
@@ -183,7 +183,7 @@ export class CommandParser extends null {
       const original = preParsedArgs.shift();
       let argument = original ?? null;
       if (!argument) {
-        return { arg: original, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
+        return { arg: null, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
       }
 
       argument = MessageMentions.ChannelsPattern.test(argument) ? argument.slice(2, -1) : argument;
@@ -195,7 +195,7 @@ export class CommandParser extends null {
       const original = preParsedArgs.shift();
       let argument = original ?? null;
       if (!argument) {
-        return { arg: original, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
+        return { arg: null, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
       }
 
       if ('choices' in data && data.choices) {
@@ -223,7 +223,7 @@ export class CommandParser extends null {
       const original = preParsedArgs.shift();
       let argument = original ?? null;
       if (!argument) {
-        return { arg: original, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
+        return { arg: null, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
       }
 
       if (MessageMentions.RolesPattern.test(argument)) {
@@ -244,7 +244,7 @@ export class CommandParser extends null {
       const original = preParsedArgs.shift();
       let argument = original ?? null;
       if (!argument) {
-        return { arg: original, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
+        return { arg: null, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
       }
 
       if ('choices' in data && data.choices) {
@@ -272,7 +272,7 @@ export class CommandParser extends null {
       const original = preParsedArgs.shift();
       let argument = original ?? null;
       if (!argument) {
-        return { arg: original, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
+        return { arg: null, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
       }
 
       if (MessageMentions.RolesPattern.test(argument)) {
@@ -286,7 +286,7 @@ export class CommandParser extends null {
       const original = preParsedArgs.shift();
       let argument = original ?? null;
       if (!argument) {
-        return { arg: original, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
+        return { arg: null, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
       }
 
       if ('choices' in data && data.choices) {
@@ -313,7 +313,7 @@ export class CommandParser extends null {
       const original = preParsedArgs.shift();
       let argument = original ?? null;
       if (!argument) {
-        return { arg: original, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
+        return { arg: null, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
       }
       
       if (MessageMentions.UsersPattern.test(argument)) {

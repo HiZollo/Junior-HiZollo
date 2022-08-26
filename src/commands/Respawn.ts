@@ -21,20 +21,35 @@
 import { Command } from "../classes/Command";
 import { CommandType } from "../utils/enums";
 import { Source } from "../classes/Source";
+import { ApplicationCommandOptionType } from "discord.js";
 
-export default class Respawn extends Command<[]> {
+export default class Respawn extends Command<[number]> {
   constructor() {
     super({ 
       type: CommandType.Developer, 
       name: 'respawn', 
       description: '重新生成所有分支', 
-      aliases: ['rsp']
+      aliases: ['rsp'], 
+      options: [{
+        type: ApplicationCommandOptionType.Number, 
+        name: '分支', 
+        description: '要重生的分支 ID', 
+        required: false
+      }]
     });
   }
 
-  public async execute(source: Source): Promise<void> {
+  public async execute(source: Source, [shardId]: [number]): Promise<void> {
     await source.hide();
-    await source.update('已開始重設所有分支');
-    await source.client.shard?.respawnAll();
+
+    console.log(source.client.shard?.mode);
+    if (shardId === null) {
+      await source.update(`已開始重生所有分支`);
+      await source.client.shard?.respawnAll();
+    }
+    else {
+      await source.update(`已開始重生 ${shardId} 號分支`);
+      process.exit();
+    }
   }
 }
