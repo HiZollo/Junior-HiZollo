@@ -204,10 +204,14 @@ export class CommandParser extends null {
           return { arg: original, status: CommandParserOptionResultStatus.NotInChoices, choices: data.choices };
         }
       }
-      const number = Number(argument);
-      if (number !== ~~number) {
+
+      let number: bigint;
+      try {
+        number = BigInt(argument);
+      } catch {
         return { arg: argument, status: CommandParserOptionResultStatus.WrongFormat };
       }
+      
       if ('minValue' in data) {
         if (data.minValue && number < data.minValue) {
           return { arg: original, status: CommandParserOptionResultStatus.ValueTooSmall, limit: data.minValue };
@@ -216,7 +220,7 @@ export class CommandParser extends null {
           return { arg: original, status: CommandParserOptionResultStatus.ValueTooLarge, limit: data.maxValue };
         }
       }
-      return { arg: number, status: CommandParserOptionResultStatus.Pass };
+      return { arg: Number(number), status: CommandParserOptionResultStatus.Pass };
     },
 
     async [ApplicationCommandOptionType.Mentionable]({ data, preParsedArgs, message }) {
