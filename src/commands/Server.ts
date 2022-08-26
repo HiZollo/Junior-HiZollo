@@ -58,7 +58,7 @@ export default class Server extends Command<[]> {
       .setThumbnail(guild.iconURL({ extension: 'png', size: 4096, forceStatic: false }))
       .addFields(
         { name: '伺服器 ID', value: guild.id },
-        { name: 'HiZollo 分支編號', value: client.shard?.ids[0] ? `${client.shard?.ids[0]}` : '查無資訊'},
+        { name: 'HiZollo 分支編號', value: client.shard?.ids[0] === undefined ? '查無資訊' : `${client.shard?.ids[0]}`},
         { name: '擁有者', value: `<@${owner.user.id}>` },
         { name: '成員數量', value: `${guild.memberCount}` },
         { name: '頻道數量', value: `文字頻道：${channels.textCount}\n語音頻道：${channels.voiceCount}\n討論串：${channels.threadCount}` },

@@ -84,7 +84,7 @@ export default class TicTacToe extends Command<[GuildMember, number]> {
       }], 
       boardSize: boardSize ?? 3, 
       source: source.source, 
-      time: 120e3, 
+      time: 30e3, 
       strings: strings
     });
 
