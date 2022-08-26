@@ -44,25 +44,22 @@ export default class MusicPlaylist extends Command<[]> {
       return;
     }
 
-    const queue = source.client.music.getQueue(source.guild.id);
-    if (!queue.length) {
-      await source.defer({ ephemeral: true });
-      await source.update('待播清單中目前沒有任何歌曲');
-      return;
-    }
-
     await source.defer();
 
     const nowPlaying = source.client.music.getNowPlaying(source.guild.id) as Track;
-
     const embed = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 的音樂中心');
-    
     const pages: PageSystemPagesOptions[][] = [];
 
-    queue.forEach((track, i) => {
+    source.client.music.getQueue(source.guild.id).forEach((track, i) => {
       if (i % 10 === 0) pages.push([]);
       pages[~~(i / 10)].push({ name: track.videoLink });
     });
+
+    if (pages.length === 0) {
+      embed.setDescription(`以下是目前的播放清單\n\n\`>> \`${nowPlaying.videoLink}`);
+      await source.update({ embeds: [embed] });
+      return;
+    }
 
     await pageSystem({
       mode: PageSystemMode.Description, 

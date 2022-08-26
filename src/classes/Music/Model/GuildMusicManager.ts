@@ -284,7 +284,7 @@ export class GuildMusicManager {
    * 解析 Youtube 播放清單
    * @param source 觸發指令的來源
    * @param url 播放清單的連結
-   * @returns 播放清單中前 20 首歌曲的相關數據
+   * @returns 播放清單中前 100 首歌曲的相關數據
    */
   private async parsePlaylistUrl(source: Source, url: string): Promise<{ stream: YouTubeStream, info: InfoData }[] | void> {
     const playlist = await ytpl.playlist_info(url, { incomplete: true }).catch(() => {});
@@ -293,7 +293,7 @@ export class GuildMusicManager {
       return;
     }
 
-    const videos = playlist.page(1).slice(0, 20) ?? [];
+    const videos = playlist.page(1).slice(0, 100) ?? [];
 
     const message = await this.view.startParsingPlaylist(source);
     const result: { stream: YouTubeStream, info: InfoData }[] = [];
