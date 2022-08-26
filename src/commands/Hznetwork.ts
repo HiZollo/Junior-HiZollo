@@ -23,6 +23,7 @@ import config from "@root/config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { CommandType } from "../utils/enums";
+import { Translator } from "../classes/Translator";
 
 export default class Hznetwork extends Command<[string]> {
   constructor() {
@@ -102,7 +103,8 @@ export default class Hznetwork extends Command<[string]> {
 
   private networkDescription = 
 `**HiZollo Network** 是一個大型聊天室，你可以與伺服器以外的成員聊天互動
-你只要建立一個名為 __#hz-network-[埠號]__ 的頻道，就能加入 HiZollo Network 了
+使用前，請確保伺服器沒有開啟 2FA，且 HiZollo 有__${Translator.getPermissionChinese('ManageWebhooks')}__的權限
+你只要建立一個名為 \`#hz-network-[埠號]\` 的頻道，就能加入 HiZollo Network 了
 目前可用的埠號有 \`1\`、\`8\`、\`9\`、\`27\`，注意埠號不含方括號 \`[]\`
 
 在 HiZollo Network 中，每一條訊息都會被發送到所有相同埠號的頻道

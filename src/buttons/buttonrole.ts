@@ -18,11 +18,15 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ButtonInteraction, GuildMemberRoleManager } from "discord.js";
+import { ButtonInteraction, GuildMemberRoleManager, GuildMFALevel } from "discord.js";
 
 export default async function buttonrole(interaction: ButtonInteraction<"cached">): Promise<void> {
   const roleId = interaction.customId.slice('buttonrole_'.length);
   const role = interaction.guild?.roles.resolve(roleId);
+  if (interaction.guild.mfaLevel === GuildMFALevel.Elevated) {
+    await interaction.reply({ content: '這個伺服器開啟了 2FA 驗證，因此我無法管理身分組', ephemeral: true });
+    return;
+  }
   if (!role?.editable) {
     await interaction.reply({ content: `我的權限不足，因此無法管理 ${role} 身分組`, ephemeral: true });
     return;
