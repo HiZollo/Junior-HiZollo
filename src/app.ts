@@ -110,6 +110,7 @@ client.commands.on('reject', async (source, info) => {
       description = `\`\`\`css\n/${commandName[0]}${commandName[1] ? ` ${commandName[1]}` : ''} ${description}\n\`\`\`\n`;
 
       const displayName = options[index].repeat ? options[index].name.replaceAll('%i', '') : options[index].name;
+      let limit: number;
       switch (status) {
         case CommandParserOptionResultStatus.Required:
           helper.setTitle(`參數 ${displayName} 是必填的`);
@@ -132,7 +133,7 @@ client.commands.on('reject', async (source, info) => {
               
         case CommandParserOptionResultStatus.ValueTooSmall:
           if (!('limit' in info.args[2])) break;
-          let { limit } = info.args[2];
+          ({ limit } = info.args[2]);
           helper.setTitle(`參數 ${displayName} 太小了`);
           description += `這個參數必須比 ${limit} 還要大，但你給了 ${arg}`;
           break;
