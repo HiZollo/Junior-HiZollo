@@ -62,7 +62,8 @@ export default class Buttonrole extends Command<[Role, string, string, string]> 
       permissions: {
         bot: [PermissionFlagsBits.ManageRoles, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.SendMessages],
         user: [PermissionFlagsBits.ManageRoles]
-      }
+      }, 
+      twoFactorRequired: true
     });
   }
 
