@@ -26,7 +26,7 @@
 *************************************************************************/
 
 /******************* 系統變數設置 *******************/
-import { EmbedBuilder, GatewayIntentBits, Options } from 'discord.js';
+import { ApplicationCommandOptionType, EmbedBuilder, GatewayIntentBits, Options } from 'discord.js';
 import './djsAddon';
 import config from '@root/config';
 import { HZClient } from './classes/HZClient';
@@ -102,17 +102,24 @@ client.commands.on('reject', async (source, info) => {
     case CommandManagerRejectReason.IllegalArgument:
       const [commandName, options, { arg, index, status }] = info.args;
 
-      let description = options.map((o, i) => i === index ? `[${o.name}]` : `${o.name}`).join(' ');
+      let description = options.map((o, i) => {
+        const text = o.repeat ? new Array(2).fill(o.name).map((e, i) => e.replaceAll('%i', (i+1).toString())).join(' ') + ' ...' : o.name;
+        const indexRange = o.repeat ? (source.isMessage() ? Infinity : 5) : 0;
+        return index <= i && i <= index + indexRange ? `[${text}]` : text;
+      }).join(' ');
       description = `\`\`\`css\n/${commandName[0]}${commandName[1] ? ` ${commandName[1]}` : ''} ${description}\n\`\`\`\n`;
 
+      const displayName = options[index].repeat ? options[index].name.replaceAll('%i', '') : options[index].name;
       switch (status) {
         case CommandParserOptionResultStatus.Required:
-          helper.setTitle(`參數 ${options[index].name} 是必填的`);
+          helper.setTitle(`參數 ${displayName} 是必填的`);
           break;
         
         case CommandParserOptionResultStatus.WrongFormat:
-          helper.setTitle(`參數 ${options[index].name} 的格式錯誤`);
-          description += `${arg} 不符合${Translator.getCommandOptionTypeChinese(options[index])}的格式`;
+          helper.setTitle(`參數 ${displayName} 的格式錯誤`);
+          description += `${arg} 不符合${Translator.getCommandOptionTypeChinese(options[index])}`;
+          if (options[index].type === ApplicationCommandOptionType.Boolean) description += `（是或否）`;
+          description += `的格式`;
           break;
       
         case CommandParserOptionResultStatus.NotInChoices:
@@ -120,34 +127,34 @@ client.commands.on('reject', async (source, info) => {
           const { choices } = info.args[2];
           const choicesString = choices.map(({ name: n, value: v }) => n === v.toString() ? `\`${n}\`` : `\`${n}\`/\`${v}\``).flat().join('．');
           helper.setTitle(`${arg} 並不在規定的選項內`)
-          description += `參數 ${options[index].name} 必須是下列選項中的其中一個：\n${choicesString}`;
+          description += `參數 ${displayName} 必須是下列選項中的其中一個：\n${choicesString}`;
           break;
               
         case CommandParserOptionResultStatus.ValueTooSmall:
           if (!('limit' in info.args[2])) break;
           let { limit } = info.args[2];
-          helper.setTitle(`參數 ${options[index].name} 太小了`);
+          helper.setTitle(`參數 ${displayName} 太小了`);
           description += `這個參數必須比 ${limit} 還要大，但你給了 ${arg}`;
           break;
               
         case CommandParserOptionResultStatus.ValueTooLarge:
           if (!('limit' in info.args[2])) break;
           ({ limit } = info.args[2]);
-          helper.setTitle(`參數 ${options[index].name} 太大了`);
+          helper.setTitle(`參數 ${displayName} 太大了`);
           description += `這個參數必須比 ${limit} 還要小，但你給了 ${arg}`;
           break;
         
         case CommandParserOptionResultStatus.LengthTooShort:
           if (!('limit' in info.args[2])) break;
           ({ limit } = info.args[2]);
-          helper.setTitle(`參數 ${options[index].name} 太短了`);
+          helper.setTitle(`參數 ${displayName} 太短了`);
           description += `這個參數的長度必須比 ${limit} 還要長，但你給的 ${arg} 的長度只有 ${(arg as string).length}`;
           break;
       
         case CommandParserOptionResultStatus.LengthTooLong:
           if (!('limit' in info.args[2])) break;
           ({ limit } = info.args[2]);
-          helper.setTitle(`參數 ${options[index].name} 太長了`);
+          helper.setTitle(`參數 ${displayName} 太長了`);
           description += `這個參數的長度必須比 ${limit} 還要短，但你給的 ${arg} 的長度卻是 ${(arg as string).length}`;
           break;
       }

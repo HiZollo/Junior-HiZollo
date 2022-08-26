@@ -395,11 +395,11 @@ export class CommandParser extends null {
     async [ApplicationCommandOptionType.User]({ interaction, data, optionName }) {
       const argument = interaction.options.getUser(optionName ?? data.name) ?? null;
       if (argument === null) {
-        return { arg: null, status: CommandParserOptionResultStatus.Pass };
+        return { arg: argument, status: CommandParserOptionResultStatus.Pass };
       }
       if (data.parseAs === CommandOptionType.Member) {
         const member = interaction.guild?.members.resolve(argument.id) ?? null;
-        return { arg: member, status: CommandParserOptionResultStatus[!member ? "WrongFormat" : "Pass"] };
+        return { arg: argument, status: CommandParserOptionResultStatus[!member ? "WrongFormat" : "Pass"] };
       }
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };
     }, 
