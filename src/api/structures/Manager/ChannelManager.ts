@@ -22,8 +22,6 @@ export class ChannelManager {
 
   public add(data: APIChannel): Channel | null {
     const channel = ChannelUtil.createChannel(this.client, data);
-    if (!channel) return null;
-
     this.cache.set(data.id, channel);
     return channel;
   }

@@ -3,7 +3,6 @@ import { GatewayIntentBits } from "./types/types";
 import { Client, Message, Permissions } from "./structures";
 import { ClientEvents } from "./types/enum";
 import { InteractionUtil } from "./utils";
-import { EmbedBuilder } from "./builder";
 
 const client = new Client({
   id: config.bot.id, 
@@ -25,13 +24,9 @@ client.on(ClientEvents.MessageCreate, async rawMessage => {
   const message = new Message(client, rawMessage);
   if (!message.inGuild()) return;
   
-  await message.send({
-    embeds: [
-      new EmbedBuilder()
-        .setTitle('Title')
-        .setTimestamp()
-    ]
-  });
+  const channel = await message.fetchChannel();
+  if (!channel.inGuild()) return;
+  await message.send(channel.name ?? 'Name');
 });
 
 client.on(ClientEvents.GuildCreate, rawGuild => {

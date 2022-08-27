@@ -1,6 +1,6 @@
 import * as API from "discord-api-types/v10";
 import { ButtonBuilder, LinkButtonBuilder, SelectMenuBuilder, TextInputBuilder } from "../builder";
-import { AutocompleteInteraction, ButtonInteraction, CategoryChannel, ChatInputInteraction, DMChannel, GroupDMChannel, MessageInteraction, ModalSubmitInteraction, NewsChannel, SelectMenuInteraction, TextChannel, ThreadChannel, UserInteraction } from "../structures";
+import { AutocompleteInteraction, ButtonInteraction, CategoryChannel, ChatInputInteraction, DMChannel, GroupDMChannel, GuildForumChannel, GuildStageVoiceChannel, GuildVoiceChannel, MessageInteraction, ModalSubmitInteraction, NewsChannel, SelectMenuInteraction, TextChannel, ThreadChannel, UserInteraction } from "../structures";
 import { ClientEvents, CollectorEvents } from "./enum";
 
 export type Awaitable<T> = T | Promise<T>;
@@ -28,7 +28,7 @@ export type CollectorEventsMap<K, V> = {
   [CollectorEvents.End]: [Map<K, V>, CollectorEndReason];
 }
 
-export type Channel = CategoryChannel | DMChannel | GroupDMChannel /* | GuildStageVoiceChannel | GuildVoiceChannel */ | NewsChannel | TextChannel | ThreadChannel;
+export type Channel = CategoryChannel | DMChannel | GroupDMChannel | GuildStageVoiceChannel | GuildVoiceChannel | NewsChannel | TextChannel | ThreadChannel | GuildForumChannel;
 
 export type Interaction = AutocompleteInteraction | ChatInputInteraction | MessageInteraction | UserInteraction | ButtonInteraction | SelectMenuInteraction | ModalSubmitInteraction;
 

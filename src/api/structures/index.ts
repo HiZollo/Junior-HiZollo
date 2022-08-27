@@ -15,13 +15,14 @@ export * from "./Channel/GroupDMChannel";
 
 export * from "./Channel/GuildChannel";
 export * from "./Channel/GuildTextChannel";
-// export * from "./Channel/VoiceChannelBase";
+export * from "./Channel/VoiceChannelBase";
 export * from "./Channel/ThreadChannel";
 export * from "./Channel/CategoryChannel";
+export * from "./Channel/GuildForumChannel";
 export * from "./Channel/NewsChannel";
 export * from "./Channel/TextChannel";
-// export * from "./Channel/GuildVoiceChannel";
-// export * from "./Channel/GuildStageVoiceChannel";
+export * from "./Channel/GuildVoiceChannel";
+export * from "./Channel/GuildStageVoiceChannel";
 
 
 export * from "./Collector/Collector";
