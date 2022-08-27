@@ -103,7 +103,7 @@ export interface CollectorInteractionTypeMap {
   [ComponentType.SelectMenu]: SelectMenuInteraction;
 }
 
-export interface TextBasedChannel {
+export interface ITextBasedChannel {
   send(options: TextBasedChannelSendOptions | string): Promise<Message>;
   createMessageCollector(options: CollectorOptions): MessageCollector;
   awaitMessages(options: CollectorOptions): Promise<Map<string, APIMessage>>;

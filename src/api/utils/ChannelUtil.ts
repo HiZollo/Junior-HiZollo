@@ -1,7 +1,7 @@
 import { MessageUtil } from ".";
 import { CategoryChannel, Client, DMChannel, GroupDMChannel, GuildForumChannel, GuildStageVoiceChannel, GuildVoiceChannel, InteractionCollector, Message, MessageCollector, NewsChannel, TextChannel, ThreadChannel } from "../structures";
 import { CollectorEvents } from "../types/enum";
-import { CollectorInteractionTypeMap, CollectorOptions, InteractionCollectorOptions, TextBasedChannel, TextBasedChannelSendOptions } from "../types/interfaces";
+import { CollectorInteractionTypeMap, CollectorOptions, InteractionCollectorOptions, ITextBasedChannel, TextBasedChannelSendOptions } from "../types/interfaces";
 import { APIChannel, APIMessage, Channel, ChannelType, CollectorComponentTypes, InteractionType, Routes } from "../types/types";
 
 export class ChannelUtil extends null {
@@ -42,7 +42,7 @@ export class ChannelUtil extends null {
   }
 
   static ApplyTextBased<T extends abstract new (...args: any[]) => { client: Client, id: string, guildId?: string | null }>(Base: T) {
-    abstract class BaseWithTextBased extends Base implements TextBasedChannel {
+    abstract class BaseWithTextBased extends Base implements ITextBasedChannel {
       public async send(message: TextBasedChannelSendOptions | string): Promise<Message> {
         const body = typeof message === 'string' ? { content: message } : MessageUtil.resolveBody(message);
         const files = typeof message === 'string' ? [] : await MessageUtil.resolveFiles(message.files ?? []);

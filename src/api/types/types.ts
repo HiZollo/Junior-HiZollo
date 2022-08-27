@@ -30,6 +30,8 @@ export type CollectorEventsMap<K, V> = {
 
 export type Channel = CategoryChannel | DMChannel | GroupDMChannel | GuildStageVoiceChannel | GuildVoiceChannel | NewsChannel | TextChannel | ThreadChannel | GuildForumChannel;
 
+export type TextBasedChannel = DMChannel | GroupDMChannel | GuildForumChannel | NewsChannel | TextChannel | GuildVoiceChannel | ThreadChannel;
+
 export type Interaction = AutocompleteInteraction | ChatInputInteraction | MessageInteraction | UserInteraction | ButtonInteraction | SelectMenuInteraction | ModalSubmitInteraction;
 
 export type CollectorInteraction = ButtonInteraction | SelectMenuInteraction | ModalSubmitInteraction;

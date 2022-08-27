@@ -1,4 +1,4 @@
-import { APIActionRowComponent, APIApplication, APIAttachment, APIChannel, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, APIUser, Channel, CollectorComponentTypes, GatewayMessageCreateDispatchData, If, InteractionType, MessageFlags, MessageType, Routes, Snowflake } from "../types/types";
+import { APIActionRowComponent, APIApplication, APIAttachment, APIChannel, APIEmbed, APIMessage, APIMessageActionRowComponent, APIMessageActivity, APIMessageInteraction, APIMessageReference, APIStickerItem, APIUser, CollectorComponentTypes, GatewayMessageCreateDispatchData, If, InteractionType, MessageFlags, MessageType, Routes, Snowflake, TextBasedChannel } from "../types/types";
 import { Client, GuildMember, InteractionCollector, User } from ".";
 import { BaseMessageOptions, CollectorInteractionTypeMap, InteractionCollectorOptions, TextBasedChannelSendOptions } from "../types/interfaces";
 import { MessageUtil } from "../utils";
@@ -77,8 +77,8 @@ export class Message<InGuild extends boolean = boolean> {
   /**
    * 從快取中取得這則訊息所在的頻道。
    */
-  public get channel(): Channel | null {
-    return this.client.channels.get(this.channelId) ?? null;
+  public get channel(): TextBasedChannel | null {
+    return (this.client.channels.get(this.channelId) as TextBasedChannel) ?? null;
   }
 
   public inGuild(): this is Message<true> {
@@ -90,12 +90,12 @@ export class Message<InGuild extends boolean = boolean> {
    * @param force 是否強制敲 API，預設為否，此時會回傳快取內的資料
    * @returns 訊息所在的頻道
    */
-  public async fetchChannel(force: boolean = false): Promise<Channel> {
+  public async fetchChannel(force: boolean = false): Promise<TextBasedChannel> {
     if (!force && this.channel) return this.channel;
     
     const data = await this.client.rest.get(Routes.channel(this.channelId)) as APIChannel;
     this.client.channels.add(data);
-    return this.client.channels.get(this.channelId)!;
+    return this.client.channels.get(this.channelId) as TextBasedChannel;
   }
 
   public async send(message: TextBasedChannelSendOptions | string): Promise<Message> {

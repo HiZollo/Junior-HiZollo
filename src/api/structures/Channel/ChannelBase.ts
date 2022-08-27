@@ -1,5 +1,5 @@
 import { Client, GuildChannel, ThreadChannel } from "..";
-import { ChannelBasePatchOptions, TextBasedChannel } from "../../types/interfaces";
+import { ChannelBasePatchOptions, ITextBasedChannel } from "../../types/interfaces";
 import { APIChannelBase, ChannelType, Routes, Snowflake } from "../../types/types";
 import { SnowflakeUtil } from "../../utils";
 
@@ -37,7 +37,7 @@ export abstract class ChannelBase<T extends ChannelType> {
     return this instanceof GuildChannel;
   }
 
-  public isText(): this is TextBasedChannel {
+  public isText(): this is ITextBasedChannel {
     return Boolean(this.type && [ChannelType.DM, ChannelType.GroupDM, ChannelType.GuildText, ChannelType.GuildVoice].includes(this.type));
   }
 
