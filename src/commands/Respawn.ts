@@ -48,7 +48,10 @@ export default class Respawn extends Command<[number]> {
     }
     else {
       await source.update(`已開始重生 ${shardId} 號分支`);
-      process.exit();
+      source.client.shard!.broadcastEval((client, { shardId }) => {
+        if (client.shard!.ids.includes(shardId)) process.exit();
+      }, { context: { shardId } });
+      // process.exit();
     }
   }
 }
