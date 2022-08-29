@@ -51,7 +51,6 @@ export default class Respawn extends Command<[number]> {
       source.client.shard!.broadcastEval((client, { shardId }) => {
         if (client.shard!.ids.includes(shardId)) process.exit();
       }, { context: { shardId } });
-      // process.exit();
     }
   }
 }
