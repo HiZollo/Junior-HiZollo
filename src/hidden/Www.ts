@@ -27,7 +27,7 @@ export default class Www extends HiddenCommand {
   }
 
   public filter(message: Message): boolean {
-    return /^[wWŵŴM]{3,}$/.test(message.content);
+    return /^[wWŵŴ]{3,}$/.test(message.content);
   }
 
 
