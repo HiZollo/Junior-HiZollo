@@ -125,3 +125,8 @@ export interface RepliableInteraction {
   deleteReply(): Promise<void>;
   followUp(options: InteractionReplyOptions | string): Promise<Message>;
 }
+
+export interface GuildMemberCache {
+  nickname: string | null;
+  id: string;
+}

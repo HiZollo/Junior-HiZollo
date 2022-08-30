@@ -1,6 +1,6 @@
 import config from "../../config";
 import { GatewayIntentBits } from "./types/types";
-import { Client, Message, Permissions } from "./structures";
+import { Client, Permissions } from "./structures";
 import { ClientEvents } from "./types/enum";
 import { InteractionUtil } from "./utils";
 
@@ -21,18 +21,9 @@ client.on(ClientEvents.Ready, shardId => {
 
 client.on(ClientEvents.MessageCreate, async rawMessage => {
   if (rawMessage.author.bot) return;
-  const message = new Message(client, rawMessage);
-  if (!message.inGuild()) return;
-  
-  await message.send({
-    files: [{
-      attachment: './src/pictures/badbot.jpg', 
-      name: 'badbot.jpg'
-    }, {
-      attachment: './src/pictures/badbot.jpg', 
-      name: 'badbot.jpg'
-    }]
-  });
+  if (!rawMessage.guild_id) return;
+  const guild = client.guilds.get(rawMessage.guild_id);
+  console.log(guild?.members);
 });
 
 client.on(ClientEvents.GuildCreate, rawGuild => {

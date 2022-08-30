@@ -1,4 +1,4 @@
-import { Client } from ".";
+import { Client, GuildMemberManager } from ".";
 import { APIGuildMember, APIRole, GatewayGuildCreateDispatchData, Routes } from "../types/types";
 
 export class Guild {
@@ -7,12 +7,15 @@ export class Guild {
   public id!: string;
   public ownerId!: string;
   public roles!: Map<string, APIRole>;
+  public members!: GuildMemberManager;
+  public memberCount!: number;
   public available!: boolean;
 
   constructor(client: Client, data: Partial<GatewayGuildCreateDispatchData>) {
     Object.defineProperty(this, 'client', { value: client });
 
     this.available = false;
+    this.members = new GuildMemberManager(client, this);
     this.patch(data);
   }
 
@@ -37,6 +40,16 @@ export class Guild {
     }
     if (data.owner_id) {
       this.ownerId = data.owner_id;
+    }
+    if (data.members) {
+      data.members.forEach(m => {
+        if (m.user?.id) {
+          this.members.update(m.user.id, m);
+        }
+      });
+    }
+    if (data.member_count) {
+      this.memberCount = data.member_count;
     }
     this.available ||= Boolean(data.roles);
     return this;

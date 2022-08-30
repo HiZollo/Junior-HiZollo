@@ -46,3 +46,4 @@ export * from "./Interaction/UserInteraction";
 
 export * from "./Manager/ChannelManager";
 export * from "./Manager/GuildManager";
+export * from "./Manager/GuildMemberManager";
