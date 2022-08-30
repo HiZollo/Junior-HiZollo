@@ -20,7 +20,7 @@
   <br /><br />
   <p>用 TypeScript 寫出來的爛 bot。</p>
 
-  <img src="https://files.catbox.moe/9kaz2l.png" width="500" />
+  <img src="https://files.catbox.moe/ys65as.png" width="500" />
 </div>
 
 ## 邀請連結
