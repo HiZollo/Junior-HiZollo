@@ -24,9 +24,15 @@ client.on(ClientEvents.MessageCreate, async rawMessage => {
   const message = new Message(client, rawMessage);
   if (!message.inGuild()) return;
   
-  const channel = await message.fetchChannel();
-  if (!channel.inGuild()) return;
-  await message.send(channel.name ?? 'Name');
+  await message.send({
+    files: [{
+      attachment: './src/pictures/badbot.jpg', 
+      name: 'badbot.jpg'
+    }, {
+      attachment: './src/pictures/badbot.jpg', 
+      name: 'badbot.jpg'
+    }]
+  });
 });
 
 client.on(ClientEvents.GuildCreate, rawGuild => {

@@ -1,3 +1,4 @@
+import { fetch } from "undici";
 import fs from "node:fs/promises";
 import path from "node:path";
 
@@ -11,9 +12,8 @@ export class DataResolver extends null {
     }
 
     const file = path.resolve(resource);
-
-    const stats = await fs.stat(file);
-    if (!stats.isFile()) throw new Error('File Not Found.');
+    const stats = await fs.stat(file).catch(() => {});
+    if (!stats?.isFile()) throw new Error(`File ${file} Not Found.`);
     return { data: await fs.readFile(file) };
   }
 }
