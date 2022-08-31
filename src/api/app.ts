@@ -4,7 +4,6 @@ import { Client, Permissions } from "./structures";
 import { ClientEvents } from "./types/enum";
 import { InteractionUtil } from "./utils";
 
-console.log(process.env.SHARD_ID);
 const client = new Client({
   id: config.bot.id, 
   token: config.bot.token, 
@@ -13,8 +12,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessages |
     GatewayIntentBits.GuildMessageReactions |
     GatewayIntentBits.GuildVoiceStates |
-    GatewayIntentBits.MessageContent, 
-  shardId: Number(process.env.SHARD_ID as string)
+    GatewayIntentBits.MessageContent
 });
 
 client.on(ClientEvents.Ready, shardId => {

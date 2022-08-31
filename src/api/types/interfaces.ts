@@ -7,7 +7,13 @@ export interface ClientOptions {
   id: string;
   token: string;
   intents: GatewayIntentBits;
-  shardId: number;
+}
+
+export interface ShardingManagerOptions {
+  file: string;
+  token: string;
+  shardArgs?: string[];
+  shardCount?: number;
 }
 
 export interface ChannelBasePatchOptions {

@@ -9,9 +9,11 @@ import { ActionManager } from "./ActionManager";
 
 export class Client extends EventEmitter {
   public id: string;
-  public shardId: number;
   public token!: string
   public intents: GatewayIntentBits;
+
+  public shardId: number;
+  public shardCount: number;
 
   public rest: REST;
   public ws: WebSocketManager;
@@ -23,18 +25,20 @@ export class Client extends EventEmitter {
   constructor(options: ClientOptions) {
     super();
 
-    Object.defineProperty(this, 'token', { value: options.token })
+    Object.defineProperty(this, 'token', { value: options.token });
 
     this.id = options.id;
-    this.shardId = options.shardId;
     this.intents = options.intents;
+
+    this.shardId = Number(process.env.SHARD_ID as string);
+    this.shardCount = Number(process.env.SHARD_COUNT as string);
 
     this.rest = new REST().setToken(this.token);
     this.ws = new WebSocketManager({
       token: this.token, 
       intents: this.intents, 
       rest: this.rest, 
-      shardCount: 2, 
+      shardCount: this.shardCount, 
       shardIds: [this.shardId]
     });
 

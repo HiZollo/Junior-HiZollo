@@ -1,4 +1,5 @@
 export * from "./Client/Client";
+export * from "./Client/ShardingManager";
 
 export * from "./Guild";
 export * from "./GuildMember";

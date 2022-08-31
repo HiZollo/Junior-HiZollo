@@ -1,9 +1,12 @@
-import childProcess from "node:child_process";
+import { ShardingManager } from "./structures";
+import config from "../../config";
 
-[0, 1].forEach(n => {
-  childProcess.fork('./dist/src/api/app.js', [], {
-    env: {
-      SHARD_ID: n.toString()
-    }
-  })
+const manager = new ShardingManager({
+  file: './dist/src/api/app.js', 
+  token: config.bot.token, 
+  shardArgs: process.argv.slice(2), 
+  shardCount: 2
+});
+manager.spawn().then(() => {
+  console.log('All shards have been spawned.');
 });

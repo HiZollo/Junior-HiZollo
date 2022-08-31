@@ -10,4 +10,10 @@ export class Util extends null {
   static entriesOf<T>(object: T): [keyof T, T[keyof T]][] {
     return Object.entries(object) as [keyof T, T[keyof T]][];
   }
+
+  static sleep(time: number): Promise<void> {
+    return new Promise(resolve => {
+      setTimeout(resolve, time);
+    });
+  }
 }
