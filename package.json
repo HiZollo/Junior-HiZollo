@@ -1,8 +1,8 @@
 {
   "name": "junior-hizollo",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.js",
+  "description": "用 TypeScript 寫成的爛 bot",
+  "main": "dist/src/index.js",
   "dependencies": {
     "@discordjs/voice": "^0.11.0",
     "@hizollo/games": "^2.4.0",
