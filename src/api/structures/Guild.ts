@@ -5,13 +5,14 @@ export class Guild {
   public client!: Client;
   public name!: string;
   public id!: string;
+  public shardId!: number;
   public ownerId!: string;
   public roles!: Map<string, APIRole>;
   public members!: GuildMemberManager;
   public memberCount!: number;
   public available!: boolean;
 
-  constructor(client: Client, data: Partial<GatewayGuildCreateDispatchData>) {
+  constructor(client: Client, data: Partial<GatewayGuildCreateDispatchData> & { shard_id: number }) {
     Object.defineProperty(this, 'client', { value: client });
 
     this.available = false;
@@ -31,24 +32,30 @@ export class Guild {
     return this._me = data;
   }
 
-  public patch(data: Partial<GatewayGuildCreateDispatchData>): this {
-    if (data.name) {
+  public patch(data: Partial<GatewayGuildCreateDispatchData & { shard_id: number }>): this {
+    if (data.name !== undefined) {
       this.name = data.name;
     }
-    if (data.roles) {
+    if (data.roles !== undefined) {
       this.roles = new Map(data.roles.map(r => [r.id, r]));
     }
-    if (data.owner_id) {
+    if (data.id !== undefined) {
+      this.id = data.id;
+    }
+    if (data.shard_id !== undefined) {
+      this.shardId = data.shard_id;
+    }
+    if (data.owner_id !== undefined) {
       this.ownerId = data.owner_id;
     }
-    if (data.members) {
+    if (data.members !== undefined) {
       data.members.forEach(m => {
         if (m.user?.id) {
           this.members.update(m.user.id, m);
         }
       });
     }
-    if (data.member_count) {
+    if (data.member_count !== undefined) {
       this.memberCount = data.member_count;
     }
     this.available ||= Boolean(data.roles);

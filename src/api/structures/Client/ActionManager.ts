@@ -18,6 +18,6 @@ export class ActionManager {
     if (!(event in Actions)) return;
 
     // @ts-ignore
-    this.actions[event as keyof typeof Actions]?.(this.client, data);
+    this.actions[event](this.client, data, payload.shardId);
   }
 }

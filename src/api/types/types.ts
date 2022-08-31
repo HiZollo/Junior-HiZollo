@@ -10,12 +10,12 @@ export type If<T extends boolean, A, B = null> = T extends true ? A : T extends 
 export type ClientEventsMap = {
   [ClientEvents.ChannelDelete]: [rawChannel: API.GatewayChannelDeleteDispatchData];
   [ClientEvents.ChannelUpdate]: [rawChannel: API.GatewayChannelUpdateDispatchData];
-  [ClientEvents.GuildCreate]: [rawGuild: API.GatewayGuildCreateDispatchData];
+  [ClientEvents.GuildCreate]: [rawGuild: API.GatewayGuildCreateDispatchData & { shard_id: number }];
   [ClientEvents.GuildDelete]: [rawGuild: API.GatewayGuildDeleteDispatchData];
   [ClientEvents.GuildRoleCreate]: [rawRole: API.GatewayGuildRoleCreateDispatchData];
   [ClientEvents.GuildRoleDelete]: [rawRole: API.GatewayGuildRoleDeleteDispatchData];
   [ClientEvents.GuildRoleUpdate]: [rawRole: API.GatewayGuildRoleUpdateDispatchData];
-  [ClientEvents.GuildUpdate]: [rawGuild: API.GatewayGuildUpdateDispatchData];
+  [ClientEvents.GuildUpdate]: [rawGuild: API.GatewayGuildUpdateDispatchData & { shard_id: number }];
   [ClientEvents.InteractionCreate]: [rawInteraction: Exclude<API.GatewayInteractionCreateDispatchData, API.APIPingInteraction>];
   [ClientEvents.MessageCreate]: [rawMessage: API.GatewayMessageCreateDispatchData];
   [ClientEvents.MessageDelete]: [rawMessage: API.GatewayMessageDeleteDispatchData];

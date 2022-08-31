@@ -9,6 +9,7 @@ import { ActionManager } from "./ActionManager";
 
 export class Client extends EventEmitter {
   public id: string;
+  public shardId: number;
   public token!: string
   public intents: GatewayIntentBits;
 
@@ -25,13 +26,16 @@ export class Client extends EventEmitter {
     Object.defineProperty(this, 'token', { value: options.token })
 
     this.id = options.id;
+    this.shardId = options.shardId;
     this.intents = options.intents;
 
     this.rest = new REST().setToken(this.token);
     this.ws = new WebSocketManager({
       token: this.token, 
       intents: this.intents, 
-      rest: this.rest
+      rest: this.rest, 
+      shardCount: 2, 
+      shardIds: [this.shardId]
     });
 
     this.onReady = this.onReady.bind(this);

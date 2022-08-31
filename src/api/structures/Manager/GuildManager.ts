@@ -15,7 +15,7 @@ export class GuildManager {
     return this.cache.get(guildId);
   }
 
-  public add(data: Partial<GatewayGuildCreateDispatchData> & { id: string }): Guild {
+  public add(data: Partial<GatewayGuildCreateDispatchData> & { id: string, shard_id: number }): Guild {
     const guild = new Guild(this.client, data);
     this.cache.set(data.id, guild);
     return guild;

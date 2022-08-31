@@ -7,6 +7,7 @@ export interface ClientOptions {
   id: string;
   token: string;
   intents: GatewayIntentBits;
+  shardId: number;
 }
 
 export interface ChannelBasePatchOptions {
