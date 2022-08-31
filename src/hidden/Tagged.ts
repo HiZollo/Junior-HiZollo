@@ -29,7 +29,7 @@ export default class Tagged extends HiddenCommand {
 
   public filter(message: Message): boolean {
     return !!message.client.user && message.author.id !== message.client.user.id &&
-      message.mentions.has(message.client.user.id, { ignoreRoles: true, ignoreEveryone: true });
+      message.mentions.has(message.client.user, { ignoreRoles: true, ignoreEveryone: true });
   }
 
   private r1 = [
