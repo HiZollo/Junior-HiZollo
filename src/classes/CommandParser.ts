@@ -403,7 +403,7 @@ export class CommandParser extends null {
       }
       if (data.parseAs === CommandOptionType.Member) {
         const member = interaction.guild?.members.resolve(argument.id) ?? null;
-        return { arg: argument, status: CommandParserOptionResultStatus[!member ? "WrongFormat" : "Pass"] };
+        return { arg: member, status: CommandParserOptionResultStatus[!member ? "WrongFormat" : "Pass"] };
       }
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };
     }, 

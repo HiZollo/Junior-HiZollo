@@ -31,7 +31,7 @@
     }, 
     "hbar": "———————————————————", 
     "nowPlayer": "現在輪到 <player> 了", 
-    "cardsOnTable": "**現在的牌組是**：[<cards>]", 
+    "cardsOnTable": "**現在桌面上的牌組是**：[<cards>]", 
     "cardsLeft": "<player>：還剩 <number> 張牌", 
     "openCards": "<player>：[<cards>]", 
     "playerLeft": "<player> 已離開遊戲", 
