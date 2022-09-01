@@ -76,9 +76,7 @@ export default class Help extends Command<[string]> {
     };
   }
 
-  private componentsForAllTypes: ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[] | null = null;
   public getComponentsForAllTypes(): ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[] {
-    if (this.componentsForAllTypes) return this.componentsForAllTypes;
 
     const menu = new SelectMenuBuilder()
       .setCustomId('help_menu_main')
@@ -94,16 +92,10 @@ export default class Help extends Command<[string]> {
       });
     }
 
-    this.componentsForAllTypes = [
-      new ActionRowBuilder<SelectMenuBuilder>().addComponents(menu)
-    ];
-    return this.componentsForAllTypes;
+    return [new ActionRowBuilder<SelectMenuBuilder>().addComponents(menu)];
   }
 
-  private embedForAllTypes: EmbedBuilder[] | null = null;
   public getEmbedsForAllTypes(source: Source): EmbedBuilder[] {
-    if (this.embedForAllTypes) return this.embedForAllTypes;
-    
     const embed = new EmbedBuilder()
       .applyHiZolloSettings(source.member, 'HiZollo 的幫助中心', '使用指令時不須連同 [] 或 <> 一起輸入')
       .setDescription(`以下是我的指令列表，你可以使用 \`${config.bot.prefix}help 指令名稱\` 或 \`/help 指令名稱\` 來查看特定指令的使用方法`)
@@ -124,8 +116,7 @@ export default class Help extends Command<[string]> {
       }
     }
     
-    this.embedForAllTypes = [embed];
-    return this.embedForAllTypes;
+    return [embed];
   }
 
   
