@@ -49,7 +49,7 @@ export default class Bullsandcows extends Command<[boolean]> {
         required: false
       }], 
       permissions: {
-        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]
+        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]
       }
     });
   }

@@ -54,7 +54,7 @@ export default class Gomoku extends Command<[GuildMember, GuildMember]> {
         required: false
       }], 
       permissions: {
-        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.SendMessages, PermissionFlagsBits.UseExternalEmojis, PermissionFlagsBits.ViewChannel]
+        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.SendMessages, PermissionFlagsBits.UseExternalEmojis, PermissionFlagsBits.ViewChannel]
       },
     });
   }

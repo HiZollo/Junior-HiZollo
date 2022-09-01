@@ -66,7 +66,7 @@ export default class Bigtwo extends Command<[GuildMember, GuildMember, GuildMemb
         required: true
       }], 
       permissions: {
-        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.SendMessages]
+        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.SendMessages]
       }
     });
   }
