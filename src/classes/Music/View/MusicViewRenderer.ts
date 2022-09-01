@@ -295,7 +295,7 @@ export class MusicViewRenderer {
    * 取得一首歌曲的相關資訊
    */
   public getTrackDescription(track: Track): string {
-    return !track ? '' : `
+    return `
 目前正在播放：${track.videoLink}
 
 播放時間：${this.msFormat(track.resource.playbackDuration)}／${this.msFormat(track.length * 1000)}
