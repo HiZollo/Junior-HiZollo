@@ -18,6 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { PermissionFlagsBits } from "discord.js";
 import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
 import { CommandType } from "../../utils/enums";
@@ -29,7 +30,10 @@ export default class MusicResend extends Command<[]> {
       parent: 'music', 
       name: 'resend', 
       description: '重新傳送音樂遙控器', 
-      aliases: ['rs']
+      aliases: ['rs'], 
+      permissions: {
+        bot: [PermissionFlagsBits.SendMessages]
+      }
     });
   }
 

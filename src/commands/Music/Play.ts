@@ -41,7 +41,7 @@ export default class MusicPlay extends Command<[string]> {
         type: ArgumentParseType.None
       }, 
       permissions: {
-        bot: [PermissionFlagsBits.Speak]
+        bot: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.Speak]
       }
     });
   }
