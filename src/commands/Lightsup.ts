@@ -39,7 +39,7 @@ export default class Lightsup extends Command<[]> {
         `注意當遊戲閒置超過 30 秒時，遊戲會直接結束`,
       aliases: ['lu'], 
       permissions: {
-        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.SendMessages]
+        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.SendMessages]
       }
     });
   }

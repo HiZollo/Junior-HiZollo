@@ -50,7 +50,7 @@ export default class Tofe extends Command<[boolean]> {
         required: false
       }], 
       permissions: {
-        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.SendMessages]
+        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.SendMessages]
       }
     });
   }

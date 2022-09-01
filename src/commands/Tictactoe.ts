@@ -52,7 +52,7 @@ export default class TicTacToe extends Command<[GuildMember, number]> {
         maxValue: 4
       }], 
       permissions: {
-        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.SendMessages]
+        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.SendMessages]
       }
     });
   }

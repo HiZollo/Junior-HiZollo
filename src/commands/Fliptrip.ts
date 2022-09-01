@@ -51,7 +51,7 @@ export default class FlipTrip extends Command<[number]> {
         maxValue: 10
       }], 
       permissions: {
-        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.SendMessages]
+        bot: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.SendMessages]
       }
     });
   }
