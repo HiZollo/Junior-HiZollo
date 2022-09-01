@@ -218,6 +218,9 @@ export class GuildMusicManager {
    * 刪除原有的音樂遙控器，並重新發送一個
    */
   public async resend(): Promise<void> {
+    if (!this.nowPlaying || !this.controller.message) {
+      throw new Error('No tracks are playing now.');
+    }
     await this.controller.resend();
   }
 
