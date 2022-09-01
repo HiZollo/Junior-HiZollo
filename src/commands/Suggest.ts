@@ -120,6 +120,6 @@ function newSuggestComponent(source: Source): ActionRowBuilder<ButtonBuilder> {
     new ButtonBuilder()
       .setCustomId(`suggestResponse_${source.user.id}`)
       .setLabel('回覆')
-      .setStyle(ButtonStyle.Danger)
+      .setStyle(ButtonStyle.Primary)
   );
 }
