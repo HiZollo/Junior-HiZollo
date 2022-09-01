@@ -131,21 +131,20 @@ export default class Help extends Command<[string]> {
     const menu = new SelectMenuBuilder()
       .setCustomId('help_menu_type')
       .setPlaceholder('請選擇一個指令');
-    
-    interaction.client.commands.each(command => {
-      if (command.type === type) {
-        menu.addOptions({
-          label: command.name, 
-          description: command.description, 
-          emoji: '🔹', 
-          value: command.name
-        });
-      }
+    const commands = type === CommandType.SubcommandGroup ?
+      interaction.client.commands.subcommands.map(c => c) :
+      interaction.client.commands.map(c => c).filter(c => c.type === type);
+
+    commands.forEach(command => {
+      menu.addOptions({
+        label: command.name, 
+        description: command.description, 
+        emoji: '🔹', 
+        value: command.name
+      })
     });
 
-    return [
-      new ActionRowBuilder<SelectMenuBuilder>().addComponents(menu)
-    ];
+    return [new ActionRowBuilder<SelectMenuBuilder>().addComponents(menu)];
   }
 
   public getEmbedsForType(interaction: SelectMenuInteraction<"cached">, type: CommandType): EmbedBuilder[] {
@@ -153,13 +152,11 @@ export default class Help extends Command<[string]> {
       `以下是所有**${Translator.getCommandTypeChinese(type)}**分類中的指令\n` +
       `你可以使用 \`${config.bot.prefix}help 指令名稱\` 或 \`/help 指令名稱\` 來查看特定指令的使用方法\n\n`;
 
-    const commands: string[] = [];
-    interaction.client.commands.each(command => {
-      if (command.type === type) {
-        commands.push(`\`${command.name}\``);
-      }
-    });
-    description += commands.join('．');
+    const commands = type === CommandType.SubcommandGroup ?
+      interaction.client.commands.subcommands.map(c => c) :
+      interaction.client.commands.map(c => c).filter(c => c.type === type);
+    
+    description += commands.map(c => `\`${c.name}\``).join('．');
 
     return [
       new EmbedBuilder()
