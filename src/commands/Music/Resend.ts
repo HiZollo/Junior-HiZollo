@@ -48,7 +48,10 @@ export default class MusicResend extends Command<[]> {
       return;
     }
 
-    await source.client.music.resend(source.guild.id);
-    await source.temp('音樂遙控器已重新傳送');
+    await source.client.music.resend(source.guild.id).then(() => {
+      source.temp('音樂遙控器已重新傳送');
+    }).catch(() => {
+      source.temp('現在沒有任何遙控器，請問我要怎麼重傳一個');
+    });
   }
 }
