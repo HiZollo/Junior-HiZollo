@@ -190,15 +190,14 @@ export class GuildMusicController {
         case 'skip':
           this.manager.skip();
           await this.view.controllerAction(MusicControllerActions.Skip, interaction, nowPlaying);
-          break;
+          return; // 跳過後附著訊息會被刪除，所以沒有 reply 也沒關係
         
         case 'info':
           await this.view.controllerAction(MusicControllerActions.Info, interaction, nowPlaying);
           return; // 這邊 render 的時候會 reply，所以直接結束
       }
 
-      // 可能會因為跳過歌曲導致附著訊息被刪除
-      await interaction.update({ components: this.newComponents }).catch(() => {}); 
+      await interaction.update({ components: this.newComponents });
     });
 
     return collector;
