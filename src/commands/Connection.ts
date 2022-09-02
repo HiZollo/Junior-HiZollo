@@ -41,34 +41,28 @@ export default class Connection extends Command<[]> {
 
     const connections = await source.client.shard?.broadcastEval(client => {
       return client.music.map(manager => ({
-        name: manager.guild.name,
-        id: manager.guild.id,
-        members: client.user?.id && manager.voiceChannel.members.has(client.user.id) ? 
-          manager.voiceChannel.members.first(5).map(v => `<@${v.id}>`).join(', ') : null
+        name: manager.guild.name, 
+        id: manager.guild.id, 
+        memberCount: manager.voiceChannel.members.size, 
+        working: manager.working
       }));
     }).then(r => r.reduce((acc, now) => acc.concat(now), []));
 
-    const pages: PageSystemPagesOptions[][] = [];
-    let index = 0;
-    connections?.forEach(con => {
-      if (!con.members || con.members === `<@${source.client.user?.id}>`) {
-        source.client.music.leave(con.id);
-      }
-      else {
-        if (index % 5 === 0) pages.push([]);
-        pages[~~(index / 5)].push({
-          name: `${con.name}\n\`GID\` ${con.id}\n\`USR\` ${con.members}`,
-          guildName: con.name, 
-          id: con.id
-        });
-        index++;
-      }
-    });
-
-    if (!pages.length) {
+    if (!connections?.length) {
       await source.update('沒有人在聽音樂');
       return;
     }
+
+    const pages: PageSystemPagesOptions[][] = [];
+    connections?.forEach((con, i) => {
+      if (i % 5 === 0) pages.push([]);
+      pages[Math.trunc(i / 5)].push({
+        name: `${con.name}\n\`GID\` ${con.id}\n\`STS\` ${con.working ? '播放中' : '閒置'}\n\`CNT\` ${con.memberCount}`,
+        guildName: con.name, 
+        id: con.id
+      });
+      i++;
+    });
 
     const embed = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 的音樂中心');
 
