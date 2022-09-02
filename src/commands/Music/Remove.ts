@@ -67,7 +67,7 @@ export default class MusicRemove extends Command<[number, number]> {
     const queue = source.client.music.getQueue(source.guild.id);
     if (!queue?.length) {
       await source.defer({ ephemeral: true });
-      await source.update('我想隊列應該已經沒有東西可以被移除了，你要不要檢查看看');
+      await source.update('我想待播清單應該已經沒有東西可以被移除了，你要不要檢查看看');
       return;
     }
 

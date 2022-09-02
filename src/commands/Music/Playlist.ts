@@ -21,7 +21,6 @@
 import { EmbedBuilder } from "discord.js";
 import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
-import { Track } from "../../classes/Music/Model/Track";
 import pageSystem from "../../features/utils/pageSystem";
 import { CommandType, PageSystemMode } from "../../utils/enums";
 import { PageSystemPagesOptions } from "../../utils/interfaces";
@@ -46,7 +45,14 @@ export default class MusicPlaylist extends Command<[]> {
 
     await source.defer();
 
-    const nowPlaying = source.client.music.getNowPlaying(source.guild.id) as Track;
+    const nowPlaying = source.client.music.getNowPlaying(source.guild.id);
+
+    if (!nowPlaying) {
+      await source.defer({ ephemeral: true });
+      await source.update('我根本沒在播音樂，請問我要怎麼顯示清單');
+      return;
+    }
+
     const embed = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 的音樂中心');
     const pages: PageSystemPagesOptions[][] = [];
 
