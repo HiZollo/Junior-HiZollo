@@ -125,7 +125,7 @@ export class HZClient extends Client {
   /**
    * 隨機反應機率的倒數
    */
-  private readonly ReactConstant = 9808;
+  private readonly ReactConstant = 10261;
 
   /**
    * 對一則訊息隨機反應
