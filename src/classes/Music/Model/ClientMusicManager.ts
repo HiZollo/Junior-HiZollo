@@ -210,6 +210,10 @@ export class ClientMusicManager {
 
     const manager = this.get(oldState.guild.id)!;
 
+    if (newState.channel && newState.channel?.id !== manager.voiceChannel.id) {
+      manager.voiceChannel = newState.channel;
+    }
+
     if (manager.voiceChannel.members.some(m => !m.user.bot)) return;
     if (manager.player.state.status !== AudioPlayerStatus.Idle) return;
 
