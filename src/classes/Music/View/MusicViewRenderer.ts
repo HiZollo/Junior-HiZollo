@@ -104,26 +104,14 @@ export class MusicViewRenderer {
   }
 
   /**
-   * 告知使用者一部影片已載入成功
+   * 告知使用者一首歌曲已載入成功
    * @param source 觸發指令的來源
    * @param track 載入成功的歌曲
    * @returns 顯示此資訊的訊息
    */
-  public async startPlaying(source: Source, track: Track): Promise<Message> {
+  public async trackLoaded(source: Source, track: Track): Promise<Message> {
     const embed = this.baseEmbed
-      .setDescription(`${track.videoLink} 載入成功，即將開始播放`);
-    return await source.update({ embeds: [embed] });
-  }
-
-  /**
-   * 告知使用者一首歌曲已被加進待播清單中
-   * @param source 觸發指令的來源
-   * @param track 被加入的歌曲
-   * @returns 顯示此資訊的訊息
-   */
-  public async addedToQueue(source: Source, track: Track): Promise<Message> {
-    const embed = this.baseEmbed
-      .setDescription(`${track.videoLink} 歌曲載入成功，已加入待播清單中`);
+      .setDescription(`${track.videoLink} 載入成功`);
     return await source.update({ embeds: [embed] });
   }
 

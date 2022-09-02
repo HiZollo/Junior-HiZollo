@@ -181,14 +181,13 @@ export class GuildMusicManager {
 
     const track = new Track({ requester: source.member, ...resources });
 
+    await this.view.trackLoaded(source, track);
     if (!this.working) {
       this._play(track);
-      await this.view.startPlaying(source, track);
-      return;
     }
-
-    this.queue.push(track);
-    await this.view.addedToQueue(source, track);
+    else {
+      this.queue.push(track);
+    }
   }
 
   /**
