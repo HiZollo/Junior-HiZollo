@@ -129,7 +129,7 @@ export class GuildMusicController {
    * 取得新的遙控器按鈕
    */
   private get newComponents(): ActionRowBuilder<ButtonBuilder>[] {
-    this.controllerButtons[0] = this.getPlayButton(1 - +this.manager.paused);
+    this.controllerButtons[0] = this.getPlayButton(+this.manager.paused);
     this.controllerButtons[1] = this.getRepeatButton(this.manager.nowPlaying!.loopState);
     
     return [
@@ -169,9 +169,9 @@ export class GuildMusicController {
       switch (args[2]) {
         case 'play':
           this.manager.togglePlayState();
-          this.controllerButtons[0] = this.getPlayButton(1 - +this.manager.paused);
+          this.controllerButtons[0] = this.getPlayButton(+this.manager.paused);
           await this.view.controllerAction(
-            this.manager.paused ? MusicControllerActions.Resume : MusicControllerActions.Pause, 
+            this.manager.paused ? MusicControllerActions.Pause : MusicControllerActions.Resume, 
             interaction, nowPlaying
           );
           break;
