@@ -18,10 +18,23 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ActionRow, ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonComponent, ButtonStyle, PermissionFlagsBits, Role } from "discord.js";
+import config from "@root/config";
+import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonComponent, ButtonStyle, ComponentType, Message, PermissionFlagsBits, Role } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { CommandOptionType, CommandType } from "../utils/enums";
+
+type RoleData = {
+  id: string, 
+  name: string, 
+  style: ButtonStyle, 
+  description: string | null, 
+  emoji: string | null
+};
+
+enum ButtonroleAction {
+  Add, Update, Remove
+};
 
 export default class Buttonrole extends Command<[Role, string, string, string]> {
   constructor() {
@@ -60,7 +73,7 @@ export default class Buttonrole extends Command<[Role, string, string, string]> 
         required: false
       }],
       permissions: {
-        bot: [PermissionFlagsBits.ManageRoles, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.SendMessages],
+        bot: [PermissionFlagsBits.ManageRoles, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel],
         user: [PermissionFlagsBits.ManageRoles]
       }, 
       twoFactorRequired: true
@@ -69,15 +82,7 @@ export default class Buttonrole extends Command<[Role, string, string, string]> 
 
   public async execute(source: Source, [role, description, emoji, style]: [Role, string, string, string]): Promise<void> {
     await source.hide();
-
-    const button = new ButtonBuilder()
-      .setCustomId(`buttonrole_${role.id}`)
-      .setLabel(role.name)
-      .setStyle(this.resolveStyle(style));
-    if (emoji) button.setEmoji(emoji);
       
-    const displayDescription = `${emoji ? `${emoji} ` : ''}${role}${description ? `：${description}` : ''}`;
-
     const memberRoles = source.member?.roles;
     if (!(memberRoles && 'highest' in memberRoles)) {
       await source.temp('你需要在伺服器中才能使用這個指令');
@@ -92,49 +97,133 @@ export default class Buttonrole extends Command<[Role, string, string, string]> 
       return;
     }
 
-    const message = (await source.channel?.messages.fetch({ limit: 1, cache: false }))?.first();
-    if (message && message?.author.id === source.client.user?.id && message.components.length === 1 && message.components[0].components.length < 5 && 
-        message.components[0].components.every(comp => comp.customId?.startsWith('buttonrole'))) {
-      if (message.components[0].components.some(comp => comp.customId === `buttonrole_${role.id}`)) {
-        await source.temp(`上面那則訊息已經有 ${role.name} 身分組了，你沒看見嗎？`);
+    const message = (await source.channel?.messages.fetch({ limit: 1, cache: false }))?.first()!;
+    let roles = this.resolve(message);
+
+    if (message && roles) {
+      const index = roles.findIndex(r => r.id === role.id);
+      let action: ButtonroleAction;
+
+      if (index !== -1) {
+        if (this.compareEmoji(roles[index].emoji, emoji) && roles[index].description === description && roles[index].style === this.resolveStyle(style)) {
+          roles.splice(index, 1);
+          action = ButtonroleAction.Remove;
+        }
+        else {
+          roles[index].description = description;
+          roles[index].emoji = emoji;
+          roles[index].style = this.resolveStyle(style);
+          action = ButtonroleAction.Update;
+        }
+      }
+      else {
+        roles.push({
+          id: role.id, 
+          name: role.name, 
+          style: this.resolveStyle(style), 
+          emoji: emoji, 
+          description: description
+        });
+        action = ButtonroleAction.Add;
+      }
+
+      if (roles.length === 0) {
+        await message.delete().catch(() => {});
+        await source.temp(`成功移除 ${role.name} 的按鈕`);
         return;
       }
 
       await message.edit({ 
         allowedMentions: { parse: [] },
-        components: [this.addButton(message.components[0] as ActionRow<ButtonComponent>, button)], 
-        content: message.content + '\n' + displayDescription
+        components: [this.getActionRow(roles)], 
+        content: this.getContent(roles)
       }).then(async () => {
-        await source.temp(`${role.name} 身分組的按鈕添加成功`);
+        switch (action) {
+          case ButtonroleAction.Add:
+            return await source.temp(`成功加上 ${role.name} 的按鈕`);
+          
+          case ButtonroleAction.Update:
+            return await source.temp(`成功更新 ${role.name} 的按鈕`);
+          
+          case ButtonroleAction.Remove:
+            return await source.temp(`成功移除 ${role.name} 的按鈕`);
+        }
       }).catch(async () => {
         await source.temp(`${role.name} 身分組的按鈕添加失敗，可能是因為你提供的表情不存在`);
       });
     }
     else {
+      const roles = [{
+        id: role.id, 
+        name: role.name, 
+        style: this.resolveStyle(style), 
+        emoji: emoji, 
+        description: description
+      }]
       source.channel?.send({
         allowedMentions: { parse: [] },
-        components: [this.addButton(undefined, button)], 
-        content: '請點擊按鈕來獲得對應身分組\n\n' + displayDescription
+        components: [this.getActionRow(roles)], 
+        content: this.getContent(roles)
       }).then(async () => {
-        await source.temp(`${role.name} 身分組的按鈕建立成功`);
+        await source.temp(`成功建立 ${role.name} 的按鈕`);
       }).catch(async () => {
         await source.temp(`${role.name} 身分組的按鈕建立失敗，可能是因為你提供的表情不存在`);
       });
     }
   }
 
-  private addButton(actionRow: ActionRow<ButtonComponent> | undefined, button: ButtonBuilder): ActionRowBuilder<ButtonBuilder> {
-    const builder = new ActionRowBuilder<ButtonBuilder>();
-    if (actionRow) {
-      actionRow.components.forEach(({ customId, emoji, label, style }) => {
-        const button = new ButtonBuilder().setStyle(style);
-        if (customId) button.setCustomId(customId);
-        if (emoji) button.setEmoji(emoji);
-        if (label) button.setLabel(label);
-        builder.addComponents(button);
+  private resolve(message: Message | undefined): RoleData[] | null {
+    if (!message) return null;
+    if (message.author.id !== config.bot.id) return null;
+    if (message.components.length !== 1) return null;
+    if (message.components[0].components.length === 5) return null;
+    if (message.components[0].components.some(c => !c.customId?.startsWith('buttonrole_' || c.type !== ComponentType.Button))) return null;
+
+    const roles: RoleData[] = [];
+    for (const button of message.components[0].components as ButtonComponent[]) {
+      roles.push({
+        id: button.customId!.slice('buttonrole_'.length), 
+        name: button.label!, 
+        style: button.style, 
+        description: null, 
+        emoji: button.emoji?.id ?? button.emoji?.name ?? null
       });
     }
-    return builder.addComponents(button)
+
+    const lines = message.content.split('\n').slice(2);
+    if (lines.length !== roles.length) return null;
+    lines.forEach((line, i) => {
+      roles[i].description = line.match(/^.+?：(.+)$/)?.[1] ?? null;
+    })
+
+    return roles;
+  }
+
+  private getActionRow(roles: RoleData[]): ActionRowBuilder<ButtonBuilder> {
+    return new ActionRowBuilder<ButtonBuilder>()
+      .setComponents(
+        roles.map(r => {
+          const button = new ButtonBuilder()
+            .setCustomId(`buttonrole_${r.id}`)
+            .setStyle(r.style);
+          if (r.emoji) button.setEmoji(r.emoji);
+          if (r.name) button.setLabel(r.name);
+          return button;
+        })
+      );
+  }
+
+  private getContent(roles: RoleData[]): string {
+    let content = '請點擊按鈕來獲得對應身分組\n\n';
+    roles.forEach(role => {
+      content += `${role.emoji ? `${role.emoji} ` : ''}<@&${role.id}>${role.description ? `：${role.description}` : ''}\n`;
+    });
+    return content;
+  }
+
+  private compareEmoji(emojiName: string | null, emojiResolvable: string | null): boolean {
+    return emojiName === emojiResolvable ||
+      emojiName === (emojiResolvable?.match(/<?(a)?:?(\w{2,32}):(\d{17,20})>?/)?.[3] ?? null);
   }
 
   private resolveStyle(style: string): ButtonStyle {
