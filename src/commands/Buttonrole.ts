@@ -42,7 +42,11 @@ export default class Buttonrole extends Command<[Role, string, string, string]> 
       type: CommandType.Utility, 
       name: 'buttonrole', 
       description: '產生手動取得身分組的按鈕', 
-      extraDescription: '如果上一則訊息是由這個指令觸發的，再次使用這個指令後，新的按鈕會併入上一則訊息中，一則訊息最多可以用有 5 個按鈕', 
+      extraDescription:
+        '如果上一則訊息是由這個指令觸發的，再次使用這個指令後，新的按鈕會併入上一則訊息中，一則訊息最多可以擁有 5 個按鈕\n'+
+        '如果上一則訊息已經存在指定身分組的按鈕，會更新或移除該按鈕：\n'+
+        '當你輸入的所有參數（描述、表情、顏色）都與訊息上的相同，該按鈕會被移除\n'+
+        '如果有至少一項參數是不同的，該按鈕的所有參數會被更新成你輸入的新參數', 
       aliases: ['br'], 
       options: [{ 
         type: ApplicationCommandOptionType.Role, 
