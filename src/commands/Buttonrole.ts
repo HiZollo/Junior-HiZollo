@@ -132,6 +132,10 @@ export default class Buttonrole extends Command<[Role, string, string, string]> 
         await source.temp(`成功移除 ${role.name} 的按鈕`);
         return;
       }
+      if (roles.length === 6) {
+        await this.send(source, roles[5]);
+        return;
+      }
 
       await message.edit({ 
         allowedMentions: { parse: [] },
@@ -153,23 +157,26 @@ export default class Buttonrole extends Command<[Role, string, string, string]> 
       });
     }
     else {
-      const roles = [{
+      this.send(source, {
         id: role.id, 
         name: role.name, 
         style: this.resolveStyle(style), 
         emoji: emoji, 
         description: description
-      }]
-      source.channel?.send({
-        allowedMentions: { parse: [] },
-        components: [this.getActionRow(roles)], 
-        content: this.getContent(roles)
-      }).then(async () => {
-        await source.temp(`成功建立 ${role.name} 的按鈕`);
-      }).catch(async () => {
-        await source.temp(`${role.name} 身分組的按鈕建立失敗，可能是因為你提供的表情不存在`);
       });
     }
+  }
+
+  private async send(source: Source, role: RoleData): Promise<void> {
+    source.channel?.send({
+      allowedMentions: { parse: [] },
+      components: [this.getActionRow([role])], 
+      content: this.getContent([role])
+    }).then(async () => {
+      await source.temp(`成功建立 ${role.name} 的按鈕`);
+    }).catch(async () => {
+      await source.temp(`${role.name} 身分組的按鈕建立失敗，可能是因為你提供的表情不存在`);
+    });
   }
 
   private resolve(message: Message | undefined): RoleData[] | null {
