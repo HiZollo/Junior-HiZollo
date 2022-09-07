@@ -45,9 +45,7 @@ export default class Repeat extends Command<[string]> {
     await source.defer();
     await source.update({
       content: content,
-      allowedMentions: {
-        parse: ['users']
-      }
+      allowedMentions: { parse: [] }
     });
   }
 }
