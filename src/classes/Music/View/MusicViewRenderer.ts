@@ -55,7 +55,7 @@ export class MusicViewRenderer {
    */
   public async invalidPlaylistUrl(source: Source): Promise<Message> {
     const embed = this.baseEmbed
-      .setDescription('我找不到這個播放清單連結的相關資訊，可能是因為這個清單是私人的，或單純只是你亂打連結');
+      .setDescription('我找不到這個播放清單連結的相關資訊，你可以重新輸入連結再試一次');
     return await source.update({ embeds: [embed] });
   }
 
@@ -77,7 +77,7 @@ export class MusicViewRenderer {
    */
   public async invalidVideoUrl(source: Source): Promise<Message> {
     const embed = this.baseEmbed
-      .setDescription('我找不到這個影片連結的相關資訊，可能是因為它是私人影片，或是影片有年齡限制，或單純只是你亂打連結');
+      .setDescription('我找不到這個影片連結的相關資訊，你可以重新輸入連結再試一次');
     return await source.update({ embeds: [embed] });
   }
 
