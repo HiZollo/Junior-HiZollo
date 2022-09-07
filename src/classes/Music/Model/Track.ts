@@ -20,9 +20,10 @@
 
 import { AudioResource, createAudioResource } from "@discordjs/voice";
 import { GuildMember } from "discord.js";
-import ytpl, { InfoData } from "play-dl";
+import { InfoData } from "play-dl";
 import { MusicLoopState } from "../../../utils/enums";
 import { TrackOptions } from "../../../utils/interfaces";
+import { YoutubeUtil } from "./YoutubeUtil";
 
 /**
  * 代表一首歌曲
@@ -121,7 +122,9 @@ export class Track {
    * 重新載入這首歌曲的音訊資源
    */
   public async renewResource() {
-    const stream = await ytpl.stream(this.info.video_details.url);
+    const stream = await YoutubeUtil.getStream(this.info.video_details.url);
+    if (!stream) throw new Error(`Invalid url ${this.info.video_details.url}`);
+
     this.resource = createAudioResource(stream.stream, { inputType: stream.type });
   }
 

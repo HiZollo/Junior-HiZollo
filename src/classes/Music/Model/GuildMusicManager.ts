@@ -364,7 +364,7 @@ export class GuildMusicManager {
     const info = await ytpl.video_basic_info(url).catch(() => {});
     if (!info) return;
 
-    const stream = await ytpl.stream(url).catch(() => {}) as YouTubeStream | void;
+    const stream = await YoutubeUtil.getStream(url).catch(() => {}) as YouTubeStream | void;
     if (!stream) return;
 
     return { stream, info };
