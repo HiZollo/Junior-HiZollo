@@ -1,0 +1,54 @@
+name: HiZollo 的錯誤
+title: "[Bug]："
+description: 任何其它的問題可以在這裡提出
+labels: ["bug", "hizollo"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        你可以使用 `bug` 指令回報
+        也可以到 HiZollo 的官方伺服器提出問題：https://discord.gg/xUXTrYG2MZ
+  - type: textarea
+    id: description
+    attributes:
+      label: 錯誤內容
+      description: |
+        請詳細的告訴我們發生了怎麼樣的問題
+      placeholder: |
+        請儘量詳細的描述，有助於我們能更快的理解並解決問題
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: 有問題的指令
+      description: |
+        如果這個問題適用，請告訴我們你用的指令和參數
+      placeholder: |
+        /say hello world
+  - type: input
+    id: server-id
+    attributes:
+      label: 伺服器 ID
+      description: |
+        你所在的伺服器 ID，如果不知道，可以使用在伺服器 `server` 指令查看
+      placeholder: |
+        572733182412193792
+  - type: input
+    id: username
+    attributes:
+      label: 你的名字
+      description: |
+        你的 Discord 使用者名稱，方便我們認出你
+      placeholder: |
+        Junior HiZollo
+  - type: textarea
+    id: other
+    attributes:
+        label: 其它資訊
+        description: |
+          可以幫助我們理解你的問題的文字、圖片或檔案
+        placeholder: |
+          請把一些上面沒提到但你覺得很重要或有助於別人解決這個問題的東西在這裡
+
+      
