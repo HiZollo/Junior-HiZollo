@@ -1,0 +1,25 @@
+name: 我有問題
+title: "[Question]："
+description: 任何其它的問題可以在這裡提出
+labels: ["question", "help wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        你也可以到 HiZollo 的官方伺服器中詢問：https://discord.gg/xUXTrYG2MZ
+  - type: textarea
+    id: question
+    attributes:
+      label: 你的問題
+      description: |
+        請告訴我們你的問題
+      placeholder: |
+        爛 bot
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: 其它
+      description: |
+        任何可以協助其他人了解你的問題的文字、圖片或檔案
