@@ -9,13 +9,23 @@ body:
         你可以使用 `bug` 指令回報
         也可以到 HiZollo 的官方伺服器提出問題：https://discord.gg/xUXTrYG2MZ
   - type: textarea
-    id: description
+    id: expected
     attributes:
-      label: 錯誤內容
+      label: 預期效果
       description: |
-        請詳細的告訴我們發生了怎麼樣的問題
+        請告訴我們在這個功能上你期望有的效果
       placeholder: |
-        請儘量詳細的描述，有助於我們能更快的理解並解決問題
+        請儘量詳細的描述，有助於我們能更快的理解你的想法
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: 實際行為
+      description: |
+        請告訴我們實際上發生的事
+      placeholder: |
+        請儘量詳細的描述，有助於我們能更快的理解發生了什麼事
     validations:
       required: true
   - type: textarea
