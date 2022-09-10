@@ -1,0 +1,54 @@
+name: 錯誤回報
+title: "[Bug]："
+description: 程式如果有任何錯誤都可以透過這裡回報
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        你也可以到 HiZollo 的官方伺服器提出問題：https://discord.gg/xUXTrYG2MZ
+  - type: textarea
+    id: expected
+    attributes:
+      label: 預期效果
+      description: |
+        請告訴我們在這個功能上你期望有的效果
+      placeholder: |
+        請儘量詳細的描述，有助於我們能更快的理解你的想法
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: 實際行為
+      description: |
+        請告訴我們實際上發生的事
+      placeholder: |
+        請儘量詳細的描述，有助於我們能更快的理解發生了什麼事
+    validations:
+      required: true
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js 版本
+      description: |
+        你使用的 Node.js 版本是多少？你可以使用 `node -v` 來查看。
+      placeholder: 16.9.0
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本
+      placeholder: 1.0.0
+      description: |
+        請告訴我們你使用的 HiZollo 版本是多少，有些東西可能已經在比較新的地方修好了
+        如果使用的是 `dev` 分支的版本（開發中），請填 `dev`
+  - type: textarea
+    id: other
+    attributes:
+        label: 其它資訊
+        description: |
+          可以幫助我們理解你的問題的文字、圖片或檔案
+        placeholder: |
+          你可以在這裡寫下上面沒提到，但你覺得很重要或有助於別人解決這個問題的額外資訊
