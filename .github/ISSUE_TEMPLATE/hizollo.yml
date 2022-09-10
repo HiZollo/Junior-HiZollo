@@ -1,6 +1,6 @@
 name: HiZollo 的錯誤
 title: "[Bug]："
-description: 任何其它的問題可以在這裡提出
+description: 有關 HiZollo 機器人的錯誤，可以在這裡提出
 labels: ["bug", "hizollo"]
 body:
   - type: markdown
