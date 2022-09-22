@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc-watch --onSuccess resolve-tspaths",
     "deploy": "node dist/src/deploy.js",
+    "rg-webhook": "node dist/src/register-webhook.js",
     "start": "node dist/src/index.js",
     "test": "node dist/src/index.js dev"
   },
