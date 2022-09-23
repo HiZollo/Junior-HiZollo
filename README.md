@@ -86,7 +86,7 @@ Webhook 的名稱可以在之後到 Discord 中手動更改。
 
 Name: Cool Webhook
 ID: 1022496087895973898
-Webhook: DYewdMZ138jskaXgFalU_JJ_wKBTjaC6kdgYnF2lyqnkb-HrU2y0JdY2xdpr7Do-P6zl
+Token: DYewdMZ138jskaXgFalU_JJ_wKBTjaC6kdgYnF2lyqnkb-HrU2y0JdY2xdpr7Do-P6zl
 ```
 
 ## 官方伺服器
