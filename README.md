@@ -72,7 +72,7 @@ BLOCKED_USERS="[
 在複製或使用 HiZollo 的原始碼時，請注意[我們的授權方式](#授權)。
 
 ### Webhook
-我們建議在建議以及錯誤回報（Suggest & Bug）的 Webhook 使用由應用程式創建的 Webhook，可以有更多的功能。
+在創建回報系統的 Webhook 時，我們建議你使用由應用程式創建的 Webhook，按鈕才能正常顯示。
 
 如果要使用，可以先先不填入 Webhook 相關部分直接編譯整份專案。編譯完成後使用 `npm run rg-webhook [頻道 ID] <名稱>` 指令讓你的應用程式在指定的頻道上註冊 Webhook。之後再將它們的 ID 和 Token 寫回 `.env` 和 `config.ts`。
 
