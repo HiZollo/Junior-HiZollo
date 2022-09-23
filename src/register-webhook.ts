@@ -46,7 +46,7 @@ import 'dotenv/config';
 
 		console.log(`Name: ${res.name}`);
 		console.log(`ID: ${res.id}`);
-		console.log(`Webhook: ${res.token}`);
+		console.log(`Token: ${res.token}`);
 	} catch(err) {
 		console.error(err);
 		process.exit(1);
