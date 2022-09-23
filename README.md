@@ -90,7 +90,7 @@ Webhook: DYewdMZ138jskaXgFalU_JJ_wKBTjaC6kdgYnF2lyqnkb-HrU2y0JdY2xdpr7Do-P6zl
 ```
 
 ## 官方伺服器
-如果有碰到任何使用上的問題，你都可以到我們的[官方伺服器](https://hizollo.ddns.net/server)中訊問。
+如果有碰到任何使用上的問題，你都可以到我們的[官方伺服器](https://hizollo.ddns.net/server)中詢問。
 
 ## 授權
 Junior HiZollo 的原始碼是以 GPL-3.0-or-later 條款授權給所有人使用，你可以在該條款之下對其做任意的分發、修改。對於更詳細的說明，請參見 [COPYING](https://github.com/HiZollo/Junior-HiZollo/blob/main/COPYING) 或 [Google](https://www.google.com/search?q=gpl-3.0-or-later)。
