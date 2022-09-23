@@ -74,7 +74,7 @@ BLOCKED_USERS="[
 ### Webhook
 在創建回報系統的 Webhook 時，我們建議你使用由應用程式創建的 Webhook，按鈕才能正常顯示。
 
-如果要使用，可以先先不填入 Webhook 相關部分直接編譯整份專案。編譯完成後使用 `npm run rg-webhook [頻道 ID] <名稱>` 指令讓你的應用程式在指定的頻道上註冊 Webhook。之後再將它們的 ID 和 Token 寫回 `.env` 和 `config.ts`。
+如果要使用，可以先不填入 Webhook 相關部分直接編譯整份專案。編譯完成後使用 `npm run rg-webhook [頻道 ID] <Webhook 名稱>` 指令讓你的應用程式在指定的頻道上註冊 Webhook。之後再將它們的 ID 和 Token 寫回 `.env` 和 `config.ts`。
 
 請注意因為 `config.ts` 會被編進 `dist/config.js`，所以如果 `config.ts` 有任何更動都會需要重新編譯。
 
