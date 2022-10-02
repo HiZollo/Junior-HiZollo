@@ -21,7 +21,8 @@
 import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
 import { ArgumentParseType, CommandType } from "../../utils/enums";
-import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
+import { ApplicationCommandOptionType, PermissionFlagsBits, EmbedBuilder } from "discord.js";
+import Constant from '../../constant.json';
 
 export default class MusicPlay extends Command<[string]> {
   constructor() {
@@ -47,6 +48,26 @@ export default class MusicPlay extends Command<[string]> {
   }
 
   public async execute(source: Source, [keywordOrUrl]: [string]): Promise<void> {
+    //// <Lock>
+    if (!process.env.ENABLE_YT) {
+      const embed = new EmbedBuilder()
+        .applyHiZolloSettings(source.member, 'HiZollo 的幫助中心')
+        .setDescription(
+`
+由於 Google 和 Discord 的規範越來越嚴格，為了保證能繼續為各位提供服務，我們將暫時關閉音樂功能。
+
+我們會在設計好一個能夠運作的新的音樂功能後重新對外開放，請各位多注意我們的公告（</annoucement:894066153654198372>）。
+
+在這之前，你可以考慮使用 </youtube:894066844405739520> 指令來在語音頻道中播放來自 Youtube 的音樂。
+
+如果有任何問題或意見，你可以查看我們的[最近公告](${Constant.websiteLinks.annoucement})或加入 [HiZollo 官方伺服器](${Constant.mainGuild.inviteLink})。
+`);
+      await source.defer();
+      await source.update({ embeds: [embed] });
+      return;
+    }
+    //// </Lock>
+
     if (!source.client.music.has(source.guild.id)) {
       const command = source.client.commands.search(['music', 'join']) as Command;
       await command.execute(source, [true]);
