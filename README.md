@@ -89,6 +89,17 @@ ID: 1022496087895973898
 Token: DYewdMZ138jskaXgFalU_JJ_wKBTjaC6kdgYnF2lyqnkb-HrU2y0JdY2xdpr7Do-P6zl
 ```
 
+### Youtube 音樂功能
+因應 Youtube 的聲明，Discord 會將被發現在播放 Youtube 音樂的機器人取消驗證。
+
+為了避免遭受處分，我們在程式中將播放 Youtube 音樂的功能上了鎖。如果你希望在你的複製品中可以啟用此功能，可以在你的 `.env` 檔案中加上一行
+```
+ENABLE_YT=1
+```
+，或是把 `/src/commands/Music/Play` 中 `<Lock></Lock>` 的部分刪掉。
+
+由於在未來我們可能會對音樂系統做改寫，啟用此功能的方法亦可能改變，對於使用此功能的人，請關注本章節和更新日誌。
+
 ## 官方伺服器
 如果有碰到任何使用上的問題，你都可以到我們的[官方伺服器](https://hizollo.ddns.net/server)中詢問。
 
