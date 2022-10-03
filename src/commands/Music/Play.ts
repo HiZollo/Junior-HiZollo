@@ -49,7 +49,7 @@ export default class MusicPlay extends Command<[string]> {
 
   public async execute(source: Source, [keywordOrUrl]: [string]): Promise<void> {
     //// <Lock>
-    if (!process.env.ENABLE_YT) {
+    if (process.env.ENABLE_YT === '1') {
       const embed = new EmbedBuilder()
         .applyHiZolloSettings(source.member, 'HiZollo 的幫助中心')
         .setDescription(
