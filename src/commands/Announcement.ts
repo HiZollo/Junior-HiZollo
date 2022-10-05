@@ -38,6 +38,8 @@ export default class Announcement extends Command<[]> {
     });
   }
 
+  private static Update = recentUpdate.split('\n').slice(0, -1).join('\n\u200b')
+
   public async execute(source: Source): Promise<void> {
     await source.defer();
     const announcement = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 開發團隊公告')
@@ -48,7 +50,7 @@ export default class Announcement extends Command<[]> {
           `HiZollo 的開發者開始寫開發日誌了！你可以[點此](${websiteLinks.blog} "開發日誌")前去閱讀。`
       }, {
         name: `📰 最新更新 - ${bot.version}`, 
-        value: `> **${bot.releaseDate.year} 年 ${bot.releaseDate.month} 月 ${bot.releaseDate.date} 日**${recentUpdate}`
+        value: `> **${bot.releaseDate.year} 年 ${bot.releaseDate.month} 月 ${bot.releaseDate.date} 日**${Announcement.Update}`
       });
     await source.update({ embeds: [announcement] });
   }
