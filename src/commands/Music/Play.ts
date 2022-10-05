@@ -58,7 +58,7 @@ export default class MusicPlay extends Command<[string]> {
 
 我們會在設計好一個能夠運作的新的音樂功能後重新對外開放，請各位多注意我們的公告（</annoucement:894066153654198372>）。
 
-在這之前，你可以考慮使用 </youtube:894066844405739520> 指令來在語音頻道中播放來自 Youtube 的音樂。
+在這之前，你可以考慮使用 </activity:1027038277833855027> 指令來在語音頻道中播放來自 Youtube 的音樂。
 
 如果有任何問題或意見，你可以查看我們的[最近公告](${Constant.websiteLinks.annoucement})或加入 [HiZollo 官方伺服器](${Constant.mainGuild.inviteLink})。
 `);
