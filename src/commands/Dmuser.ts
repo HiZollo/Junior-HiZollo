@@ -23,7 +23,7 @@ import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { CommandType } from "../utils/enums";
 
-export default class Dice extends Command<[User, string]> {
+export default class Dmuser extends Command<[User, string]> {
   constructor() {
     super({
       type: CommandType.Developer, 
