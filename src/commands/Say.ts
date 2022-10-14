@@ -50,9 +50,7 @@ export default class Say extends Command<[string]> {
     await source.hide();
     await source.channel?.send({
       content: content,
-      allowedMentions: {
-        parse: ['users']
-      }
+      allowedMentions: { parse: [] }
     });
     await source.editReply('訊息已成功傳送');
   }

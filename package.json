@@ -1,6 +1,6 @@
 {
   "name": "junior-hizollo",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "用 TypeScript 寫成的爛 bot",
   "main": "dist/src/index.js",
   "private": true,
@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc-watch --onSuccess resolve-tspaths",
     "deploy": "node dist/src/deploy.js",
+    "rg-webhook": "node dist/src/register-webhook.js",
     "start": "node dist/src/index.js",
     "test": "node dist/src/index.js dev"
   },

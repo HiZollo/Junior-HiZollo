@@ -71,8 +71,37 @@ BLOCKED_USERS="[
 
 在複製或使用 HiZollo 的原始碼時，請注意[我們的授權方式](#授權)。
 
+### Webhook
+在創建回報系統的 Webhook 時，我們建議你使用由應用程式創建的 Webhook，按鈕才能正常顯示。
+
+如果要使用，可以先不填入 Webhook 相關部分直接編譯整份專案。編譯完成後使用 `npm run rg-webhook [頻道 ID] <Webhook 名稱>` 指令讓你的應用程式在指定的頻道上註冊 Webhook。之後再將它們的 ID 和 Token 寫回 `.env` 和 `config.ts`。
+
+請注意因為 `config.ts` 會被編進 `dist/config.js`，所以如果 `config.ts` 有任何更動都會需要重新編譯。
+
+Webhook 的名稱可以在之後到 Discord 中手動更改。
+
+使用範例：
+```
+> npm run rg-webhook 816612487649689621 "Cool Webhook"
+
+Name: Cool Webhook
+ID: 1022496087895973898
+Token: DYewdMZ138jskaXgFalU_JJ_wKBTjaC6kdgYnF2lyqnkb-HrU2y0JdY2xdpr7Do-P6zl
+```
+
+### Youtube 音樂功能
+因應 Youtube 的聲明，Discord 會將被發現在播放 Youtube 音樂的機器人取消驗證。
+
+為了避免遭受處分，我們在程式中將播放 Youtube 音樂的功能上了鎖。如果你希望在你的複製品中可以啟用此功能，可以在你的 `.env` 檔案中加上一行
+```
+ENABLE_YT=1
+```
+，或是把 `/src/commands/Music/Play` 中 `<Lock></Lock>` 的部分刪掉。
+
+由於在未來我們可能會對音樂系統做改寫，啟用此功能的方法亦可能改變，對於使用此功能的人，請關注本章節和更新日誌。
+
 ## 官方伺服器
-如果有碰到任何使用上的問題，你都可以到我們的[官方伺服器](https://hizollo.ddns.net/server)中訊問。
+如果有碰到任何使用上的問題，你都可以到我們的[官方伺服器](https://hizollo.ddns.net/server)中詢問。
 
 ## 授權
 Junior HiZollo 的原始碼是以 GPL-3.0-or-later 條款授權給所有人使用，你可以在該條款之下對其做任意的分發、修改。對於更詳細的說明，請參見 [COPYING](https://github.com/HiZollo/Junior-HiZollo/blob/main/COPYING) 或 [Google](https://www.google.com/search?q=gpl-3.0-or-later)。
