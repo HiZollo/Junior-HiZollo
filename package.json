@@ -8,7 +8,9 @@
     "node": ">=16.9.0"
   },
   "scripts": {
-    "build": "tsc-watch --onSuccess resolve-tspaths",
+    "dev": "tsc-watch --onSuccess resolve-tspaths",
+    "build": "tsc", 
+    "postbuild": "resolve-tspaths", 
     "deploy": "node dist/src/deploy.js",
     "rg-webhook": "node dist/src/register-webhook.js",
     "start": "node dist/src/index.js",
