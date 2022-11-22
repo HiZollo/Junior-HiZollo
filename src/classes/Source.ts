@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ChatInputCommandInteraction, Client, Guild, GuildMember, GuildTextBasedChannel, InteractionDeferReplyOptions, InteractionResponse, Message, MessagePayload, User, WebhookEditMessageOptions } from "discord.js";
+import { ChatInputCommandInteraction, Client, Guild, GuildMember, GuildTextBasedChannel, InteractionDeferReplyOptions, InteractionResponse, Message, MessageCreateOptions, MessagePayload, User, WebhookEditMessageOptions } from "discord.js";
 import tempMessage from "../features/utils/tempMessage";
 
 /**
@@ -162,7 +162,7 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
    * @param options 上述函式的選項
    * @returns 上述函式的回傳值
    */
-  public async temp(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message> {
+  public async temp(options: string | MessageCreateOptions): Promise<Message> {
     if (this.source instanceof ChatInputCommandInteraction) {
       return this.source.editReply(options);
     }
@@ -195,11 +195,11 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
    * @param options 上述函式的選項
    * @returns 上述函式的回傳值
    */
-  public async update(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message> {
+  public async update(options: string | MessageCreateOptions): Promise<Message> {
     if (this.source instanceof ChatInputCommandInteraction) {
       return this.source.editReply(options);
     }
-    return this.source.channel.send(options);
+    return this.source.channel.send(options)
   }
 
   /**

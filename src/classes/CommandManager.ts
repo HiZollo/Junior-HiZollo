@@ -104,7 +104,7 @@ export class CommandManager extends EventEmitter {
   public async onInteractionCreate(interaction: Interaction): Promise<void> {
     if (!interaction.isChatInputCommand() || !interaction.inCachedGuild()) return;
     if (interaction.user.blocked || interaction.user.bot) return;
-    if (this.client.devMode && interaction.channel?.isTestChannel()) return;
+    if (this.client.devMode && !interaction.channel?.isTestChannel()) return;
 
     const channel = interaction.channel;
     const member = interaction.member;

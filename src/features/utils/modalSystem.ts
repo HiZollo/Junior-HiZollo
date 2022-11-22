@@ -18,10 +18,10 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { InteractionCollector, ActionRowBuilder, MessageOptions, ComponentType, InteractionType, ButtonBuilder, APIButtonComponent, ButtonStyle, APIButtonComponentWithURL, ModalSubmitInteraction, Collection } from 'discord.js';
+import { InteractionCollector, ActionRowBuilder, MessageCreateOptions, ComponentType, InteractionType, ButtonBuilder, APIButtonComponent, ButtonStyle, APIButtonComponentWithURL, ModalSubmitInteraction, Collection } from 'discord.js';
 import { ModelSystemContentOptions, ModelSystemOptions } from '../../utils/interfaces';
 
-type CustomMessageOptions = Omit<MessageOptions, 'flags'> & { fetchReply?: boolean };
+type CustomMessageOptions = Omit<MessageCreateOptions, 'flags'> & { fetchReply?: boolean };
 
 /**
  * 建立一個有時效性的表單系統

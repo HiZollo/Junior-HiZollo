@@ -1,7 +1,15 @@
+# builds
 dist
+
+# node
 node_modules
+
+# data
 *.bat
 *.txt
 .DS_Store
 .env
+
+# editor
 .vscode
+*.swp
