@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, GuildMember, GuildTextBasedChannel, InteractionCollector, Message, MessageOptions } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, GuildMember, GuildTextBasedChannel, InteractionCollector, Message, MessageCreateOptions } from "discord.js";
 import { HZClient } from "../../HZClient";
 import { MusicControllerActions, MusicLoopState } from "../../../utils/enums";
 import { GuildMusicControllerOptions } from "../../../utils/interfaces";
@@ -118,7 +118,7 @@ export class GuildMusicController {
   /**
    * 回傳現正播放歌曲的 MessageOptions
    */
-  private get newMessage(): MessageOptions {
+  private get newMessage(): MessageCreateOptions {
     return {
       components: this.newComponents, 
       embeds: this.view.getcontrollerEmbeds(this.manager)

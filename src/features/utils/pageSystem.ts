@@ -59,7 +59,6 @@ export default async function pageSystem(options: PageSystemOptions): Promise<Pa
   modifyButtons(buttons, pages.length, index);
   
   const messageOptions = {
-    content: null,
     embeds: [embed],
     components: mode === PageSystemMode.Description && allowSelect ? [newSelectMenu(pages[index]), buttons] : [buttons]
   };
