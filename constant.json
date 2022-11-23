@@ -1,0 +1,46 @@
+{
+  "bot": {
+    "version": "1.1.1",
+    "releaseDate": {
+      "year": 2022,
+      "month": 10,
+      "date": 5
+    },
+    "inviteLink": {
+      "default": "https://discord.com/api/oauth2/authorize?client_id=584677291318312963&permissions=292940885&scope=bot%20applications.commands",
+      "customized": "https://discord.com/api/oauth2/authorize?client_id=584677291318312963&permissions=0&scope=bot%20applications.commands"
+    }
+  },
+  "websiteLinks": {
+    "main": "https://hizollo.ddns.net",
+    "blog": "https://hizollo.ddns.net/blog",
+    "changelog": "https://hizollo.ddns.net/changelog",
+    "commands": "https://hizollo.ddns.net/commands",
+    "tos": "https://hizollo.ddns.net/tos",
+    "annoucement": "https://hizollo.ddns.net/annoucements",
+    "github": "https://github.com/HiZollo",
+    "source": "https://github.com/HiZollo/Junior-HiZollo",
+    "topgg": "https://top.gg/bot/584677291318312963",
+    "dtw": "https://discordservers.tw/bots/584677291318312963"
+  },
+  "mainGuild": {
+    "name": "HiZollo 官方伺服器",
+    "id": "891723602074927115",
+    "inviteLink": "https://discord.gg/xUXTrYG2MZ",
+    "channels": {
+      "announcementId": "927692466839252992",
+      "bugReportId": "911680567844679691",
+      "suggestReportId": "911680567844679691"
+    },
+    "roles": {
+      "adminId": "906963078615294063",
+      "groupMemberId": "823241953012350977",
+      "botNotifyId": "1009701262545129473",
+      "devNotifyId": "1009701253166665729",
+      "serverNotifyId": "1009701267788005417"
+    }
+  },
+  "devGuild": {
+    "id": "891723602074927115"
+  }
+}

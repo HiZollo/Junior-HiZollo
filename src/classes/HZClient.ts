@@ -24,7 +24,7 @@ import { Client as Osu } from "@hizollo/osu-api";
 import { CommandManager } from "./CommandManager";
 import CooldownManager from "./CooldownManager";
 import config from "@root/config";
-import constant from "../constant.json";
+import constant from "../../constant.json";
 import getActivity from "../features/utils/getActivity";
 import { HZClientOptions } from "../utils/interfaces";
 import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";

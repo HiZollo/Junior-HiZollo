@@ -1,12 +1,12 @@
 import "dotenv/config";
 
 if (!process.env.TOKEN) throw new Error('Bot token not configured.');
-if (!process.env.MAIN_WEBHOOK_TOKEN) throw new Error('Main webhook token not configured.');
-if (!process.env.ERROR_WEBHOOK_TOKEN) throw new Error('Error webhook token not configured.');
-if (!process.env.BUG_WEBHOOK_TOKEN) throw new Error('Bug webhook token not configured.');
-if (!process.env.SUGGEST_WEBHOOK_TOKEN) throw new Error('Suggest webhook token not configured.');
-if (!process.env.REPLY_WEBHOOK_TOKEN) throw new Error('Reply webhook token not configured.');
-if (!process.env.NETWORK_WEBHOOK_TOKEN) throw new Error('Network webhook token not configured.');
+if (!process.env.MAIN_WEBHOOK) throw new Error('Main webhook token not configured.');
+if (!process.env.ERROR_WEBHOOK) throw new Error('Error webhook token not configured.');
+if (!process.env.BUG_WEBHOOK) throw new Error('Bug webhook token not configured.');
+if (!process.env.SUGGEST_WEBHOOK) throw new Error('Suggest webhook token not configured.');
+if (!process.env.REPLY_WEBHOOK) throw new Error('Reply webhook token not configured.');
+if (!process.env.NETWORK_WEBHOOK) throw new Error('Network webhook token not configured.');
 if (!process.env.OSU_APIKEY) throw new Error('Osu API key not configured.');
 
 export default {
@@ -22,28 +22,28 @@ export default {
 
   webhooks: {
     main: {
-      id: "584725204090093579",
-      token: process.env.MAIN_WEBHOOK_TOKEN
+      id: process.env.MAIN_WEBHOOK.split('/')[5],
+      token: process.env.MAIN_WEBHOOK.split('/')[6]
     },
     error: {
-      id: "945695872883236905",
-      token: process.env.ERROR_WEBHOOK_TOKEN
+      id: process.env.ERROR_WEBHOOK.split('/')[5],
+      token: process.env.ERROR_WEBHOOK.split('/')[6]
     },
     bug: {
-      id: "985911129215762483", 
-      token: process.env.BUG_WEBHOOK_TOKEN
+      id: process.env.BUG_WEBHOOK.split('/')[5],
+      token: process.env.BUG_WEBHOOK.split('/')[6]
     },
     suggest: {
-      id: "985911185532678186",
-      token: process.env.SUGGEST_WEBHOOK_TOKEN
+      id: process.env.SUGGEST_WEBHOOK.split('/')[5],
+      token: process.env.SUGGEST_WEBHOOK.split('/')[6]
     },
     reply: {
-      id: "993674361728946188", 
-      token: process.env.REPLY_WEBHOOK_TOKEN
+      id: process.env.REPLY_WEBHOOK.split('/')[5],
+      token: process.env.REPLY_WEBHOOK.split('/')[6]
     }, 
     network: {
-      id: "800736609187659797",
-      token: process.env.NETWORK_WEBHOOK_TOKEN
+      id: process.env.NETWORK_WEBHOOK.split('/')[5],
+      token: process.env.NETWORK_WEBHOOK.split('/')[6]
     }
   },
 
