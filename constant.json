@@ -25,15 +25,15 @@
   },
   "mainGuild": {
     "name": "HiZollo 官方伺服器",
-    "id": "891723602074927115",
+    "id": "572733182412193792",
     "inviteLink": "https://discord.gg/xUXTrYG2MZ",
     "channels": {
-      "announcementId": "927692466839252992",
-      "bugReportId": "911680567844679691",
-      "suggestReportId": "911680567844679691"
+      "announcementId": "793146488933842954",
+      "bugReportId": "650726659263037490",
+      "suggestReportId": "650726701835354165"
     },
     "roles": {
-      "adminId": "906963078615294063",
+      "adminId": "656112661209022495",
       "groupMemberId": "823241953012350977",
       "botNotifyId": "1009701262545129473",
       "devNotifyId": "1009701253166665729",
@@ -41,6 +41,6 @@
     }
   },
   "devGuild": {
-    "id": "891723602074927115"
+    "id": "784971366234587137"
   }
 }
