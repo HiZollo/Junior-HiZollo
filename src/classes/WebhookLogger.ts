@@ -20,7 +20,7 @@
 
 import { EmbedBuilder, Guild, Message, TextChannel, User, WebhookClient } from "discord.js";
 import config from "@root/config";
-import constant from "../../constant.json";
+import constant from "@root/constant.json";
 import { HZClient } from "./HZClient";
 import { Source } from "./Source";
 

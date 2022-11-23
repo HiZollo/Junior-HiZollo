@@ -20,7 +20,7 @@
 
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { bot, mainGuild } from "../../constant.json";
+import { bot, mainGuild } from "@root/constant.json";
 import recentUpdate from "../features/info/recentUpdate";
 import { CommandType } from "../utils/enums";
 

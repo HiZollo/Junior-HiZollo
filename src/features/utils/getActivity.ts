@@ -20,7 +20,7 @@
 
 import { Client } from 'discord.js';
 import config from '@root/config';
-import { websiteLinks } from '../../../constant.json';
+import { websiteLinks } from '@root/constant.json';
 import randomElement from './randomElement';
 
 /**
