@@ -45,8 +45,7 @@ import 'dotenv/config';
     }) as APIWebhook;
 
     console.log(`Name: ${res.name}`);
-    console.log(`ID: ${res.id}`);
-    console.log(`Token: ${res.token}`);
+    console.log(`URL: https://discord.com/api/webhooks/${res.id}/${res.token}`);
   } catch(err) {
     console.error(err);
     process.exit(1);
