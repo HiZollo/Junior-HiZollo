@@ -19,7 +19,7 @@
  */
 
 import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
-import { bot } from "../constant.json";
+import { bot } from "../../constant.json";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { CommandType } from "../utils/enums";

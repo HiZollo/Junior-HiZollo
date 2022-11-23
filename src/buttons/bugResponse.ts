@@ -19,7 +19,7 @@
  */
 
 import { ActionRowBuilder, ButtonInteraction, ModalBuilder, TextInputBuilder, TextInputStyle, User } from "discord.js";
-import { mainGuild } from "../constant.json";
+import { mainGuild } from "../../constant.json";
 
 export default async function (interaction: ButtonInteraction<"cached">): Promise<void> {
   if (!interaction.member.roles.cache.has(mainGuild.roles.groupMemberId)) {
