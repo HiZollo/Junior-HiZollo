@@ -85,8 +85,8 @@ Webhook 的名稱可以在之後到 Discord 中手動更改。
 > npm run rg-webhook 816612487649689621 "Cool Webhook"
 
 Name: Cool Webhook
-ID: 1022496087895973898
-Token: DYewdMZ138jskaXgFalU_JJ_wKBTjaC6kdgYnF2lyqnkb-HrU2y0JdY2xdpr7Do-P6zl
+URL: https://discord.com/api/webhooks/1022496087895973898/DYewdMZ138jskaXgFalU_JJ_wKBTjaC6kdgYnF2lyqnkb-HrU2y0JdY2xdpr7Do-P6zl
+```
 ```
 
 ### Youtube 音樂功能
