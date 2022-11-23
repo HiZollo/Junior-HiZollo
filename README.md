@@ -47,12 +47,12 @@ Junior HiZollo 需要在 node.js v16.9.0 以上的版本中才能運行，你可
 在你把整份專案複製回去後，在根目錄創建一個叫做 `.env` 的檔案，並把下方模板中的缺項補齊：
 ```
 TOKEN=
-MAIN_WEBHOOK=
-ERROR_WEBHOOK=
-BUG_WEBHOOK=
-SUGGEST_WEBHOOK=
-REPLY_WEBHOOK=
-NETWORK_WEBHOOK=
+MAIN_WEBHOOK_URL=
+ERROR_WEBHOOK_URL=
+BUG_WEBHOOK_URL=
+SUGGEST_WEBHOOK_URL=
+REPLY_WEBHOOK_URL=
+NETWORK_WEBHOOK_URL=
 OSU_APIKEY=
 TEST_CHANNELS="[
   // 這是一個陣列，請在這裡填入測試頻道的 ID，沒有的話則留白

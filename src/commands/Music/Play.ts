@@ -22,7 +22,7 @@ import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
 import { ArgumentParseType, CommandType } from "../../utils/enums";
 import { ApplicationCommandOptionType, PermissionFlagsBits, EmbedBuilder } from "discord.js";
-import Constant from '../../../constant.json';
+import Constant from '@root/constant.json';
 
 export default class MusicPlay extends Command<[string]> {
   constructor() {

@@ -19,7 +19,7 @@
  */
 
 import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
-import { bot, websiteLinks } from "../../constant.json";
+import { bot, websiteLinks } from "@root/constant.json";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import recentUpdate from "../features/info/recentUpdate";

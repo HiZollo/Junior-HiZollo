@@ -21,7 +21,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ModalBuilder, ModalSubmitInteraction, PermissionFlagsBits, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { mainGuild } from "../../constant.json";
+import { mainGuild } from "@root/constant.json";
 import modalSystem from "../features/utils/modalSystem";
 import removeMd from "../features/utils/removeMd";
 import { CommandType } from "../utils/enums";

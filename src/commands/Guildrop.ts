@@ -19,7 +19,7 @@
  */
 
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, Message, TextChannel } from "discord.js";
-import constant from "../../constant.json";
+import constant from "@root/constant.json";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { CommandType, PageSystemMode } from "../utils/enums";
