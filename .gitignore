@@ -4,6 +4,10 @@ dist
 # node
 node_modules
 
+# package lockers
+package-lock.json
+yarn.lock
+
 # data
 *.bat
 *.txt
@@ -13,3 +17,4 @@ node_modules
 # editor
 .vscode
 *.swp
+
