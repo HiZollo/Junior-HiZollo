@@ -24,11 +24,9 @@
 </div>
 
 ## 邀請連結
-
 你可以[點擊此處](https://hizollo.ddns.net/invite)邀請他加入你的伺服器。
 
 ## 功能
-
 - `/2048`：在 Discord 中玩一場 2048
 - `/buttonrole`：設置讓使用者獲取身份的按鈕
 - `/calc`：計算一個數學算式
@@ -51,12 +49,12 @@ Junior HiZollo 需要在 node.js v16.9.0 以上的版本中才能運行，你可
 
 ```
 TOKEN=
-MAIN_WEBHOOK_TOKEN=
-ERROR_WEBHOOK_TOKEN=
-BUG_WEBHOOK_TOKEN=
-SUGGEST_WEBHOOK_TOKEN=
-REPLY_WEBHOOK_TOKEN=
-NETWORK_WEBHOOK_TOKEN=
+MAIN_WEBHOOK_URL=
+ERROR_WEBHOOK_URL=
+BUG_WEBHOOK_URL=
+SUGGEST_WEBHOOK_URL=
+REPLY_WEBHOOK_URL=
+NETWORK_WEBHOOK_URL=
 OSU_APIKEY=
 TEST_CHANNELS="[
   // 這是一個陣列，請在這裡填入測試頻道的 ID，沒有的話則留白
@@ -78,7 +76,6 @@ BLOCKED_USERS="[
 在複製或使用 HiZollo 的原始碼時，請注意[我們的授權方式](#授權)。
 
 ### Webhook
-
 在創建回報系統的 Webhook 時，我們建議你使用由應用程式創建的 Webhook，按鈕才能正常顯示。
 
 如果要使用，可以先不填入 Webhook 相關部分直接編譯整份專案。編譯完成後使用 `npm run rg-webhook [頻道 ID] <Webhook 名稱>` 指令讓你的應用程式在指定的頻道上註冊 Webhook。之後再將它們的 ID 和 Token 寫回 `.env` 和 `config.ts`。
@@ -93,9 +90,9 @@ Webhook 的名稱可以在之後到 Discord 中手動更改。
 > npm run rg-webhook 816612487649689621 "Cool Webhook"
 
 Name: Cool Webhook
-ID: 1022496087895973898
-Token: DYewdMZ138jskaXgFalU_JJ_wKBTjaC6kdgYnF2lyqnkb-HrU2y0JdY2xdpr7Do-P6zl
+URL: https://discord.com/api/webhooks/1022496087895973898/DYewdMZ138jskaXgFalU_JJ_wKBTjaC6kdgYnF2lyqnkb-HrU2y0JdY2xdpr7Do-P6zl
 ```
+
 
 ### Youtube 音樂功能
 
