@@ -42,11 +42,9 @@
 你也可以到 [HiZollo 的官方網站](https://hizollo.ddns.net)上瀏覽他的[指令列表](https://hizollo.ddns.net/commands)。
 
 ## 複製一臺
-
 Junior HiZollo 需要在 node.js v16.9.0 以上的版本中才能運行，你可以使用 `node -v` 來確定你的版本是否足夠。
 
 在你把整份專案複製回去後，在根目錄創建一個叫做 `.env` 的檔案，並把下方模板中的缺項補齊：
-
 ```
 TOKEN=
 MAIN_WEBHOOK_URL=
@@ -63,13 +61,11 @@ BLOCKED_USERS="[
   // 這是一個陣列，請在這裡填入被封鎖用戶的 ID，沒有的話則留白
 ]"
 ```
-
 在這之後，也將 `config.ts` 中的各種 ID 換成你自己的，各種 prefix 如果你有自己的也換成自己的。
 
 完成資料的設置後，請用 `npm install` 把所有依賴的套件下載完，並使用 `npm run build` 來編譯整個專案。
 
 編譯完成後，使用 `npm run deploy` 來部署所有應用程式指令。使用 `npm start` 可以在一般模式下執行機器人，而使用 `npm test` 則是在測試模式下執行。在測試模式中：
-
 - HiZollo Network 無效
 - 測試頻道以外使用的指令不會被回應
 
@@ -85,14 +81,12 @@ BLOCKED_USERS="[
 Webhook 的名稱可以在之後到 Discord 中手動更改。
 
 使用範例：
-
 ```
 > npm run rg-webhook 816612487649689621 "Cool Webhook"
 
 Name: Cool Webhook
 URL: https://discord.com/api/webhooks/1022496087895973898/DYewdMZ138jskaXgFalU_JJ_wKBTjaC6kdgYnF2lyqnkb-HrU2y0JdY2xdpr7Do-P6zl
 ```
-
 
 ### Youtube 音樂功能
 
