@@ -72,7 +72,7 @@ type GetmsgJSONResult = {
   messages: GetmsgJSONMessagesResult[]
 };
 
-export default class Getmsg extends Command<[string]> {
+export default class Getmsg extends Command<[number, string]> {
   constructor() {
     super({
       type: CommandType.Utility, 
@@ -87,6 +87,12 @@ export default class Getmsg extends Command<[string]> {
           { name: 'txt', value: 'txt' },
           { name: 'json', value: 'json' }
         ]
+      },{
+        type: ApplicationCommandOptionType.Integer, 
+        name: '數量', 
+        description: '要獲取的訊息數量',
+        minValue: 1, 
+        maxValue: 100
       }], 
       permissions: {
         bot: [PermissionFlagsBits.AttachFiles, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel],
@@ -95,13 +101,13 @@ export default class Getmsg extends Command<[string]> {
     });
   }
 
-  public async execute(source: Source, [format]: [string]): Promise<void> {
+  public async execute(source: Source, [count = 100, format]: [number, string]): Promise<void> {
     await source.defer();
 
     let log!: Buffer;
 
     const message = await source.update('搜取訊息中……');
-    const messages = await source.channel?.messages.fetch({ limit: 100 }).catch(() => {});
+    const messages = await source.channel?.messages.fetch({ limit: count }).catch(() => {});
     if (!messages) {
       await message.edit('搜取訊息失敗，請再試一次');
       return;
