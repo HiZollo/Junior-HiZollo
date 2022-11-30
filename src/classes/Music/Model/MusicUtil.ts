@@ -23,7 +23,7 @@ import ytpl, { YouTubeStream } from "play-dl";
 /**
  * 與 Youtube 相關的功能性函式
  */
-export class YoutubeUtil extends null {
+export class MusicUtil extends null {
   /**
    * 確認字串是不是合法的 Youtube 影片連結
    * @param url 字串
