@@ -22,6 +22,8 @@ import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { ArgumentParseType, CommandType } from "../utils/enums";
+import { EmbedBuilder } from 'discord.js';
+import removeMd from "../features/utils/removeMd";
 
 export default class Say extends Command<[string]> {
   constructor() {
@@ -52,6 +54,12 @@ export default class Say extends Command<[string]> {
       content: content,
       allowedMentions: { parse: [] }
     });
+    const logChannel = source.guild.channels.cache.find(v => v.name == "hz-message-log");
+    if(logChannel && logChannel.isTextBased() && !logChannel.isThread() && !logChannel.isVoiceBased()){
+      logChannel.send({
+        embeds: [new EmbedBuilder().setHiZolloColor().setDescription(`${source.user}在${source.channel}發送了信息：\n\`\`\`${removeMd(content)}\`\`\``)]
+      });
+    }
     await source.editReply('訊息已成功傳送');
   }
 }
