@@ -72,7 +72,7 @@ type GetmsgJSONResult = {
   messages: GetmsgJSONMessagesResult[]
 };
 
-export default class Getmsg extends Command<[number, string]> {
+export default class Getmsg extends Command<[string, number]> {
   constructor() {
     super({
       type: CommandType.Utility, 
@@ -101,7 +101,7 @@ export default class Getmsg extends Command<[number, string]> {
     });
   }
 
-  public async execute(source: Source, [count = 100, format]: [number, string]): Promise<void> {
+  public async execute(source: Source, [format, count = 100]: [string, number]): Promise<void> {
     await source.defer();
 
     let log!: Buffer;
