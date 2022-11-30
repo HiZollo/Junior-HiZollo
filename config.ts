@@ -12,7 +12,7 @@ if (!process.env.OSU_APIKEY) throw new Error('Osu API key not configured.');
 export default {
   bot: {
     prefix: "w!",
-    id: Buffer.from(process.env.TOKEN.split(".")[0]).toString("ascii"),
+    id: Buffer.from(process.env.TOKEN.split(".")[0], "base64").toString("ascii"),
     token: process.env.TOKEN,
     network: {
       namePrefix: "HIZOLLO",
