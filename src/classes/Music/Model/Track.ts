@@ -23,7 +23,7 @@ import { GuildMember } from "discord.js";
 import { InfoData } from "play-dl";
 import { MusicLoopState } from "../../../utils/enums";
 import { TrackOptions } from "../../../utils/interfaces";
-import { YoutubeUtil } from "./MusicUtil";
+import { YoutubeUtil } from "./YoutubeUtil";
 
 /**
  * 代表一首歌曲

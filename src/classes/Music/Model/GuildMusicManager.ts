@@ -22,7 +22,7 @@ import { ChannelType, Guild, GuildTextBasedChannel, PermissionsBitField, VoiceBa
 import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, VoiceConnection } from "@discordjs/voice";
 import { HZClient } from "../../../classes/HZClient";
 import { GuildMusicManagerOptions } from "../../../utils/interfaces";
-import { YoutubeUtil } from "./MusicUtil";
+import { YoutubeUtil } from "./YoutubeUtil";
 import ytpl, { InfoData, YouTubeStream } from "play-dl";
 import { Track } from "./Track";
 import { GuildMusicController } from "../Controller/GuildMusicController";
