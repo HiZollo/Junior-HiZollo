@@ -22,7 +22,7 @@ import { ChannelType, Guild, GuildTextBasedChannel, PermissionsBitField, VoiceBa
 import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, VoiceConnection } from "@discordjs/voice";
 import { HZClient } from "../../../classes/HZClient";
 import { GuildMusicManagerOptions } from "../../../utils/interfaces";
-import { MusicUtil } from "./MusicUtil";
+import { YoutubeUtil } from "./MusicUtil";
 import ytpl, { InfoData, YouTubeStream } from "play-dl";
 import { Track } from "./Track";
 import { GuildMusicController } from "../Controller/GuildMusicController";
@@ -155,10 +155,10 @@ export class GuildMusicManager {
   public async play(source: Source, keywordOrUrl: string): Promise<void> {
     let resources: { stream: YouTubeStream, info: InfoData }[] | { stream: YouTubeStream, info: InfoData } | void;
 
-    if (MusicUtil.isPlaylistUrl(keywordOrUrl)) {
+    if (YoutubeUtil.isPlaylistUrl(keywordOrUrl)) {
       resources = await this.parsePlaylistUrl(source, keywordOrUrl);
     }
-    else if (MusicUtil.isVideoUrl(keywordOrUrl)) {
+    else if (YoutubeUtil.isVideoUrl(keywordOrUrl)) {
       resources = await this.parseVideoUrl(source, keywordOrUrl);
     }
     else {
@@ -364,7 +364,7 @@ export class GuildMusicManager {
     const info = await ytpl.video_basic_info(url).catch(() => {});
     if (!info) return;
 
-    const stream = await MusicUtil.getStream(url).catch(() => {}) as YouTubeStream | void;
+    const stream = await YoutubeUtil.getStream(url).catch(() => {}) as YouTubeStream | void;
     if (!stream) return;
 
     return { stream, info };
