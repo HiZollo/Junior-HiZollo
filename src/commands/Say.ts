@@ -53,7 +53,7 @@ export default class Say extends Command<[string]> {
       content: content,
       allowedMentions: { parse: [] }
     });
-    const logChannel = source.guild.channels.cache.find(v => v.name == "hz-message-log");
+    const logChannel = source.guild.channels.cache.find(v => v.name === 'hz-message-log');
     if(logChannel && logChannel.isTextBased() && !logChannel.isThread() && !logChannel.isVoiceBased()){
       logChannel.send({
         embeds: [new EmbedBuilder().setHiZolloColor().setDescription(`${source.user}在${source.channel}發送了信息：\n\`\`\`${content}\`\`\``)]
