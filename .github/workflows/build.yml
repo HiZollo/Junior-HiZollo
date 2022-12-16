@@ -1,0 +1,32 @@
+name: Build HiZollo
+on:
+  push:
+  pull_request:
+    types: [opened, reopened, review_requested]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.12.1]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache Node Modules
+        uses: action/cache@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Dependencies
+        run: test -d node_modules && echo "Cache hit" || npm ci
+
+      - name: Compile TypeScript
+        run: npm run build
+
