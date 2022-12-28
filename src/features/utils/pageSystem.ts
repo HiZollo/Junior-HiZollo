@@ -18,8 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ActionRowBuilder, SelectMenuBuilder } from '@discordjs/builders';
-import { APISelectMenuOption, ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, SelectMenuInteraction } from 'discord.js';
+import { ActionRowBuilder, APISelectMenuOption, ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, StringSelectMenuBuilder, StringSelectMenuInteraction } from 'discord.js';
 import { PageSystemMode } from '../../utils/enums.js';
 import { PageSystemDescriptionOptions, PageSystemEmbedFieldOptions, PageSystemPagesOptions } from '../../utils/interfaces.js';
 import { PageSystemOptions } from '../../utils/types.js';
@@ -109,7 +108,7 @@ export default async function pageSystem(options: PageSystemOptions): Promise<Pa
     });
   });
 
-  let selectCollector: InteractionCollector<SelectMenuInteraction>;
+  let selectCollector: InteractionCollector<StringSelectMenuInteraction>;
   if (allowSelect) {
     selectCollector = message.createMessageComponentCollector({
       filter: async i => {
@@ -187,7 +186,7 @@ function modifyButtons(actionRow: ActionRowBuilder<ButtonBuilder>, pageCount: nu
  * @param option 所有選項
  * @returns 動作列
  */
-function newSelectMenu(option: PageSystemPagesOptions[]): ActionRowBuilder<SelectMenuBuilder> {
+function newSelectMenu(option: PageSystemPagesOptions[]): ActionRowBuilder<StringSelectMenuBuilder> {
   const selectOptions: APISelectMenuOption[] = [];
   for (let i = 0; i < option.length; i++) {
     selectOptions.push({
@@ -196,11 +195,11 @@ function newSelectMenu(option: PageSystemPagesOptions[]): ActionRowBuilder<Selec
     })
   }
 
-  const select = new SelectMenuBuilder()
+  const select = new StringSelectMenuBuilder()
     .setCustomId('pageSystemSelect')
     .setPlaceholder('請選擇一個選項')
     .setOptions(selectOptions);
-  return new ActionRowBuilder<SelectMenuBuilder>().addComponents(select);
+  return new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
 }
 
 /**
