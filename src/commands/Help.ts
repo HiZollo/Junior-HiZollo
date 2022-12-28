@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, ButtonBuilder, Client, EmbedBuilder, GuildMember, InteractionReplyOptions, MessageCreateOptions, PermissionFlagsBits, SelectMenuBuilder, SelectMenuInteraction } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, ButtonBuilder, Client, EmbedBuilder, GuildMember, InteractionReplyOptions, MessageCreateOptions, PermissionFlagsBits, StringSelectMenuBuilder, StringSelectMenuInteraction } from "discord.js";
 import config from "@root/config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
@@ -76,9 +76,9 @@ export default class Help extends Command<[string]> {
     };
   }
 
-  public getComponentsForAllTypes(): ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[] {
+  public getComponentsForAllTypes(): ActionRowBuilder<ButtonBuilder | StringSelectMenuBuilder>[] {
 
-    const menu = new SelectMenuBuilder()
+    const menu = new StringSelectMenuBuilder()
       .setCustomId('help_menu_main')
       .setPlaceholder('請選擇一個指令分類');
     
@@ -92,7 +92,7 @@ export default class Help extends Command<[string]> {
       });
     }
 
-    return [new ActionRowBuilder<SelectMenuBuilder>().addComponents(menu)];
+    return [new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(menu)];
   }
 
   public getEmbedsForAllTypes(source: Source): EmbedBuilder[] {
@@ -120,15 +120,15 @@ export default class Help extends Command<[string]> {
   }
 
   
-  public getMessageForType(interaction: SelectMenuInteraction<"cached">, type: CommandType): InteractionReplyOptions {
+  public getMessageForType(interaction: StringSelectMenuInteraction<"cached">, type: CommandType): InteractionReplyOptions {
     return {
       components: this.getComponentsForType(interaction, type), 
       embeds: this.getEmbedsForType(interaction, type)
     };
   }
 
-  public getComponentsForType(interaction: SelectMenuInteraction<"cached">, type: CommandType): ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[] {
-    const menu = new SelectMenuBuilder()
+  public getComponentsForType(interaction: StringSelectMenuInteraction<"cached">, type: CommandType): ActionRowBuilder<ButtonBuilder | StringSelectMenuBuilder>[] {
+    const menu = new StringSelectMenuBuilder()
       .setCustomId('help_menu_type')
       .setPlaceholder('請選擇一個指令');
     const commands = type === CommandType.SubcommandGroup ?
@@ -144,10 +144,10 @@ export default class Help extends Command<[string]> {
       })
     });
 
-    return [new ActionRowBuilder<SelectMenuBuilder>().addComponents(menu)];
+    return [new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(menu)];
   }
 
-  public getEmbedsForType(interaction: SelectMenuInteraction<"cached">, type: CommandType): EmbedBuilder[] {
+  public getEmbedsForType(interaction: StringSelectMenuInteraction<"cached">, type: CommandType): EmbedBuilder[] {
     let description =
       `以下是所有**${Translator.getCommandTypeChinese(type)}**分類中的指令\n` +
       `你可以使用 \`${config.bot.prefix}help 指令名稱\` 或 \`/help 指令名稱\` 來查看特定指令的使用方法\n\n`;
