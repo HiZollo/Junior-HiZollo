@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Interaction, InteractionType, StringSelectMenuInteraction } from 'discord.js';
+import { Interaction, InteractionType, AnySelectMenuInteraction } from 'discord.js';
 import fs from "node:fs";
 import path from "node:path";
 import constant from '@root/constant.json';
@@ -36,7 +36,7 @@ export class SelectMenuManager {
   /**
    * 選單識別ID－回應方式的鍵值對
    */
-  private data: Map<string, (interaction: StringSelectMenuInteraction<"cached">) => Promise<void>>;
+  private data: Map<string, (interaction: AnySelectMenuInteraction<"cached">) => Promise<void>>;
   
   /**
    * 永久選單的回應是否已載入完畢
@@ -63,7 +63,7 @@ export class SelectMenuManager {
     const buttonFiles = fs.readdirSync(dirPath);
     for (const file of buttonFiles) {
       if (!file.endsWith('.js')) continue;
-      const func: (interaction: StringSelectMenuInteraction<"cached">) => Promise<void> = require(path.join(dirPath, file)).default;
+      const func: (interaction: AnySelectMenuInteraction<"cached">) => Promise<void> = require(path.join(dirPath, file)).default;
       this.data.set(file.slice(0, -3), func);
     }
 
@@ -75,7 +75,7 @@ export class SelectMenuManager {
    * @param interaction 從 client#on('interactionCreate') 得到的指令互動
    */
   public async onInteractionCreate(interaction: Interaction): Promise<void> {
-    if (interaction.type !== InteractionType.MessageComponent || !interaction.isSelectMenu()) return;
+    if (interaction.type !== InteractionType.MessageComponent || !interaction.isAnySelectMenu()) return;
     if (!interaction.inCachedGuild()) return;
     if (interaction.user.blocked) return;
     if (this.client.devMode && interaction.guild.id !== constant.mainGuild.id) return;
