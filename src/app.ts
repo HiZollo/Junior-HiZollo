@@ -232,6 +232,13 @@ process.on('uncaughtException', error => {
 });
 /**/
 
+/******************* DEBUG *******************/
+if (client.devMode) {
+  process.on('warning', warning => {
+    console.warn(warning.stack);
+  })
+}
+
 /******************* 訊息創建 *******************/
 client.on('messageCreate', message => {
   client.addonCommand(message);
