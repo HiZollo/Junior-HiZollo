@@ -1,6 +1,6 @@
 /*
  * 
- * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
+ * Copyright 2023 HiZollo Dev Team <https://github.com/hizollo>
  * 
  * This file is a part of Junior HiZollo.
  * 
