@@ -157,6 +157,36 @@ export class HZClient extends Client {
   }
 
   /**
+   * HiZolo 是否正在生某個使用者的氣
+   * @param userId 該使用者的 ID
+   */
+  public async isAngryAt(userId: string): Promise<number> {
+    const angry = await this.shard?.broadcastEval((c, { id }) => {
+      return c.angryList.get(id);
+    }, { context: { id: userId } });
+    const time = angry?.find(a => a);
+    const now = Date.now();
+
+    return time && time > now ? time - now : 0;
+  }
+
+  /**
+   * 暫時封鎖一名使用者
+   * @param userId 該使用者的 ID
+   */
+  public block(userId: string): void {
+    this.blockedUsers.add(userId);
+  }
+
+  /**
+   * 暫時解封一名使用者
+   * @param userId 該使用者的 ID
+   */
+  public unblock(userId: string): void {
+    this.blockedUsers.delete(userId);
+  }
+
+  /**
    * 附加指令的前綴
    */
   private readonly addonPrefix = '?';
