@@ -17,7 +17,7 @@
     "noImplicitReturns": true,
     "skipLibCheck": true,
     "typeRoots": [
-      "src/utils",
+      "src/typings",
       "node_modules/@types"
     ],
     "paths": {
