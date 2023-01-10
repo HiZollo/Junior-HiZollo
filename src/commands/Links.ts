@@ -22,7 +22,7 @@ import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
 import { bot, mainGuild, websiteLinks } from "@root/constant.json";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 
 export default class Links extends Command<[]> {
   constructor() {

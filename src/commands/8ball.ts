@@ -22,7 +22,7 @@ import { ApplicationCommandOptionType } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import randomElement from "../features/utils/randomElement";
-import { ArgumentParseType, CommandType } from "../utils/enums";
+import { ArgumentParseType, CommandType } from "../typings/enums";
 
 export default class EBall extends Command<[string]> {
   constructor() {

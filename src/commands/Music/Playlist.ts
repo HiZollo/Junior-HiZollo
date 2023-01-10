@@ -22,8 +22,8 @@ import { EmbedBuilder } from "discord.js";
 import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
 import pageSystem from "../../features/utils/pageSystem";
-import { CommandType, PageSystemMode } from "../../utils/enums";
-import { PageSystemPagesOptions } from "../../utils/interfaces";
+import { CommandType, PageSystemMode } from "../../typings/enums";
+import { PageSystemPagesOptions } from "../../typings/interfaces";
 
 export default class MusicPlaylist extends Command<[]> {
   constructor() {

@@ -22,9 +22,9 @@ import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationComman
 import config from "@root/config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { CommandType } from "../utils/enums";
-import { HZCommandOptionData } from "../utils/types";
-import { SubcommandGroup } from "../utils/interfaces";
+import { CommandType } from "../typings/enums";
+import { HZCommandOptionData } from "../typings/types";
+import { SubcommandGroup } from "../typings/interfaces";
 import { Translator } from "../classes/Translator";
 
 export default class Help extends Command<[string]> {

@@ -30,7 +30,7 @@ import { ApplicationCommandOptionType, EmbedBuilder, GatewayIntentBits, Options 
 import './djsAddon';
 import config from '@root/config';
 import { HZClient } from './classes/HZClient';
-import { CommandManagerRejectReason, CommandParserOptionResultStatus } from './utils/enums';
+import { CommandManagerRejectReason, CommandParserOptionResultStatus } from './typings/enums';
 const client = new HZClient({
   intents: [
     GatewayIntentBits.Guilds, 

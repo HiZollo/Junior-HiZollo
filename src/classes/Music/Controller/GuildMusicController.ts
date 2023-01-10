@@ -20,8 +20,8 @@
 
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, GuildMember, GuildTextBasedChannel, InteractionCollector, Message, MessageCreateOptions } from "discord.js";
 import { HZClient } from "../../HZClient";
-import { MusicControllerActions, MusicLoopState } from "../../../utils/enums";
-import { GuildMusicControllerOptions } from "../../../utils/interfaces";
+import { MusicControllerActions, MusicLoopState } from "../../../typings/enums";
+import { GuildMusicControllerOptions } from "../../../typings/interfaces";
 import { GuildMusicManager } from "../Model/GuildMusicManager";
 import { MusicViewRenderer } from "../View/MusicViewRenderer";
 

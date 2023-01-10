@@ -19,7 +19,7 @@
  */
 
 import { Command } from "../classes/Command";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 import { Source } from "../classes/Source";
 import { ApplicationCommandOptionType } from "discord.js";
 

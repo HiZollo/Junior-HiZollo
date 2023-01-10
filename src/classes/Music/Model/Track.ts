@@ -21,8 +21,8 @@
 import { AudioResource, createAudioResource } from "@discordjs/voice";
 import { GuildMember } from "discord.js";
 import { InfoData } from "play-dl";
-import { MusicLoopState } from "../../../utils/enums";
-import { TrackOptions } from "../../../utils/interfaces";
+import { MusicLoopState } from "../../../typings/enums";
+import { TrackOptions } from "../../../typings/interfaces";
 import { YoutubeUtil } from "./YoutubeUtil";
 
 /**

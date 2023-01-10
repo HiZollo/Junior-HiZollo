@@ -26,7 +26,7 @@ import CooldownManager from "./CooldownManager";
 import config from "@root/config";
 import constant from "@root/constant.json";
 import getActivity from "../features/utils/getActivity";
-import { HZClientOptions } from "../utils/interfaces";
+import { HZClientOptions } from "../typings/interfaces";
 import { ClientMusicManager } from "../classes/Music/Model/ClientMusicManager";
 import { HZNetwork } from "./HZNetwork";
 import { AutocompleteManager } from "./AutocompleteManager";

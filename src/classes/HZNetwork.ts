@@ -24,7 +24,7 @@ import { HZClient } from "./HZClient";
 import config from "@root/config";
 import tempMessage from "../features/utils/tempMessage";
 import removeMd from "../features/utils/removeMd";
-import { HZNetworkEvents } from "../utils/interfaces";
+import { HZNetworkEvents } from "../typings/interfaces";
 
 /**
  * HiZollo Network 系統

@@ -21,7 +21,7 @@
 import { StringSelectMenuInteraction } from "discord.js";
 import { Command } from "../classes/Command";
 import Help from "../commands/Help";
-import { SubcommandGroup } from "../utils/interfaces";
+import { SubcommandGroup } from "../typings/interfaces";
 
 export default async function help(interaction: StringSelectMenuInteraction<"cached">): Promise<void> {
   const help = interaction.client.commands.search(['help', undefined]) as Help;

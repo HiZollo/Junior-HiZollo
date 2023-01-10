@@ -20,7 +20,7 @@
 
 import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
-import { CommandType, PageSystemMode } from "../../utils/enums";
+import { CommandType, PageSystemMode } from "../../typings/enums";
 import { APIEmbedField, ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 import pageSystem from "../../features/utils/pageSystem";
 import { ScoreRank, ModsBitField, ModsAbbreviation } from "@hizollo/osu-api";

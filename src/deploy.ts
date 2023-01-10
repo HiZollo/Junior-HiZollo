@@ -25,8 +25,8 @@ import { ApplicationCommandOptionAllowedChannelTypes, ApplicationCommandOptionTy
 import config from "@root/config";
 import constant from "@root/constant.json";
 import { Command } from "./classes/Command";
-import { CommandType } from "./utils/enums";
-import { HZCommandOptionData } from "./utils/types";
+import { CommandType } from "./typings/enums";
+import { HZCommandOptionData } from "./typings/types";
 import { Translator } from "./classes/Translator";
 
 (async () => {

@@ -28,9 +28,9 @@ import { HZClient } from "./HZClient";
 import { Source } from "./Source";
 import config from '@root/config';
 import missingPermissions from "../features/utils/missingPermissions";
-import { CommandManagerRejectReason, CommandParserOptionResultStatus, CommandType } from "../utils/enums";
-import { CommandManagerEvents, SubcommandGroup } from "../utils/interfaces";
-import { CommandManagerRejectInfo } from "../utils/types";
+import { CommandManagerRejectReason, CommandParserOptionResultStatus, CommandType } from "../typings/enums";
+import { CommandManagerEvents, SubcommandGroup } from "../typings/interfaces";
+import { CommandManagerRejectInfo } from "../typings/types";
 import { SubcommandManager } from "./SubcommandManager";
 import { Translator } from "./Translator";
 

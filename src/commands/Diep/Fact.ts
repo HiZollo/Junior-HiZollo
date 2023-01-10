@@ -22,7 +22,7 @@ import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
 import randomElement from "../../features/utils/randomElement";
 import { facts } from "../../features/json/diepFacts.json";
-import { CommandType } from "../../utils/enums";
+import { CommandType } from "../../typings/enums";
 
 export default class DiepFact extends Command<[]> {
   constructor() {

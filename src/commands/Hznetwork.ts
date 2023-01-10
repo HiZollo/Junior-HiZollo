@@ -22,7 +22,7 @@ import { ApplicationCommandOptionType, EmbedBuilder, Webhook } from "discord.js"
 import config from "@root/config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 import { Translator } from "../classes/Translator";
 
 export default class Hznetwork extends Command<[string]> {

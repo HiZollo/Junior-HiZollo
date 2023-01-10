@@ -22,7 +22,7 @@ import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
 import randomElement from "../../features/utils/randomElement";
 import { info } from "../../features/json/diepRandomInfo.json";
-import { CommandType } from "../../utils/enums";
+import { CommandType } from "../../typings/enums";
 import { ApplicationCommandOptionType } from "discord.js";
 
 export default class DiepInfo extends Command<[string]> {

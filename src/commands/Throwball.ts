@@ -22,8 +22,8 @@ import { ApplicationCommandOptionType, GuildMember, PermissionFlagsBits } from "
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import throwball from "../features/throw/throwball";
-import { CommandOptionType, CommandType } from "../utils/enums";
-import { ThrowBallType } from "../utils/types";
+import { CommandOptionType, CommandType } from "../typings/enums";
+import { ThrowBallType } from "../typings/types";
 
 export default class Throwball extends Command<[GuildMember, string]> {
   constructor() {

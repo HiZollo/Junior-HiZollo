@@ -20,7 +20,7 @@
 
 import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
-import { ArgumentParseType, CommandType } from "../../utils/enums";
+import { ArgumentParseType, CommandType } from "../../typings/enums";
 import { ApplicationCommandOptionType, PermissionFlagsBits, EmbedBuilder } from "discord.js";
 import Constant from '@root/constant.json';
 

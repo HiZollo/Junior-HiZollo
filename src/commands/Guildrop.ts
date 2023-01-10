@@ -22,7 +22,7 @@ import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, Message, TextC
 import constant from "@root/constant.json";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { CommandType, PageSystemMode } from "../utils/enums";
+import { CommandType, PageSystemMode } from "../typings/enums";
 import removeMd from "../features/utils/removeMd";
 import pageSystem from "../features/utils/pageSystem";
 

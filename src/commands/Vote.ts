@@ -21,7 +21,7 @@
 import { ApplicationCommandOptionType, EmbedBuilder, PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { ArgumentParseType, CommandType } from "../utils/enums";
+import { ArgumentParseType, CommandType } from "../typings/enums";
 
 export default class Vote extends Command<string[]> {
   constructor() {

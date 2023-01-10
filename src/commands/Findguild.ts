@@ -22,7 +22,7 @@ import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { Translator } from "../classes/Translator";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 
 export default class Findguild extends Command<[string]> {
   constructor() {

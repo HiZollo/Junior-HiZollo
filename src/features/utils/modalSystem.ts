@@ -19,7 +19,7 @@
  */
 
 import { InteractionCollector, ActionRowBuilder, MessageCreateOptions, ComponentType, InteractionType, ButtonBuilder, APIButtonComponent, ButtonStyle, APIButtonComponentWithURL, ModalSubmitInteraction, Collection } from 'discord.js';
-import { ModelSystemContentOptions, ModelSystemOptions } from '../../utils/interfaces';
+import { ModelSystemContentOptions, ModelSystemOptions } from '../../typings/interfaces';
 
 type CustomMessageOptions = Omit<MessageCreateOptions, 'flags'> & { fetchReply?: boolean };
 

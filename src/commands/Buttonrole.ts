@@ -22,7 +22,7 @@ import config from "@root/config";
 import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonComponent, ButtonStyle, ComponentType, Message, PermissionFlagsBits, Role } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { CommandOptionType, CommandType } from "../utils/enums";
+import { CommandOptionType, CommandType } from "../typings/enums";
 
 type RoleData = {
   id: string, 

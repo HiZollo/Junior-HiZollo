@@ -21,14 +21,14 @@
 import { ChannelType, Guild, GuildTextBasedChannel, PermissionsBitField, VoiceBasedChannel, VoiceState } from "discord.js";
 import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, VoiceConnection } from "@discordjs/voice";
 import { HZClient } from "../../../classes/HZClient";
-import { GuildMusicManagerOptions } from "../../../utils/interfaces";
+import { GuildMusicManagerOptions } from "../../../typings/interfaces";
 import { YoutubeUtil } from "./YoutubeUtil";
 import ytpl, { InfoData, YouTubeStream } from "play-dl";
 import { Track } from "./Track";
 import { GuildMusicController } from "../Controller/GuildMusicController";
 import { MusicViewRenderer } from "../View/MusicViewRenderer";
 import { Source } from "../../../classes/Source";
-import { MusicLoopState } from "@root/src/utils/enums";
+import { MusicLoopState } from "@root/src/typings/enums";
 
 /**
  * 掌管單個伺服器下的音樂系統

@@ -21,7 +21,7 @@
 import { ApplicationCommandOptionType, User } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 import randomElement from "../features/utils/randomElement"
 
 export default class Repeat extends Command<[User]> {

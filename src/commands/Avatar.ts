@@ -22,7 +22,7 @@ import { ApplicationCommandOptionType, GuildMember, PermissionsBitField } from "
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import removeMd from "../features/utils/removeMd";
-import { CommandOptionType, CommandType } from "../utils/enums";
+import { CommandOptionType, CommandType } from "../typings/enums";
 
 export default class Avatar extends Command<[GuildMember]> {
   constructor() {
