@@ -19,7 +19,7 @@
  */
 
 import { Client, GuildMember } from "discord.js";
-import { ThrowBallType } from "../../utils/types";
+import { ThrowBallType } from "../../typings/types";
 import randomElement from "../utils/randomElement";
 import randomInt from "../utils/randomInt";
 import removeMd from "../utils/removeMd";

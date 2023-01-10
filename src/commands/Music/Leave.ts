@@ -20,7 +20,7 @@
 
 import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
-import { CommandType } from "../../utils/enums";
+import { CommandType } from "../../typings/enums";
 import { PermissionFlagsBits } from "discord.js";
 
 export default class MusicLeave extends Command<[]> {

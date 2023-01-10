@@ -21,7 +21,7 @@
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import getActivity from "../features/utils/getActivity";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 
 export default class Refresh extends Command<[]> {
   constructor() {

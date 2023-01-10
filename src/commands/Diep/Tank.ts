@@ -21,7 +21,7 @@
 import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
 import tanks from "../../features/json/diepTanks.json";
-import { CommandType } from "../../utils/enums";
+import { CommandType } from "../../typings/enums";
 import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 
 export default class DiepTank extends Command<[string]> {

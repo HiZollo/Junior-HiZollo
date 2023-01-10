@@ -19,8 +19,8 @@
  */
 
 import { HZClient } from "../classes/HZClient";
-import { CommandType } from "../utils/enums";
-import { AutocompleteData } from "../utils/types";
+import { CommandType } from "../typings/enums";
+import { AutocompleteData } from "../typings/types";
 
 export default function(client: HZClient): AutocompleteData {
   return {

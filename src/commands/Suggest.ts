@@ -24,7 +24,7 @@ import { Source } from "../classes/Source";
 import { mainGuild } from "@root/constant.json";
 import modalSystem from "../features/utils/modalSystem";
 import removeMd from "../features/utils/removeMd";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 
 export default class Suggest extends Command<[]> {
   constructor() {

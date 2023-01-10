@@ -22,7 +22,7 @@ import { ButtonBuilder } from "@discordjs/builders";
 import { ActionRowBuilder, ApplicationCommandOptionType, ButtonStyle, ChannelType, EmbedBuilder, InviteTargetType, PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 
 export default class Youtube extends Command<[keyof typeof appIds]> {
   constructor() {

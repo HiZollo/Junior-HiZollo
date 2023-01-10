@@ -21,8 +21,8 @@
 import { EmbedBuilder } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { CommandType, PageSystemMode } from "../utils/enums";
-import { PageSystemPagesOptions } from "../utils/interfaces";
+import { CommandType, PageSystemMode } from "../typings/enums";
+import { PageSystemPagesOptions } from "../typings/interfaces";
 import pageSystem from "../features/utils/pageSystem";
 
 export default class Connection extends Command<[]> {

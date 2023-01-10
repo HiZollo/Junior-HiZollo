@@ -19,8 +19,8 @@
  */
 
 import { ApplicationCommandOptionType } from "discord.js";
-import { CommandOptionType, CommandType } from "../utils/enums";
-import { HZCommandOptionData } from "../utils/types";
+import { CommandOptionType, CommandType } from "../typings/enums";
+import { HZCommandOptionData } from "../typings/types";
 
 /**
  * 掌管常數與字串的轉換

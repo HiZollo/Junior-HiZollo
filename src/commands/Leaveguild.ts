@@ -22,7 +22,7 @@ import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import yesNoSystem from "../features/utils/yesNoSystem";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 
 export default class Leaveguild extends Command<[string]> {
   constructor() {

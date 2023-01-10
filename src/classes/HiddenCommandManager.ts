@@ -25,7 +25,7 @@ import { EventEmitter } from "node:events";
 import { HiddenCommand } from "./HiddenCommand";
 import { HZClient } from "./HZClient";
 import missingPermissions from '../features/utils/missingPermissions';
-import { HiddenCommandManagerEvents } from '../utils/interfaces';
+import { HiddenCommandManagerEvents } from '../typings/interfaces';
 
 /**
  * 掌管所有隱藏指令

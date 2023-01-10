@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { CooldownManagerAddUserOptions, CooldownManagerMethodOptions } from '../utils/interfaces';
+import { CooldownManagerAddUserOptions, CooldownManagerMethodOptions } from '../typings/interfaces';
 import { HZClient } from './HZClient';
 
 /**

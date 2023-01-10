@@ -23,7 +23,7 @@ import { bot, websiteLinks } from "@root/constant.json";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import recentUpdate from "../features/info/recentUpdate";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 
 export default class Announcement extends Command<[]> {
   constructor() {

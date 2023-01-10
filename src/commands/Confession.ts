@@ -22,7 +22,7 @@ import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonIn
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import randomElement from "../features/utils/randomElement";
-import { CommandOptionType, CommandType } from "../utils/enums";
+import { CommandOptionType, CommandType } from "../typings/enums";
 
 enum ConfessionButtonCustomId {
   Accept = 'confession_accept', 

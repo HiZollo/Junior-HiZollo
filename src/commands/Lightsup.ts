@@ -23,7 +23,7 @@ import { PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { lightsUp as strings } from "../features/json/gameString.json";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 
 export default class Lightsup extends Command<[]> {
   constructor() {

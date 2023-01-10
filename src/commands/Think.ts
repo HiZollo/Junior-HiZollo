@@ -22,7 +22,7 @@ import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import randomElement from "../features/utils/randomElement";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 
 export default class Think extends Command<[string]> {
   constructor() {

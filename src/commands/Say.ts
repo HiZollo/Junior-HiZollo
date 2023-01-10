@@ -21,7 +21,7 @@
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { ArgumentParseType, CommandType } from "../utils/enums";
+import { ArgumentParseType, CommandType } from "../typings/enums";
 import { EmbedBuilder } from 'discord.js';
 
 export default class Say extends Command<[string]> {

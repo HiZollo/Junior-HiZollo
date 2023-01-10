@@ -21,7 +21,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import constant from '@root/constant.json';
-import { AutocompleteData } from "../utils/types";
+import { AutocompleteData } from "../typings/types";
 import { HZClient } from "./HZClient";
 import { Interaction, InteractionType } from 'discord.js';
 

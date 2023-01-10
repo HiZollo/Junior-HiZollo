@@ -21,7 +21,7 @@
 import { ApplicationCommandOptionType } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { ArgumentParseType, CommandType } from "../utils/enums";
+import { ArgumentParseType, CommandType } from "../typings/enums";
 
 export default class Repeat extends Command<[string]> {
   constructor() {

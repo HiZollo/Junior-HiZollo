@@ -19,7 +19,7 @@
  */
 
 import { Command } from "../classes/Command";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 
 export default class Diep extends Command<[]> {
   constructor() {

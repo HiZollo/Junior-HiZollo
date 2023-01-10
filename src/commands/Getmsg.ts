@@ -22,7 +22,7 @@ import { APIEmbedField, APIEmbedProvider, ApplicationCommandOptionType, EmbedAss
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import fixedDigits from "../features/utils/fixedDigits";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 
 type GetmsgAttatchmentResult = {
   id: string, 

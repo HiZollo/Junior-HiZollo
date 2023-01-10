@@ -22,7 +22,7 @@ import { EmbedBuilder } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import pageSystem from "../features/utils/pageSystem";
-import { CommandType, PageSystemMode } from "../utils/enums";
+import { CommandType, PageSystemMode } from "../typings/enums";
 
 type GuildInfo = {
   id: string, 

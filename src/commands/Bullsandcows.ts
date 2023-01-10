@@ -23,7 +23,7 @@ import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { bullsAndCows as strings } from "../features/json/gameString.json";
-import { CommandType } from "../utils/enums";
+import { CommandType } from "../typings/enums";
 
 export default class Bullsandcows extends Command<[boolean]> {
   constructor() {

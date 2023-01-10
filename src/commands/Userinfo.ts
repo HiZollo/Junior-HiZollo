@@ -21,7 +21,7 @@
 import { ApplicationCommandOptionType, EmbedBuilder, GuildMember, PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { CommandOptionType, CommandType } from "../utils/enums";
+import { CommandOptionType, CommandType } from "../typings/enums";
 
 export default class Userinfo extends Command<[GuildMember]> {
   constructor() {

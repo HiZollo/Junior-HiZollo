@@ -20,7 +20,7 @@
 
 import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders';
 import { ButtonStyle, ComponentType } from 'discord.js';
-import { YesNoSystemOptions } from '../../utils/interfaces.js';
+import { YesNoSystemOptions } from '../../typings/interfaces.js';
 import randomInt from './randomInt.js';
 
 /**

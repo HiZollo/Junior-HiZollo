@@ -23,8 +23,8 @@ import path from "node:path";
 import { Collection } from "discord.js";
 import { Command } from "./Command";
 import { HZClient } from "./HZClient";
-import { SubcommandGroup } from "../utils/interfaces";
-import { CommandType } from "../utils/enums";
+import { SubcommandGroup } from "../typings/interfaces";
+import { CommandType } from "../typings/enums";
 
 /**
  * 掌管所有指令群／群組指令

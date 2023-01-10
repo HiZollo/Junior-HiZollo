@@ -22,7 +22,7 @@ import { ApplicationCommandOptionType } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import removeMd from "../features/utils/removeMd";
-import { ArgumentParseType, CommandType } from "../utils/enums";
+import { ArgumentParseType, CommandType } from "../typings/enums";
 
 const decNumber = '(?:[1-9]*\\d*\\.\\d+)|(?:(?:(?:[1-9]\\d*)|0)\\.?)';
 const hexNumber = '0(?:X|x)[\dAaBbCcDdEeFf]+';

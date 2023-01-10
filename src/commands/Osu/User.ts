@@ -20,7 +20,7 @@
 
 import { Command } from "../../classes/Command";
 import { Source } from "../../classes/Source";
-import { CommandType } from "../../utils/enums";
+import { CommandType } from "../../typings/enums";
 import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 
 export default class OsuUser extends Command<[string]> {

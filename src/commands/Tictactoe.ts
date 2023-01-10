@@ -23,7 +23,7 @@ import { ApplicationCommandOptionType, GuildMember, PermissionFlagsBits } from "
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { ticTacToe as strings } from "../features/json/gameString.json";
-import { CommandOptionType, CommandType } from "../utils/enums";
+import { CommandOptionType, CommandType } from "../typings/enums";
 
 export default class TicTacToe extends Command<[GuildMember, number]> {
   constructor() {

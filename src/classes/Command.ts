@@ -20,9 +20,9 @@
 
 import { ChatInputCommandInteraction, GuildMember, GuildTextBasedChannel, Message } from "discord.js";
 import { Source } from "./Source";
-import { ArgumentParseType, CommandType } from "../utils/enums";
-import { CommandOptions, CommandPermission } from "../utils/interfaces";
-import { ArgumentParseMethod, HZCommandOptionData } from "../utils/types";
+import { ArgumentParseType, CommandType } from "../typings/enums";
+import { CommandOptions, CommandPermission } from "../typings/interfaces";
+import { ArgumentParseMethod, HZCommandOptionData } from "../typings/types";
 
 /**
  * 一個指令的藍圖
