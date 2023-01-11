@@ -65,7 +65,6 @@ export default class E4log extends Command<[string, User]> {
       return;
     }
 
-    console.log(member.permissions.serialize())
     const eligible = member.permissions.has(PermissionsBitField.Flags.ManageGuild);
 
     await source.update({
