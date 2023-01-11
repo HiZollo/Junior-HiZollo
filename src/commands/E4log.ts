@@ -54,6 +54,8 @@ export default class E4log extends Command<[string, User]> {
       source.update('找不到伺服器，可能是因為我已經被退出了伺服器');
       return;
     }
+    
+    await guild.fetchOwner(); // 確保 Owner 一定在快取之內，取權限會比較好抓
 
     const member = await guild.members.fetch(user)
       .catch(() => {});
@@ -63,6 +65,7 @@ export default class E4log extends Command<[string, User]> {
       return;
     }
 
+    console.log(member.permissions.serialize())
     const eligible = member.permissions.has(PermissionsBitField.Flags.ManageGuild);
 
     await source.update({
