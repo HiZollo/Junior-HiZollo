@@ -42,7 +42,7 @@
 你也可以到 [HiZollo 的官方網站](https://hizollo.ddns.net)上瀏覽他的[指令列表](https://hizollo.ddns.net/commands)。
 
 ## 複製一臺
-Junior HiZollo 需要在 node.js v16.9.0 以上的版本中才能運行，你可以使用 `node -v` 來確定你的版本是否足夠。
+Junior HiZollo 需要在 node.js v18.2.1 以上的版本中才能運行，你可以使用 `node -v` 來確定你的版本是否足夠。
 
 在你把整份專案複製回去後，在根目錄創建一個叫做 `.env` 的檔案，並把下方模板中的缺項補齊：
 ```
