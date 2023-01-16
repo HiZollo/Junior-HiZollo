@@ -1,10 +1,10 @@
 {
   "bot": {
-    "version": "1.1.1",
+    "version": "1.2.0",
     "releaseDate": {
-      "year": 2022,
-      "month": 10,
-      "date": 5
+      "year": 2023,
+      "month": 1,
+      "date": 19
     },
     "inviteLink": {
       "default": "https://discord.com/api/oauth2/authorize?client_id=584677291318312963&permissions=292940885&scope=bot%20applications.commands",
