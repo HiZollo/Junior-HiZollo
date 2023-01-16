@@ -1,6 +1,6 @@
 {
   "name": "junior-hizollo",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "用 TypeScript 寫成的爛 bot",
   "main": "dist/src/index.js",
   "private": true,
