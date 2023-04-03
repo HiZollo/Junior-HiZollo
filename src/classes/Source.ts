@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ChatInputCommandInteraction, Client, Guild, GuildMember, GuildTextBasedChannel, InteractionDeferReplyOptions, InteractionResponse, Message, MessageCreateOptions, MessagePayload, User, WebhookEditMessageOptions } from "discord.js";
+import { ChatInputCommandInteraction, Client, Guild, GuildMember, GuildTextBasedChannel, InteractionDeferReplyOptions, InteractionResponse, Message, MessageCreateOptions, MessagePayload, User, WebhookMessageEditOptions } from "discord.js";
 import tempMessage from "../features/utils/tempMessage";
 
 /**
@@ -179,7 +179,7 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
    * @param options 上述函式的選項
    * @returns 上述函式的回傳值
    */
-  public async editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message | void> {
+  public async editReply(options: string | MessagePayload | WebhookMessageEditOptions): Promise<Message | void> {
     if (this.source instanceof ChatInputCommandInteraction) {
       return this.source.editReply(options);
     }
