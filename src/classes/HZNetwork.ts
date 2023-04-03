@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Awaitable, Channel, ChannelType, EmbedBuilder, Guild, GuildMFALevel, Message, PermissionFlagsBits, TextChannel, Webhook, WebhookCreateMessageOptions } from "discord.js";
+import { Awaitable, Channel, ChannelType, EmbedBuilder, Guild, GuildMFALevel, Message, PermissionFlagsBits, TextChannel, Webhook, WebhookMessageCreateOptions } from "discord.js";
 import { EventEmitter } from "node:events";
 import { HZClient } from "./HZClient";
 import config from "@root/config";
@@ -288,7 +288,7 @@ export class HZNetwork extends EventEmitter {
    * @param options 要發送的訊息
    * @param isBroadcast 是否為官方全頻公告
    */
-  public async crosspost(portNo: string, options: WebhookCreateMessageOptions, isBroadcast?: boolean): Promise<void> {
+  public async crosspost(portNo: string, options: WebhookMessageCreateOptions, isBroadcast?: boolean): Promise<void> {
     await this.client.shard?.broadcastEval(async (client, {portNo, options}) => {
       const webhooks = client.network.ports.get(portNo);
       if (!webhooks) return;
