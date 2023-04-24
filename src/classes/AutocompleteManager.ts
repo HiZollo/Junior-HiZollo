@@ -24,6 +24,7 @@ import constant from '@root/constant.json';
 import { AutocompleteData } from "../typings/types";
 import { HZClient } from "./HZClient";
 import { Interaction, InteractionType } from 'discord.js';
+import { Translator } from "./Translator";
 
 /**
  * 掌管斜線指令中的自動匹配選項
@@ -82,7 +83,19 @@ export class AutocompleteManager {
     if (this.client.devMode && interaction.guild.id !== constant.mainGuild.id) return;
 
     let commandName = interaction.commandName;
-    if (interaction.options.getSubcommand(false)) commandName += '_' + interaction.options.getSubcommand(false)
+    if (commandName == "z") {
+      // 因爲z指令都是subcommands，所以getSubCommand是required
+      const subcommand = interaction.options.getSubcommand(true);
+
+      let zAlias = Translator.getCommandName(subcommand);
+
+      if (!zAlias) return interaction.respond([]);
+      
+      commandName = zAlias.join("_");
+    }
+    else {
+      if (interaction.options.getSubcommand(false)) commandName += '_' + interaction.options.getSubcommand(false)
+    }
 
     const option = interaction.options.getFocused(true);
 
