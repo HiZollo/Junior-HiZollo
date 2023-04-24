@@ -84,7 +84,7 @@ export class AutocompleteManager {
 
     let commandName = interaction.commandName;
     if (commandName === "z") {
-      // 因爲z指令都是subcommands，所以getSubCommand是required
+      // 因為 z 指令都是群組指令，所以 getSubcommand 是 required
       const subcommand = interaction.options.getSubcommand(true);
 
       const zAlias = Translator.getFullCommandName(subcommand);
