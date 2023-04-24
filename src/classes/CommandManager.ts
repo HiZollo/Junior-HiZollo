@@ -313,7 +313,7 @@ export class CommandManager extends EventEmitter {
 
     // 先找 z 指令
     if (first === 'z' && second) {
-      const zCommandName = Translator.getCommandName(second);
+      const zCommandName = Translator.getFullCommandName(second);
       if (zCommandName) {
         [first, second] = zCommandName;
       }

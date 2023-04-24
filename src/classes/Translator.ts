@@ -45,7 +45,7 @@ export class Translator extends null {
    * @param zShortcut z 指令的捷徑名稱
    * @returns 群組指令全名
    */
-  static getCommandName(zShortcut: string): [string, string] | void {
+  static getFullCommandName(zShortcut: string): [string, string] | void {
     for (const groupName in this.ZShortcut) {
       const nextLayer = this.ZShortcut[groupName as keyof typeof this.ZShortcut];
       for (const commandName in nextLayer) {

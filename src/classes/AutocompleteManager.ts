@@ -87,7 +87,7 @@ export class AutocompleteManager {
       // 因爲z指令都是subcommands，所以getSubCommand是required
       const subcommand = interaction.options.getSubcommand(true);
 
-      let zAlias = Translator.getCommandName(subcommand);
+      let zAlias = Translator.getFullCommandName(subcommand);
 
       if (!zAlias) return interaction.respond([]);
       
