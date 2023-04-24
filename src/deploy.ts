@@ -120,8 +120,8 @@ function loadCommands(dirPath: string): {
       .setDescription('執行 z 指令')
       .setDMPermission(false);
     zGlobalCommands.forEach(([parent, command]) => {
-      const shortcut = Translator.getZShortcut([parent, command.name])
-      if(!shortcut) return;
+      const shortcut = Translator.getZShortcut([parent, command.name]);
+      if (!shortcut) return;
       command.setName(shortcut);
       builder.addSubcommand(command);
     });
