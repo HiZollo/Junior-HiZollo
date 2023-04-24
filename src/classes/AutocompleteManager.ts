@@ -83,7 +83,7 @@ export class AutocompleteManager {
     if (this.client.devMode && interaction.guild.id !== constant.mainGuild.id) return;
 
     let commandName = interaction.commandName;
-    if (commandName == "z") {
+    if (commandName === "z") {
       // 因爲z指令都是subcommands，所以getSubCommand是required
       const subcommand = interaction.options.getSubcommand(true);
 
