@@ -133,7 +133,9 @@ function loadCommands(dirPath: string): {
       .setDescription('執行 z 指令')
       .setDMPermission(false);
     zDevCommands.forEach(([parent, command]) => {
-      command.setName(Translator.getZShortcut([parent, command.name])!);
+      const shortcut = Translator.getZShortcut([parent, command.name]);
+      if (!shortcut) return;
+      command.setName(shortcut);
       builder.addSubcommand(command);
     });
     devCommands.push(builder.toJSON());
