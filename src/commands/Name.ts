@@ -47,6 +47,7 @@ export default class Name extends Command<[]> {
     'My name is Junior HiZollo.',
     '吾乃揪你耳 ‧ 還揍羅是也',
     'Junior HiZollo，一個機器人',
-    '我是 Junior HiZollo'
+    '我是 Junior HiZollo',
+    '我是 Junior HiZollo，這世界上最強的 bot'
   ];
 }
