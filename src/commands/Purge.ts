@@ -1,16 +1,16 @@
 /*
- * 
+ *
  * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
- * 
+ *
  * This file is a part of Junior HiZollo.
- * 
- * Junior HiZollo is free software: you can redistribute it and/or 
+ *
+ * Junior HiZollo is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * Junior HiZollo is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *
+ * Junior HiZollo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
@@ -25,23 +25,22 @@ import { CommandType } from "../typings/enums";
 
 export default class Purge extends Command<[number]> {
   constructor() {
-    super({ 
-      type: CommandType.Utility, 
-      name: 'purge', 
-      description: '刪除頻道中指定數量的訊息', 
+    super({
+      type: CommandType.Utility,
+      name: 'purge',
+      description: '刪除頻道中指定數量的訊息',
       options: [{
-        type: ApplicationCommandOptionType.Integer, 
-        name: '數量', 
-        description: '要刪除的訊息數量', 
-        required: true, 
-        minValue: 1, 
+        type: ApplicationCommandOptionType.Integer,
+        name: '數量',
+        description: '要刪除的訊息數量',
+        required: true,
+        minValue: 1,
         maxValue: 99
-      }], 
+      }],
       permissions: {
-        bot: [PermissionFlagsBits.ManageMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ViewChannel], 
+        bot: [PermissionFlagsBits.ManageMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ViewChannel],
         user: [PermissionFlagsBits.ManageMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ViewChannel]
-      }, 
-      twoFactorRequired: true
+      }
     });
   }
 

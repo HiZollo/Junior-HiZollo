@@ -1,16 +1,16 @@
 /*
- * 
+ *
  * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
- * 
+ *
  * This file is a part of Junior HiZollo.
- * 
- * Junior HiZollo is free software: you can redistribute it and/or 
+ *
+ * Junior HiZollo is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * Junior HiZollo is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *
+ * Junior HiZollo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
@@ -80,21 +80,16 @@ export abstract class Command<T = unknown> {
   public permissions?: CommandPermission;
 
   /**
-   * 是否需要 2FA 驗證才能執行指令
-   */
-  public twoFactorRequired?: boolean;
-
-  /**
    * 執行此指令
    * @param source 觸發指令的來源
    * @param args 指令的參數
    * @abstract
    */
-  public abstract execute(source: Source ,args?: T): Promise<void>;
+  public abstract execute(source: Source, args?: T): Promise<void>;
 
   /**
    * 建立一個指令
-   * @param options 
+   * @param options
    */
   constructor(options: CommandOptions) {
     this.type = options.type;
@@ -107,7 +102,6 @@ export abstract class Command<T = unknown> {
     this.argumentParseMethod = options.argumentParseMethod ?? { type: ArgumentParseType.Split, separator: ' ' };
     this.cooldown = options.cooldown;
     this.permissions = options.permissions;
-    this.twoFactorRequired = options.twoFactorRequired ?? false;
   }
 
   /**

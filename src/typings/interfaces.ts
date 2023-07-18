@@ -1,16 +1,16 @@
 /*
- * 
+ *
  * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
- * 
+ *
  * This file is a part of Junior HiZollo.
- * 
- * Junior HiZollo is free software: you can redistribute it and/or 
+ *
+ * Junior HiZollo is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * Junior HiZollo is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *
+ * Junior HiZollo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
@@ -96,7 +96,6 @@ export interface CommandOptions {
   argumentParseMethod?: ArgumentParseMethod;
   cooldown?: number;
   permissions?: CommandPermission;
-  twoFactorRequired?: boolean;
 }
 
 export interface CommandPermission {
@@ -124,7 +123,7 @@ export interface ModelSystemContentOptions {
 export interface ModelSystemOptions {
   source: Source;
   buttons: {
-    open: ButtonBuilder, 
+    open: ButtonBuilder,
     close: ButtonBuilder
   };
   modal: ModalBuilder;
@@ -141,7 +140,7 @@ export interface BasePageSystemOptions {
   thumbnails?: (string | null)[];
   extendFooter?: string;
   contents: {
-    exit: string, 
+    exit: string,
     idle: string
   };
 }
