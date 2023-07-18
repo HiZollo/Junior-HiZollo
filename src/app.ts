@@ -1,16 +1,16 @@
 /*
- * 
+ *
  * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
- * 
+ *
  * This file is a part of Junior HiZollo.
- * 
- * Junior HiZollo is free software: you can redistribute it and/or 
+ *
+ * Junior HiZollo is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * Junior HiZollo is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *
+ * Junior HiZollo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
@@ -33,10 +33,10 @@ import { HZClient } from './classes/HZClient';
 import { CommandManagerRejectReason, CommandParserOptionResultStatus } from './typings/enums';
 const client = new HZClient({
   intents: [
-    GatewayIntentBits.Guilds, 
-    GatewayIntentBits.GuildMessages, 
-    GatewayIntentBits.GuildMessageReactions, 
-    GatewayIntentBits.GuildVoiceStates, 
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.MessageContent
   ],
   makeCache: Options.cacheWithLimits({
@@ -73,37 +73,32 @@ client.commands.on('reject', async (source, info) => {
       helper.setTitle('(ﾒﾟДﾟ)ﾒ')
         .setDescription(`你就是剛剛丟我的那個人！我才不想理你勒，你 ${~~(info.args[0] / 1000)} 秒之後再來跟我談！`);
       break;
-    
-    case CommandManagerRejectReason.TwoFactorRequird:
-      helper.setTitle('2FA 不讓我執行這個指令')
-        .setDescription(`因為這個伺服器開啟了 2FA 驗證，所以我無法執行這個指令`);
-      break;
-    
+
     case CommandManagerRejectReason.UserMissingPermission:
       helper.setTitle('你被權限之神禁錮了')
         .setDescription(`以下是你缺少的權限\n\n${info.args[0].map(perm => `- ${Translator.getPermissionChinese(perm)}`).join('\n')}`);
       break;
-    
+
     case CommandManagerRejectReason.BotMissingPermission:
       helper.setTitle('給我這麼點權限怎麼夠我用')
         .setDescription(`我把我要的權限都列出來了，快點給我不然我沒辦法幫你執行這個指令\n\n${info.args[0].map(perm => `- ${Translator.getPermissionChinese(perm)}`).join('\n')}`);
       break;
-    
+
     case CommandManagerRejectReason.InCooldown:
       helper.setTitle('你太快了')
         .setDescription(`你必須在 ${~~(info.args[0] / 1000)} 秒後才能再使用此指令。`);
       break;
-    
+
     case CommandManagerRejectReason.InNetwork:
       helper.setTitle('這個地方不適合使用指令')
         .setDescription('在 HiZollo Network 的領域裡使用指令會發生相當嚴重的時空錯亂，你不會希望這件事發生的');
       break;
-    
+
     case CommandManagerRejectReason.IllegalArgument:
       const [commandName, options, { arg, index, status }] = info.args;
 
       let description = options.map((o, i) => {
-        const text = o.repeat ? new Array(2).fill(o.name).map((e, i) => e.replaceAll('%i', (i+1).toString())).join(' ') + ' ...' : o.name;
+        const text = o.repeat ? new Array(2).fill(o.name).map((e, i) => e.replaceAll('%i', (i + 1).toString())).join(' ') + ' ...' : o.name;
         const indexRange = o.repeat ? (source.isMessage() ? Infinity : 5) : 0;
         return index <= i && i <= index + indexRange ? `[${text}]` : text;
       }).join(' ');
@@ -115,14 +110,14 @@ client.commands.on('reject', async (source, info) => {
         case CommandParserOptionResultStatus.Required:
           helper.setTitle(`參數 ${displayName} 是必填的`);
           break;
-        
+
         case CommandParserOptionResultStatus.WrongFormat:
           helper.setTitle(`參數 ${displayName} 的格式錯誤`);
           description += `${arg} 不符合${Translator.getCommandOptionTypeChinese(options[index])}`;
           if (options[index].type === ApplicationCommandOptionType.Boolean) description += `（是或否）`;
           description += `的格式`;
           break;
-      
+
         case CommandParserOptionResultStatus.NotInChoices:
           if (!('choices' in info.args[2])) break;
           const { choices } = info.args[2];
@@ -130,28 +125,28 @@ client.commands.on('reject', async (source, info) => {
           helper.setTitle(`${arg} 並不在規定的選項內`)
           description += `參數 ${displayName} 必須是下列選項中的其中一個：\n${choicesString}`;
           break;
-              
+
         case CommandParserOptionResultStatus.ValueTooSmall:
           if (!('limit' in info.args[2])) break;
           ({ limit } = info.args[2]);
           helper.setTitle(`參數 ${displayName} 太小了`);
           description += `這個參數必須比 ${limit} 還要大，但你給了 ${arg}`;
           break;
-              
+
         case CommandParserOptionResultStatus.ValueTooLarge:
           if (!('limit' in info.args[2])) break;
           ({ limit } = info.args[2]);
           helper.setTitle(`參數 ${displayName} 太大了`);
           description += `這個參數必須比 ${limit} 還要小，但你給了 ${arg}`;
           break;
-        
+
         case CommandParserOptionResultStatus.LengthTooShort:
           if (!('limit' in info.args[2])) break;
           ({ limit } = info.args[2]);
           helper.setTitle(`參數 ${displayName} 太短了`);
           description += `這個參數的長度必須比 ${limit} 還要長，但你給的 ${arg} 的長度只有 ${(arg as string).length}`;
           break;
-      
+
         case CommandParserOptionResultStatus.LengthTooLong:
           if (!('limit' in info.args[2])) break;
           ({ limit } = info.args[2]);

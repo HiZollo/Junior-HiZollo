@@ -1,16 +1,16 @@
 /*
- * 
+ *
  * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
- * 
+ *
  * This file is a part of Junior HiZollo.
- * 
- * Junior HiZollo is free software: you can redistribute it and/or 
+ *
+ * Junior HiZollo is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * Junior HiZollo is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *
+ * Junior HiZollo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
@@ -36,7 +36,7 @@ export type Intersect<T, U> = { [K in (keyof T & keyof U)]: T[K] | U[K] };
 
 export type ValueOf<T> = T[keyof T];
 
-export type CommandParserOptionResult = 
+export type CommandParserOptionResult =
   | CommandParserOptionPassResult
   | CommandParserOptionFailWithPureStatusResult
   | CommandParserOptionFailWithChoicesResult
@@ -46,13 +46,12 @@ export type CommandParserPassResult = { args: unknown[] } & Omit<CommandParserOp
 
 export type CommandParserFailResult = { index: number } & Exclude<CommandParserOptionResult, CommandParserOptionPassResult>;
 
-export type CommandParserResult = 
+export type CommandParserResult =
   | CommandParserPassResult
   | CommandParserFailResult
 
-export type CommandManagerRejectInfo = 
+export type CommandManagerRejectInfo =
   | { reason: CommandManagerRejectReason.Angry, args: [time: number] }
-  | { reason: CommandManagerRejectReason.TwoFactorRequird, args: [] }
   | { reason: CommandManagerRejectReason.BotMissingPermission, args: [missings: (keyof PermissionFlags)[]] }
   | { reason: CommandManagerRejectReason.UserMissingPermission, args: [missings: (keyof PermissionFlags)[]] }
   | { reason: CommandManagerRejectReason.InCooldown, args: [time: number] }
@@ -64,7 +63,7 @@ export type HZCommandOptionData = (Exclude<ApplicationCommandOptionData,
   | ApplicationCommandSubGroupData
 > & { parseAs?: CommandOptionType, repeat?: boolean });
 
-export type ArgumentParseMethod = 
+export type ArgumentParseMethod =
   | { type: ArgumentParseType.None }
   | { type: ArgumentParseType.Split, separator: string }
   | { type: ArgumentParseType.Quote, quotes: [string, string] }
@@ -98,7 +97,7 @@ declare module "discord.js" {
      * 重要事件的記錄器
      */
     logger: WebhookLogger;
-    
+
     /**
      * 指令管家
      */
