@@ -38,7 +38,7 @@ export default class Rip extends Command<[]> {
 
   public async execute(source: Source): Promise<void> {
     await source.hide();
-    await source.channel?.send({ files: ['https://i.imgur.com/w3duR07.png'] });
+    await source.channel?.send({ files: ['./src/pictures/rip.png'] });
     await source.editReply('RIP!');
   }
 }
