@@ -48,7 +48,7 @@ export class YoutubeUtil extends null {
   static async getStream(url: string): Promise<YouTubeStream | null> {
     let stream: YouTubeStream | null = null;
     for (let i = 0; i < 5 && !stream; i++) {
-      stream = await ytpl.stream(url).catch(() => {}) as YouTubeStream | null;
+      stream = await ytpl.stream(url).catch(() => null) as YouTubeStream | null;
     }
     return stream;
   }
