@@ -1,16 +1,16 @@
 /*
- * 
+ *
  * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
- * 
+ *
  * This file is a part of Junior HiZollo.
- * 
- * Junior HiZollo is free software: you can redistribute it and/or 
+ *
+ * Junior HiZollo is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * Junior HiZollo is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *
+ * Junior HiZollo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
@@ -32,12 +32,12 @@ export class ButtonManager {
    * 機器人的 client
    */
   public client: HZClient;
-  
+
   /**
    * 按鈕識別ID－回應方式的鍵值對
    */
   private data: Map<string, (interaction: ButtonInteraction<"cached">) => Promise<void>>;
-  
+
   /**
    * 永久按鈕的回應是否已載入完畢
    */
@@ -58,7 +58,7 @@ export class ButtonManager {
    * @param dirPath 要載入的目標資料夾
    */
   public async load(dirPath: string): Promise<void> {
-    if (this.loaded) throw new Error('Autocomplete has already been loaded.');
+    if (this.loaded) throw new Error('Buttons have already been loaded.');
 
     const buttonFiles = fs.readdirSync(dirPath);
     for (const file of buttonFiles) {
@@ -78,7 +78,9 @@ export class ButtonManager {
     if (interaction.type !== InteractionType.MessageComponent || !interaction.isButton()) return;
     if (!interaction.inCachedGuild()) return;
     if (interaction.user.blocked) return;
-    if (this.client.devMode && interaction.guild.id !== constant.mainGuild.id) return;
+    if (this.client.devMode &&
+      interaction.guildId !== constant.mainGuild.id &&
+      interaction.guildId !== constant.devGuild.id) return;
 
     const [identifier] = interaction.customId.split('_');
     const action = this.data.get(identifier);
