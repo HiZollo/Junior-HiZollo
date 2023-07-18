@@ -45,10 +45,10 @@ export class YoutubeUtil extends null {
    * @param url 指定連結
    * @returns 音樂串流
    */
-  static async getStream(url: string): Promise<YouTubeStream | void> {
-    let stream: YouTubeStream | void;
+  static async getStream(url: string): Promise<YouTubeStream | null> {
+    let stream: YouTubeStream | null = null;
     for (let i = 0; i < 5 && !stream; i++) {
-      stream = await ytpl.stream(url).catch(() => {}) as YouTubeStream | void;
+      stream = await ytpl.stream(url).catch(() => {}) as YouTubeStream | null;
     }
     return stream;
   }

@@ -99,14 +99,14 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
    * **[Type Guard]** 來源是斜線指令
    */
   public isChatInput(): this is Source<ChatInputCommandInteraction<"cached">> {
-    return this.source instanceof ChatInputCommandInteraction<"cached">;
+    return this.source instanceof ChatInputCommandInteraction
   }
 
   /**
    * **[Type Guard]** 來源是訊息
    */
   public isMessage(): this is Source<Message<true>> {
-    return this.source instanceof Message<true>;
+    return this.source instanceof Message;
   }
 
 
