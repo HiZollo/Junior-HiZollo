@@ -1,16 +1,16 @@
 /*
- * 
+ *
  * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
- * 
+ *
  * This file is a part of Junior HiZollo.
- * 
- * Junior HiZollo is free software: you can redistribute it and/or 
+ *
+ * Junior HiZollo is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * Junior HiZollo is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *
+ * Junior HiZollo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
@@ -327,12 +327,12 @@ export class CommandManager extends EventEmitter {
     return this.subcommands.search([first, second]);
   }
 
-	public each(fn: (value: Command, key: string, collection: Collection<string, Command>) => void): Collection<string, Command> {
-		return this.commands.each(fn);
+  public each(fn: (value: Command, key: string, collection: Collection<string, Command>) => void): Collection<string, Command> {
+    return this.commands.each(fn);
   }
 
   public map<T>(fn: (value: Command, key: string, collection: Collection<string, Command>) => T): T[] {
-		return this.commands.map(fn);
+    return this.commands.map(fn);
   }
 
 

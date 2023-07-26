@@ -1,16 +1,16 @@
 /*
- * 
+ *
  * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
- * 
+ *
  * This file is a part of Junior HiZollo.
- * 
- * Junior HiZollo is free software: you can redistribute it and/or 
+ *
+ * Junior HiZollo is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * Junior HiZollo is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *
+ * Junior HiZollo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
@@ -23,6 +23,7 @@ import { Source } from "./Source";
 import { ArgumentParseType, CommandType } from "../typings/enums";
 import { CommandOptions, CommandPermission } from "../typings/interfaces";
 import { ArgumentParseMethod, HZCommandOptionData } from "../typings/types";
+import { Promisable } from "../typings/utils";
 
 /**
  * 一個指令的藍圖
@@ -90,11 +91,11 @@ export abstract class Command<T = unknown> {
    * @param args 指令的參數
    * @abstract
    */
-  public abstract execute(source: Source ,args?: T): Promise<void>;
+  public abstract execute(source: Source, args?: T): Promisable<void>;
 
   /**
    * 建立一個指令
-   * @param options 
+   * @param options
    */
   constructor(options: CommandOptions) {
     this.type = options.type;
