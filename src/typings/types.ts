@@ -48,7 +48,6 @@ export type CommandParserResult =
 
 export type CommandManagerRejectInfo =
   | { reason: CommandManagerRejectReason.Angry, args: [time: number] }
-  | { reason: CommandManagerRejectReason.TwoFactorRequird, args: [] }
   | { reason: CommandManagerRejectReason.BotMissingPermission, args: [missings: (keyof PermissionFlags)[]] }
   | { reason: CommandManagerRejectReason.UserMissingPermission, args: [missings: (keyof PermissionFlags)[]] }
   | { reason: CommandManagerRejectReason.InCooldown, args: [time: number] }

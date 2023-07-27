@@ -81,11 +81,6 @@ export abstract class Command<T = unknown> {
   public permissions?: CommandPermission;
 
   /**
-   * 是否需要 2FA 驗證才能執行指令
-   */
-  public twoFactorRequired?: boolean;
-
-  /**
    * 執行此指令
    * @param source 觸發指令的來源
    * @param args 指令的參數
@@ -108,7 +103,6 @@ export abstract class Command<T = unknown> {
     this.argumentParseMethod = options.argumentParseMethod ?? { type: ArgumentParseType.Split, separator: ' ' };
     this.cooldown = options.cooldown;
     this.permissions = options.permissions;
-    this.twoFactorRequired = options.twoFactorRequired ?? false;
   }
 
   /**

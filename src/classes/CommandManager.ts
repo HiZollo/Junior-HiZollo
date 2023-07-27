@@ -21,7 +21,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { EventEmitter } from "node:events";
-import { Awaitable, Collection, GuildMFALevel, Interaction, Message, PermissionFlagsBits } from "discord.js";
+import { Awaitable, Collection, Interaction, Message, PermissionFlagsBits } from "discord.js";
 import { Command } from "./Command";
 import { CommandParser } from "./CommandParser";
 import { HZClient } from "./HZClient";
@@ -140,11 +140,6 @@ export class CommandManager extends EventEmitter {
     /**/
 
     /***** 檢查執行權限 *****/
-    if (command.twoFactorRequired && interaction.guild.mfaLevel === GuildMFALevel.Elevated) {
-      this.emit('reject', new Source(interaction, channel, member), { reason: CommandManagerRejectReason.TwoFactorRequird, args: [] });
-      return;
-    }
-
     const userMissing = missingPermissions(command.permissions?.user ?? [], channel, member);
     if (userMissing.length) {
       this.emit('reject', new Source(interaction, channel, member), { reason: CommandManagerRejectReason.UserMissingPermission, args: [userMissing] });
@@ -251,10 +246,6 @@ export class CommandManager extends EventEmitter {
     /**/
 
     /***** 檢查執行權限 *****/
-    if (command.twoFactorRequired && message.guild.mfaLevel === GuildMFALevel.Elevated) {
-      this.emit('reject', new Source(message, channel, member), { reason: CommandManagerRejectReason.TwoFactorRequird, args: [] });
-    }
-
     const userMissing = missingPermissions(command.permissions?.user ?? [], message.channel, message.member);
     if (userMissing.length) {
       this.emit('reject', new Source(message, channel, member), { reason: CommandManagerRejectReason.UserMissingPermission, args: [userMissing] });

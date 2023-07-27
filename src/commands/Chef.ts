@@ -24,7 +24,7 @@ import { Source } from "../classes/Source";
 import { CommandType } from "../typings/enums";
 import randomElement from "../features/utils/randomElement"
 
-export default class Repeat extends Command<[User]> {
+export default class Chef extends Command<[User]> {
   constructor() {
     super({ 
       type: CommandType.Miscellaneous, 
@@ -56,9 +56,9 @@ export default class Repeat extends Command<[User]> {
     "<target> 廚了自己一次🛐", 
     "<target> 是大電神，他又廚了自己",
     "<target> 好電，在廚自己",
-    "<target> 好:zap:，又廚了自己一次", 
+    "<target> 好⚡，又廚了自己一次", 
     "<target> 最強了，連自己都廚", 
-    "<target> :zap: 起來連自己都廚", 
+    "<target> ⚡ 起來連自己都廚", 
     "<target> 電起來連自己都廚"
   ];
 
@@ -71,7 +71,8 @@ export default class Repeat extends Command<[User]> {
     "我電起來連我自己都怕好嗎", 
     "謝謝你廚我，我超強的", 
     "我知道我很強", 
-    "我可是機器人，身上很多電的"
+    "我可是機器人，身上很多電的",
+    "不用你廚我也知道我是最強的"
   ]
 
   private chefOtherBots = [
@@ -86,14 +87,14 @@ export default class Repeat extends Command<[User]> {
 
   private chefResponses = [
     "<target> 好電，被廚了一次",
-    "<target> 好:zap:，被廚了一次",
+    "<target> 好⚡，被廚了一次",
     "<target> 太強了，被廚了一次",
     "你成功廚了 <target> 一次，他變得更電了",
-    "<target> :zap::zap::zap::zap::zap::zap::zap::zap::zap::zap::zap::zap::zap:",
+    "<target> :⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡",
     "<target> 🛐🛐🛐🛐🛐🛐🛐🛐🛐🛐🛐🛐🛐",
     "<target> 又電到別人了", 
     "<target> 好電喔，一直被廚",
-    "<target> 好:zap:喔，一直被廚",
+    "<target> 好⚡喔，一直被廚",
     "<target> 太電了，被廚了一次🛐"
   ];
 }
