@@ -239,7 +239,7 @@ export class HZClient extends Client {
       case 'selfbot': case 'sb':
         return message.channel.send(
           '歡迎在這邊討論任何跟 Discord 機器人製作等相關的問題，團隊成員若是有會回答的也都會分享\n'+
-          '但有關 selfbot 等違反 Disocrd 政策的東西不在我們的回答範圍內，嚴重者也會被我們永久停權'
+          '但有關 selfbot 等違反 Discord 政策的東西不在我們的回答範圍內，嚴重者也會被我們永久停權'
         );
       
       case 'python': case 'py':
