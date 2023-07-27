@@ -24,13 +24,13 @@ import { Source } from "../classes/Source";
 import { CommandType } from "../typings/enums";
 import removeMd from "../features/utils/removeMd";
 
-export default class Dev extends Command<[]> {
+export default class Team extends Command<[]> {
   constructor() {
     super({
       type: CommandType.Information,
-      name: 'dev',
-      description: '顯示 HiZollo 的開發團隊清單',
-      aliases: ['developers', 'team'],
+      name: 'team',
+      description: '顯示 HiZollo 的團隊成員清單',
+      aliases: ['developers', 'dev'],
       permissions: {
         bot: [PermissionFlagsBits.EmbedLinks]
       }
