@@ -1,16 +1,16 @@
 /*
- * 
+ *
  * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
- * 
+ *
  * This file is a part of Junior HiZollo.
- * 
- * Junior HiZollo is free software: you can redistribute it and/or 
+ *
+ * Junior HiZollo is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * Junior HiZollo is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *
+ * Junior HiZollo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
@@ -21,6 +21,7 @@
 import { Message, MessageCreateOptions } from "discord.js";
 import randomElement from "../features/utils/randomElement";
 import randomInt from "../features/utils/randomInt";
+import { Promisable } from "../typings/utils";
 
 /**
  * 一個隱藏指令的藍圖
@@ -44,7 +45,7 @@ export abstract class HiddenCommand {
    * @param message 來源訊息
    * @return 是否成功發送回覆
    */
-  public abstract execute(message: Message): boolean;
+  public abstract execute(message: Message): Promisable<boolean>;
 
   /**
    * 建立一個隱藏指令
@@ -63,7 +64,7 @@ export abstract class HiddenCommand {
    */
   protected epicResponse(message: Message, notEpic: (string | MessageCreateOptions)[], epic: (string | MessageCreateOptions)[]): true {
     message.channel.send(
-      randomInt(1, 1000) <= 2 ? 
+      randomInt(1, 1000) <= 2 ?
         randomElement(epic) :
         randomElement(notEpic)
     );
@@ -93,7 +94,7 @@ export abstract class HiddenCommand {
 
     const group = responses[index];
     if (!group) return false;
-    
+
     let response = randomElement(group);
     if (typeof response === 'string') {
       response = response.replaceAll('%u', message.author.toString());
@@ -102,7 +103,7 @@ export abstract class HiddenCommand {
       response.content = response.content?.replaceAll('%u', message.author.toString());
     }
     message.channel.send(response);
-    
+
     return true;
   }
 }

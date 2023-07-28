@@ -23,6 +23,7 @@ import { Source } from "./Source";
 import { ArgumentParseType, CommandType } from "../typings/enums";
 import { CommandOptions, CommandPermission } from "../typings/interfaces";
 import { ArgumentParseMethod, HZCommandOptionData } from "../typings/types";
+import { Promisable } from "../typings/utils";
 
 /**
  * 一個指令的藍圖
@@ -85,7 +86,7 @@ export abstract class Command<T = unknown> {
    * @param args 指令的參數
    * @abstract
    */
-  public abstract execute(source: Source, args?: T): Promise<void>;
+  public abstract execute(source: Source, args?: T): Promisable<void>;
 
   /**
    * 建立一個指令

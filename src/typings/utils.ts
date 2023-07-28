@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
+ * Copyright 2023 HiZollo Dev Team <https://github.com/hizollo>
  *
  * This file is a part of Junior HiZollo.
  *
@@ -18,16 +18,10 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { GuildMember } from "discord.js"
+// This file is for utility types
 
-Object.defineProperties(GuildMember.prototype, {
-  tag: {
-    get: function(this: GuildMember) {
-      return typeof this.displayName === 'string'
-        ? this.user.discriminator === '0' || this.user.discriminator === null
-          ? this.displayName
-          : `${this.displayName}#${this.user.discriminator}`
-        : null;
-    }
-  }
-});
+export type Intersect<T, U> = { [K in (keyof T & keyof U)]: T[K] | U[K] }
+
+export type ValueOf<T> = T[keyof T]
+
+export type Promisable<T> = T | PromiseLike<T>
