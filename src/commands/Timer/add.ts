@@ -1,11 +1,11 @@
-import { Command } from "@root/src/classes/Command";
-import { Source } from "@root/src/classes/Source";
-import { addTimer } from "@root/src/features/utils/cdTimerSystem";
-import convertToMs from "@root/src/features/utils/convertToMs";
-import { CommandType } from "@root/src/typings/enums";
+import { Command } from "../../classes/Command";
+import { Source } from "../../classes/Source";
+import convertToMs from "../../features/utils/convertToMs";
+import { CommandType } from "../../typings/enums";
 import { ApplicationCommandOptionType } from "discord.js";
+import { addTimer } from "../Timer";
 
-export default class TimerAdd extends Command<[string, string]> {
+export default class CountdownAdd extends Command<[string, string]> {
   constructor() {
     super({
       type: CommandType.Utility,

@@ -1,7 +1,7 @@
-import { Command } from "@root/src/classes/Command";
-import { Source } from "@root/src/classes/Source";
-import { listTimers } from "@root/src/features/utils/cdTimerSystem";
-import { CommandType } from "@root/src/typings/enums";
+import { Command } from "../../classes/Command";
+import { Source } from "../../classes/Source";
+import { CommandType } from "../../typings/enums";
+import { listTimers } from "../Timer";
 
 export default class CountdownList extends Command<[]> {
   constructor() {
