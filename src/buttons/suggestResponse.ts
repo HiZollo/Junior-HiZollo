@@ -20,6 +20,7 @@
 
 import { ActionRowBuilder, ButtonInteraction, ModalBuilder, TextInputBuilder, TextInputStyle, User } from "discord.js";
 import { mainGuild } from "@root/constant.json";
+import removeMd from '../features/utils/removeMd'
 
 export default async function (interaction: ButtonInteraction<"cached">): Promise<void> {
   if (!interaction.member.roles.cache.has(mainGuild.roles.groupMemberId)) {
@@ -83,7 +84,7 @@ function newSuggestModal(): ModalBuilder {
 }
 
 function getSuggestResponse(content: string, originalReport: string, author: User): string {
-  return `
+  const res_string = `
 ———————————————————
 我們收到了你的建議，以下是你的建議內容：
 
@@ -100,4 +101,6 @@ ${mainGuild.inviteLink}
 感謝你使用 HiZollo
 - ${author.username}
 `;
+
+  return removeMd(res_string)
 }
