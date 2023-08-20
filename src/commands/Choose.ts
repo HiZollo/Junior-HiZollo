@@ -50,8 +50,12 @@ export default class Choose extends Command<string[]> {
     }
 
     const option = randomElement(options);
+    const answer = randomElement(this.replys).replace('<>', option)
     await source.defer();
-    await source.update(randomElement(this.replys).replace('<>', option));
+    await source.update({
+      content: answer,
+      allowedMentions: { parse: [] }
+    })
   }
 
   private replys = [
