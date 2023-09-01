@@ -76,7 +76,7 @@ export interface CommandParserOptionFailWithPureStatusResult extends CommandPars
 
 export interface CommandParserOptionFailWithChoicesResult extends CommandParserOptionBaseResult {
   status: CommandParserOptionResultStatus.NotInChoices;
-  choices: ApplicationCommandOptionChoiceData[];
+  choices: readonly ApplicationCommandOptionChoiceData[];
 }
 
 export interface CommandParserOptionFailWithLimitResult extends CommandParserOptionBaseResult {

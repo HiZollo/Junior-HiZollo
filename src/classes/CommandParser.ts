@@ -143,7 +143,7 @@ export class CommandParser extends null {
    * @param argument 使用者輸入
    * @returns 對應選項的 value
    */
-  static getChoicesValue(choices: ApplicationCommandOptionChoiceData[], argument: string): string | null {
+  static getChoicesValue(choices: readonly ApplicationCommandOptionChoiceData[], argument: string): string | null {
     return choices.find(c => c.name === argument || c.value.toString() === argument)?.value.toString() ?? null;
   }
 
