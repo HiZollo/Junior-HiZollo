@@ -31,7 +31,7 @@
   "homepage": "https://github.com/HiZollo/Junior-HiZollo#readme",
   "dependencies": {
     "@discordjs/voice": "^0.13.0",
-    "@hizollo/calculator": "^1.0.0",
+    "@hizollo/calculator": "^1.0.2",
     "@hizollo/games": "^2.5.0",
     "@hizollo/osu-api": "^1.2.0",
     "axios": "^1.4.0",
