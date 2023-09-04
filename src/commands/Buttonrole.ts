@@ -237,7 +237,7 @@ export default class Buttonrole extends Command<[Role, string, string, string]> 
   }
 
   private resolveStyle(style: string): ButtonStyle {
-    return this.styleTable[style] ?? ButtonStyle.Primary;
+    return this.styleTable[style as keyof typeof this.styleTable] ?? ButtonStyle.Primary;
   }
 
   private styleTable = {
