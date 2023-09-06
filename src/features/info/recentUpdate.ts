@@ -23,7 +23,7 @@ export default `
   - z 斜線指令不會自動補全
   - \`rip\` 指令的圖片無法正常發送
   - \`choose\` 指令的回應可以 tag everyone 和 here
-- \`calc\' 指令大翻新
+- \`calc\` 指令大翻新
   - 使用我們新精心打造的計算機來計算
   - 解決了之前有很多錯誤的錯誤
   - 新增很多方便的數學函式，列表可以參考[這裡](<https://github.com/HiZollo/Calculator>)
