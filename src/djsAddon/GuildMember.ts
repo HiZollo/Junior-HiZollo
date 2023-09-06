@@ -24,7 +24,7 @@ Object.defineProperties(GuildMember.prototype, {
   tag: {
     get: function(this: GuildMember) {
       return typeof this.displayName === 'string'
-        ? this.user.discriminator === '0' || this.user.discriminator === null
+        ? this.user.discriminator === '0' || this.user.discriminator == null
           ? this.displayName
           : `${this.displayName}#${this.user.discriminator}`
         : null;
