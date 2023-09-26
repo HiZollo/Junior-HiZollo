@@ -195,7 +195,7 @@ export default class Getmsg extends Command<[string, number]> {
         });
       });
 
-      log = Buffer.from(JSON.stringify(result), "utf-8");
+      log = Buffer.from(JSON.stringify(result, null, 2), "utf-8");
     }
 
     await message.edit('檔案傳送中……');
