@@ -107,7 +107,7 @@ export default class Getmsg extends Command<[string, number]> {
     let log!: Buffer;
 
     const message = await source.update('搜取訊息中……');
-    const messages = await source.channel?.messages.fetch({ limit: count }).catch(() => {});
+    const messages = await source.channel?.messages.fetch({ limit: count, before: source.id }).catch(() => {});
     if (!messages) {
       await message.edit('搜取訊息失敗，請再試一次');
       return;
