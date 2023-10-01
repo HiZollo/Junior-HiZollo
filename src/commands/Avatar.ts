@@ -27,18 +27,18 @@ import { CommandOptionType, CommandType } from "../typings/enums";
 export default class Avatar extends Command<[GuildMember]> {
   constructor() {
     super({
-      type: CommandType.Utility, 
-      name: 'avatar', 
-      description: '查看一位伺服器成員的頭像', 
-      extraDescription: '不填參數時可以查看自己的頭像', 
-      aliases: ['av'], 
-      options: [{ 
-        type: ApplicationCommandOptionType.User, 
-        parseAs: CommandOptionType.Member, 
-        name: '成員', 
-        description: '伺服器中的成員', 
+      type: CommandType.Utility,
+      name: 'avatar',
+      description: '查看一位伺服器成員的頭像',
+      extraDescription: '不填參數時可以查看自己的頭像',
+      aliases: ['av'],
+      options: [{
+        type: ApplicationCommandOptionType.User,
+        parseAs: CommandOptionType.Member,
+        name: '成員',
+        description: '伺服器中的成員',
         required: false
-      }], 
+      }],
       permissions: {
         bot: [PermissionsBitField.Flags.AttachFiles]
       }
@@ -55,7 +55,8 @@ export default class Avatar extends Command<[GuildMember]> {
       files: [{
         attachment: member.displayAvatarURL({ extension: 'png', size: 4096 }),
         name: 'avatar.png'
-      }]
+      }],
+      allowedMentions: { parse: [] }
     });
   }
 }

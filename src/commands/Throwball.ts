@@ -27,29 +27,29 @@ import { ThrowBallType } from "../typings/types";
 
 export default class Throwball extends Command<[GuildMember, string]> {
   constructor() {
-    super({ 
-      type: CommandType.Fun, 
-      name: 'throwball', 
-      description: '朝著一個人用力丟球', 
-      aliases: ['throw'], 
+    super({
+      type: CommandType.Fun,
+      name: 'throwball',
+      description: '朝著一個人用力丟球',
+      aliases: ['throw'],
       options: [{
-        type: ApplicationCommandOptionType.User, 
-        parseAs: CommandOptionType.Member, 
-        name: '目標', 
-        description: '你要砸的人', 
+        type: ApplicationCommandOptionType.User,
+        parseAs: CommandOptionType.Member,
+        name: '目標',
+        description: '你要砸的人',
         required: true
       }, {
-        type: ApplicationCommandOptionType.String, 
-        name: '球種', 
-        description: '你想要丟的球種', 
-        required: false, 
+        type: ApplicationCommandOptionType.String,
+        name: '球種',
+        description: '你想要丟的球種',
+        required: false,
         choices: [
           { name: '乒乓球', value: '乒乓球' }, { name: '巧克力球', value: '巧克力球' },
           { name: '棒球', value: '棒球' }, { name: '保齡球', value: '保齡球' }
         ]
-      }], 
+      }],
       permissions: {
-        bot: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel], 
+        bot: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel],
         user: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]
       }
     });
@@ -70,11 +70,14 @@ export default class Throwball extends Command<[GuildMember, string]> {
     else if (target.id === source.user.id)
       await source.update(`你把一顆${type}往你自己身上丟……`);
     else
-      await source.update(`你把一顆${type}往 ${target.displayName} 身上丟……`);
+      await source.update({
+        content: `你把一顆${type}往 ${target.displayName} 身上丟……`
+        , allowedMentions: { parse: [] }
+      });
 
     setTimeout(async () => {
       const result = throwball(source.client, member, target, type);
-      await source.channel?.send(result);
+      await source.channel?.send({ content: result, allowedMentions: { parse: [] } });
     }, 1900);
   }
 }
