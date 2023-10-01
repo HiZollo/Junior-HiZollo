@@ -62,7 +62,7 @@ export default class OsuBest extends Command<[string, number]> {
 
     if (!scores.length) {
       await source.defer({ ephemeral: true });
-      await source.update(`我已經盡力了，但仍找不到 ${player} 這位玩家`);
+      await source.update({ content: `我已經盡力了，但仍找不到 ${player} 這位玩家`, allowedMentions: { parse: [] } });
       return;
     }
 
