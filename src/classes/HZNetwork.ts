@@ -340,6 +340,7 @@ export class HZNetwork extends EventEmitter {
         avatarURL: this.client.user?.displayAvatarURL(),
         content: `歡迎 ${channel.guild.name} 加入 HiZollo 聯絡網！`,
         username: '[ HiZollo 全頻廣播 ]',
+        allowedMentions: { parse: [] }
       });
       this.emit('joined', portNo, channel);
     }
