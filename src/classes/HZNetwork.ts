@@ -18,12 +18,11 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Awaitable, Channel, ChannelType, EmbedBuilder, Guild, Message, PermissionFlagsBits, TextChannel, Webhook, WebhookMessageCreateOptions } from "discord.js";
+import { Awaitable, Channel, ChannelType, EmbedBuilder, Guild, Message, PermissionFlagsBits, TextChannel, User, Webhook, WebhookMessageCreateOptions } from "discord.js";
 import { EventEmitter } from "node:events";
 import { HZClient } from "./HZClient";
 import config from "@root/config";
 import tempMessage from "../features/utils/tempMessage";
-import removeMd from "../features/utils/removeMd";
 import { HZNetworkEvents } from "../typings/interfaces";
 
 /**
@@ -156,15 +155,16 @@ export class HZNetwork extends EventEmitter {
     // 貼圖
     const stickers = [...message.stickers.values()];
     stickers.forEach(s => {
-      const splited = s.url.split('/');
       attachments.push({
         attachment: s.url,
-        name: splited[splited.length - 1]
+        name: s.url.split('/')[s.url.split('/').length - 1]
       });
-    })
+    }
+
+    )
 
     // 回覆
-    const reference: { content?: string, username?: string } = {};
+    const reference: { content?: string, user?: User } = {};
     if (message.reference?.messageId) {
       const msg = await message.channel.messages.fetch(message.reference.messageId);
       if (msg) {
@@ -173,9 +173,10 @@ export class HZNetwork extends EventEmitter {
           .replace(/@here/g, `@\u200bhere`)
           .replace(/\]\(/g, ']\u200b(')
           .replace(/^> .+?\n/, ''); // 刪除回覆的回覆
+
         reference.content = this.parseReply(text);
         if (msg.attachments.size > 0) reference.content += ' <:attachment:875011591953874955>';
-        reference.username = removeMd(msg.author.username);
+        reference.user = msg.author;
       }
     }
 
@@ -184,8 +185,16 @@ export class HZNetwork extends EventEmitter {
       await message.delete().catch(() => { });
 
       let finalMessage = '';
-      if (reference.content?.length) finalMessage += `> **${reference.username}**：${reference.content}\n`;
+      const embeds: EmbedBuilder[] = [];
+
+      if (reference.content?.length && reference.user) embeds.push(
+        new EmbedBuilder()
+          .setTitle(reference.content)
+          .setUserAuthor(reference.user, reference.user.username)
+      );
+
       if (content.length) finalMessage += content;
+
 
       if (finalMessage.length > 500) {
         helper.setDescription('你的訊息已超過 500 字元的上限，請縮減訊息，避免洗版');
@@ -193,19 +202,30 @@ export class HZNetwork extends EventEmitter {
         return;
       }
 
+
       if (!finalMessage.length && !attachments.length) {
         helper.setDescription('你的訊息似乎是空的');
         tempMessage(message.channel, { embeds: [helper] }, 3);
         return;
       }
 
+      const messages = (await message.channel.messages.fetch({ limit: 20 })).reverse();
+      messages.forEach(m => {
+        if (finalMessage == m.content && m.author.username == message.author.username) {
+          finalMessage += "\u200b"
+        }
+
+      })
+
       const options = {
         avatarURL: message.author.displayAvatarURL(),
         content: finalMessage.length ? finalMessage : undefined,
         files: attachments,
         username: message.author.tag,
+        embeds: embeds
       };
-      await this.crosspost(portNo, options);
+      if (options.embeds?.length == 0) await this.crosspost(portNo, options);
+      else await this.crosspost_reply(portNo, options);
       this.emit('crosspost', portNo, message.guild, message.author);
     } catch (error) {
       message.channel.send(`HiZollo Network 出現傳輸問題……`);
@@ -297,6 +317,34 @@ export class HZNetwork extends EventEmitter {
       const iter = webhooks.entries();
       await Promise.all(Array.from({ length: webhooks.size }, async () => {
         const [channelId, webhook] = iter.next().value;
+        await webhook.send(options).catch(() => {
+          client.network.unregisterChannel(portNo, channelId);
+        });
+      }));
+    }, { context: { portNo, options } });
+
+    if (isBroadcast) {
+      this.emit('broadcast', portNo, options.content ?? '[無訊息內容]');
+    }
+  }
+  public async crosspost_reply(portNo: string, options: WebhookMessageCreateOptions, isBroadcast?: boolean): Promise<void> {
+    await this.client.shard?.broadcastEval(async (client, { portNo, options }) => {
+      const webhooks = client.network.ports.get(portNo);
+      if (!webhooks) return;
+      if (!options.embeds) return;
+
+      const iter = webhooks.entries();
+      await Promise.all(Array.from({ length: webhooks.size }, async () => {
+        const [channelId, webhook] = iter.next().value;
+        const channel = client.channels.cache.get(channelId) as TextChannel;
+        const messages = await channel.messages.fetch({ limit: 20 });
+        messages.forEach(async m => {
+          if (m.content == (options.embeds?.[0]?.title ?? '') && m.author.username == options.embeds?.[0]?.author?.name) {
+            if (typeof options.embeds == 'undefined') return;
+            options.embeds[0].url = m.url;
+          }
+        })
+
         await webhook.send(options).catch(() => {
           client.network.unregisterChannel(portNo, channelId);
         });
