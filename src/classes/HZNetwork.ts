@@ -154,7 +154,16 @@ export class HZNetwork extends EventEmitter {
     }
 
     // 貼圖
-    const stickers = [...message.stickers.keys()];
+    const stickers = [...message.stickers.values()];
+    stickers.forEach(s => {
+      console.log(s.url)
+      attachments.push({
+        attachment: s.url,
+        name: s.url.split('/')[s.url.split('/').length - 1]
+      });
+    }
+
+    )
 
     // 回覆
     const reference: { content?: string, username?: string } = {};
@@ -182,12 +191,6 @@ export class HZNetwork extends EventEmitter {
 
       if (finalMessage.length > 500) {
         helper.setDescription('你的訊息已超過 500 字元的上限，請縮減訊息，避免洗版');
-        tempMessage(message.channel, { embeds: [helper] }, 3);
-        return;
-      }
-
-      if (stickers.length) {
-        helper.setDescription('HiZollo Network 並不支援貼圖');
         tempMessage(message.channel, { embeds: [helper] }, 3);
         return;
       }
