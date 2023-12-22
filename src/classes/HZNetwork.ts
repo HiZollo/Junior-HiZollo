@@ -156,7 +156,6 @@ export class HZNetwork extends EventEmitter {
     // 貼圖
     const stickers = [...message.stickers.values()];
     stickers.forEach(s => {
-      console.log(s.url)
       attachments.push({
         attachment: s.url,
         name: s.url.split('/')[s.url.split('/').length - 1]
