@@ -160,9 +160,7 @@ export class HZNetwork extends EventEmitter {
         attachment: s.url,
         name: s.url.split('/')[s.url.split('/').length - 1]
       });
-    }
-
-    )
+})
 
     // 回覆
     const reference: { content?: string, username?: string } = {};
