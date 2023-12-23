@@ -224,8 +224,8 @@ export class HZNetwork extends EventEmitter {
         username: message.author.tag,
         embeds: embeds
       };
-      if (options.embeds?.length == 0) await this.crosspost(portNo, options);
-      else await this.crosspost_reply(portNo, options);
+      await this.crosspost_message(portNo, options);
+
       this.emit('crosspost', portNo, message.guild, message.author);
     } catch (error) {
       message.channel.send(`HiZollo Network 出現傳輸問題……`);
@@ -327,23 +327,24 @@ export class HZNetwork extends EventEmitter {
       this.emit('broadcast', portNo, options.content ?? '[無訊息內容]');
     }
   }
-  public async crosspost_reply(portNo: string, options: WebhookMessageCreateOptions, isBroadcast?: boolean): Promise<void> {
+
+  public async crosspost_message(portNo: string, options: WebhookMessageCreateOptions, isBroadcast?: boolean): Promise<void> {
     await this.client.shard?.broadcastEval(async (client, { portNo, options }) => {
       const webhooks = client.network.ports.get(portNo);
       if (!webhooks) return;
-      if (!options.embeds) return;
 
       const iter = webhooks.entries();
       await Promise.all(Array.from({ length: webhooks.size }, async () => {
         const [channelId, webhook] = iter.next().value;
-        const channel = client.channels.cache.get(channelId) as TextChannel;
-        const messages = await channel.messages.fetch({ limit: 20 });
-        messages.forEach(async m => {
-          if (m.content == (options.embeds?.[0]?.title ?? '') && m.author.username == options.embeds?.[0]?.author?.name) {
-            if (typeof options.embeds == 'undefined') return;
-            options.embeds[0].url = m.url;
-          }
-        })
+        if (options.embeds?.length) {
+          const channel = client.channels.cache.get(channelId) as TextChannel;
+          const messages = await channel.messages.fetch({ limit: 20 });
+          messages.forEach(async m => {
+            if (m.content == (options.embeds?.[0].title) && m.author.username == options.embeds[0].author?.name) {
+              options.embeds[0].url = m.url;
+            }
+          })
+        }
 
         await webhook.send(options).catch(() => {
           client.network.unregisterChannel(portNo, channelId);
