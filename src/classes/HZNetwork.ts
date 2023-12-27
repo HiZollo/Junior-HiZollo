@@ -196,8 +196,8 @@ export class HZNetwork extends EventEmitter {
       if (content.length) finalMessage += content;
 
 
-      if (finalMessage.length > 500) {
-        helper.setDescription('你的訊息已超過 500 字元的上限，請縮減訊息，避免洗版');
+      if (finalMessage.length > 250) {
+        helper.setDescription('你的訊息已超過 250 字元的上限，請縮減訊息，避免洗版');
         tempMessage(message.channel, { embeds: [helper] }, 3);
         return;
       }
