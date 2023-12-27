@@ -155,11 +155,12 @@ export class HZNetwork extends EventEmitter {
     // 貼圖
     const stickers = [...message.stickers.values()];
     stickers.forEach(s => {
+      const splited = s.url.split('/');
       attachments.push({
         attachment: s.url,
-        name: s.url.split('/')[s.url.split('/').length - 1]
+        name: splited[splited.length - 1]
       });
-  })
+    })
 
     // 回覆
     const reference: { content?: string, user?: User } = {};
