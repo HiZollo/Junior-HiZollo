@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Awaitable, Channel, ChannelType, EmbedBuilder, Guild, Message, PermissionFlagsBits, TextChannel, User, Webhook, WebhookMessageCreateOptions } from "discord.js";
+import { APIEmbed, Awaitable, Channel, ChannelType, EmbedBuilder, Guild, Message, PermissionFlagsBits, TextChannel, User, Webhook, WebhookMessageCreateOptions } from "discord.js";
 import { EventEmitter } from "node:events";
 import { HZClient } from "./HZClient";
 import config from "@root/config";
@@ -171,7 +171,6 @@ export class HZNetwork extends EventEmitter {
           .replace(/@everyone/g, `@\u200beveryone`)
           .replace(/@here/g, `@\u200bhere`)
           .replace(/\]\(/g, ']\u200b(')
-          .replace(/^> .+?\n/, ''); // 刪除回覆的回覆
 
         reference.content = this.parseReply(text);
         if (msg.attachments.size > 0) reference.content += ' <:attachment:875011591953874955>';
@@ -184,19 +183,19 @@ export class HZNetwork extends EventEmitter {
       await message.delete().catch(() => { });
 
       let finalMessage = '';
-      const embeds: EmbedBuilder[] = [];
+      const embeds: APIEmbed[] = [];
 
       if (reference.content?.length && reference.user) embeds.push(
         new EmbedBuilder()
           .setTitle(reference.content)
-          .setUserAuthor(reference.user, reference.user.username)
+          .setUserAuthor(reference.user, reference.user.username).toJSON()
       );
 
       if (content.length) finalMessage += content;
 
 
-      if (finalMessage.length > 250) {
-        helper.setDescription('你的訊息已超過 250 字元的上限，請縮減訊息，避免洗版');
+      if (finalMessage.length > 500) {
+        helper.setDescription('你的訊息已超過 500 字元的上限，請縮減訊息，避免洗版');
         tempMessage(message.channel, { embeds: [helper] }, 3);
         return;
       }
@@ -208,14 +207,14 @@ export class HZNetwork extends EventEmitter {
         return;
       }
 
-      const messages = (await message.channel.messages.fetch({ limit: 20 })).reverse();
-      messages.forEach(m => {
+      const messages = (await message.channel.messages.fetch({ limit: 20 })).toJSON();
+
+      for (let i = messages.length - 1; i >= 0; --i) {
+        const m = messages[i];
         if (finalMessage == m.content && m.author.username == message.author.username) {
           finalMessage += "\u200b"
         }
-
-      })
-
+      }
       const options = {
         avatarURL: message.author.displayAvatarURL(),
         content: finalMessage.length ? finalMessage : undefined,
