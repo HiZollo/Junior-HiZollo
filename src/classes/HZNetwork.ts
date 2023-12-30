@@ -326,7 +326,7 @@ export class HZNetwork extends EventEmitter {
     }
   }
 
-  public async crosspost_message(portNo: string, options: WebhookMessageCreateOptions, isBroadcast?: boolean): Promise<void> {
+  private async crosspost_message(portNo: string, options: WebhookMessageCreateOptions, isBroadcast?: boolean): Promise<void> {
     await this.client.shard?.broadcastEval(async (client, { portNo, options }) => {
       const webhooks = client.network.ports.get(portNo);
       if (!webhooks) return;
