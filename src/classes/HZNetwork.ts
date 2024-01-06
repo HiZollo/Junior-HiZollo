@@ -63,7 +63,7 @@ export class HZNetwork extends EventEmitter {
   /**
    * banded words
    */
-  private bandedWords: string[] = [
+  private bannedWords: string[] = [
     'discord.gg/',
     'discord.com/invite/',
     'discordapp.com/invite/',
@@ -116,7 +116,7 @@ export class HZNetwork extends EventEmitter {
     this.emit('loaded');
   }
   public checkMessageSafe(content: string): boolean {
-    return this.bandedWords.some(word => content.includes(word));
+    return this.bannedWords.some(word => content.includes(word));
   }
   /**
    * 轉接第一線的訊息
