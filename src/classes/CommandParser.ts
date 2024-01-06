@@ -25,19 +25,19 @@ import { CommandParserOptionResult, CommandParserResult } from "../typings/types
 import { ArgumentParseMethod, HZCommandOptionData } from "../typings/types";
 import { Command } from "./Command";
 
-type ParseMessageOptionFunctions = { 
+type ParseMessageOptionFunctions = {
   [key in ApplicationCommandOptionType]: (data: {
-    data: HZCommandOptionData, 
+    data: HZCommandOptionData,
     message: Message,
-    preParsedArgs: string[], 
+    preParsedArgs: string[],
     attachments: Attachment[]
-  }) => Promise<CommandParserOptionResult> 
+  }) => Promise<CommandParserOptionResult>
 }
 
 type ParseSlashOptionFunctions = {
   [key in ApplicationCommandOptionType]: (data: {
-    interaction: ChatInputCommandInteraction, 
-    data: HZCommandOptionData, 
+    interaction: ChatInputCommandInteraction,
+    data: HZCommandOptionData,
     optionName?: string
   }) => Promise<CommandParserOptionResult>
 }
@@ -58,11 +58,11 @@ export class CommandParser extends null {
     switch (method.type) {
       case ArgumentParseType.None:
         return [rawArgs];
-      
+
       case ArgumentParseType.Split:
         const { separator } = method;
         return rawArgs.split(new RegExp(`(?:${separator})+`));
-      
+
       case ArgumentParseType.Quote:
         const [left, right] = method.quotes;
         return rawArgs.match(new RegExp(`(?<=${left})[\\s\\S]*?(?=${right})`, 'g'))?.filter((_s, i) => ~i & 1) ?? [];
@@ -91,9 +91,9 @@ export class CommandParser extends null {
     for (let i = 0; i < command.options.length; i++) {
       do {
         const result: CommandParserOptionResult = await CommandParser.ParseMessageOption[command.options[i].type]({
-          data: command.options[i], 
-          message, 
-          preParsedArgs, 
+          data: command.options[i],
+          message,
+          preParsedArgs,
           attachments
         });
 
@@ -122,12 +122,12 @@ export class CommandParser extends null {
     for (let i = 0; i < command.options.length; i++) {
       let repeatIndex = 1;
       do {
-        const result: CommandParserOptionResult = await CommandParser.ParseSlashOption[command.options[i].type]({ 
-          interaction, 
-          data: command.options[i], 
+        const result: CommandParserOptionResult = await CommandParser.ParseSlashOption[command.options[i].type]({
+          interaction,
+          data: command.options[i],
           optionName: command.options[i].name.replaceAll('%i', repeatIndex.toString())
         });
-        
+
         if (result.status !== CommandParserOptionResultStatus.Pass) {
           return { index: i, ...result };
         }
@@ -187,7 +187,7 @@ export class CommandParser extends null {
       }
 
       argument = MessageMentions.ChannelsPattern.test(argument) ? argument.slice(2, -1) : argument;
-      const channel = await message.client.channels.fetch(argument).catch(() => {});
+      const channel = await message.client.channels.fetch(argument).catch(() => { });
       return { arg: channel ?? original, status: CommandParserOptionResultStatus[!channel ? "WrongFormat" : "Pass"] };
     },
 
@@ -211,7 +211,7 @@ export class CommandParser extends null {
       } catch {
         return { arg: argument, status: CommandParserOptionResultStatus.WrongFormat };
       }
-      
+
       if ('minValue' in data) {
         if (data.minValue && number < data.minValue) {
           return { arg: original, status: CommandParserOptionResultStatus.ValueTooSmall, limit: data.minValue };
@@ -231,16 +231,16 @@ export class CommandParser extends null {
       }
 
       if (MessageMentions.RolesPattern.test(argument)) {
-        const role = await message.guild?.roles.fetch(argument.slice(3, -1)).catch(() => {});
+        const role = await message.guild?.roles.fetch(argument.slice(3, -1)).catch(() => { });
         return { arg: role ?? original, status: CommandParserOptionResultStatus[!role ? "WrongFormat" : "Pass"] };
       }
       if (MessageMentions.UsersPattern.test(argument)) {
-        const user = await message.client.users.fetch(argument.slice(2, -1)).catch(() => {});
+        const user = await message.client.users.fetch(argument.slice(2, -1)).catch(() => { });
         return { arg: user ?? original, status: CommandParserOptionResultStatus[!user ? "WrongFormat" : "Pass"] };
       }
-      const mentionable = 
-        (await message.guild?.roles.fetch(argument).catch(() => {})) ?? 
-        (await message.client.users.fetch(argument).catch(() => {}));
+      const mentionable =
+        (await message.guild?.roles.fetch(argument).catch(() => { })) ??
+        (await message.client.users.fetch(argument).catch(() => { }));
       return { arg: mentionable ?? original, status: CommandParserOptionResultStatus[!mentionable ? "WrongFormat" : "Pass"] };
     },
 
@@ -282,7 +282,7 @@ export class CommandParser extends null {
       if (MessageMentions.RolesPattern.test(argument)) {
         argument = argument.slice(3, -1);
       }
-      const role = await message.guild?.roles.fetch(argument).catch(() => {});
+      const role = await message.guild?.roles.fetch(argument).catch(() => { });
       return { arg: role ?? original, status: CommandParserOptionResultStatus[!role ? "WrongFormat" : "Pass"] };
     },
 
@@ -319,17 +319,17 @@ export class CommandParser extends null {
       if (!argument) {
         return { arg: null, status: CommandParserOptionResultStatus[data.required ? "Required" : "Pass"] };
       }
-      
+
       if (MessageMentions.UsersPattern.test(argument)) {
         argument = argument.slice(2, -1);
       }
       if (data.parseAs === CommandOptionType.Member) {
-        const member = await message.guild?.members.fetch(argument).catch(() => {});
+        const member = await message.guild?.members.fetch(argument).catch(() => { });
         return { arg: member ?? original, status: CommandParserOptionResultStatus[!member ? "WrongFormat" : "Pass"] };
       }
-      const user = await message.client.users.fetch(argument).catch(() => {});
+      const user = await message.client.users.fetch(argument).catch(() => { });
       return { arg: user ?? original, status: CommandParserOptionResultStatus[!user ? "WrongFormat" : "Pass"] };
-    }, 
+    },
 
 
     // 這裡也許永遠不會執行到，很想拿掉但我需要讓編譯器閉嘴
@@ -390,7 +390,7 @@ export class CommandParser extends null {
       if (argument === null) {
         return { arg: null, status: CommandParserOptionResultStatus.Pass };
       }
-      if (data.parseAs === CommandOptionType.Emoji && !emojiRegex().test(argument) && !/<?(a)?:?(\w{2,32}):(\d{17,19})>?/.test(argument)) {
+      if (data.parseAs === CommandOptionType.Emoji && !emojiRegex().test(argument) && !/<?(a)?:?(\w{2,32}):(\d{17,19})>?/.test(argument) && !/[🇦-🇿]/u.test(argument)) {
         return { arg: null, status: CommandParserOptionResultStatus.WrongFormat };
       }
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };
@@ -406,7 +406,7 @@ export class CommandParser extends null {
         return { arg: member ?? argument, status: CommandParserOptionResultStatus[!member ? "WrongFormat" : "Pass"] };
       }
       return { arg: argument, status: CommandParserOptionResultStatus.Pass };
-    }, 
+    },
 
 
     // 這裡也許永遠不會執行到，很想拿掉但我需要讓編譯器閉嘴
