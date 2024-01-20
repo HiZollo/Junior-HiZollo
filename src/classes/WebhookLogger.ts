@@ -171,12 +171,12 @@ ID：${guild.id}
  * @param guild 來源伺服器
  * @param author 發送者
  */
-  public networkUnallowPost(portNo: string, guild: Guild, author: User, message: Message): void {
+  public networkUnallowPost(portNo: string, guild: Guild, author: User, message: string): void {
     const description =
       `在 ${portNo} 號埠上發送訊息
   伺服器：${guild.id}
   使用者：${author.tag}（${author.id}）
-  訊息內容：${message.content}
+  訊息內容：${message}
   `;
 
     this.send('Network Log', description, 0xFF5733);

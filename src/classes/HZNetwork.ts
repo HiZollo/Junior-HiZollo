@@ -116,7 +116,7 @@ export class HZNetwork extends EventEmitter {
     this.emit('loaded');
   }
   public checkMessageSafe(content: string): boolean {
-    return this.bannedWords.some(word => content.includes(word));
+    return this.bannedWords.map(s => new RegExp(s)).some(r => r.test(content))
   }
   /**
    * 轉接第一線的訊息
@@ -134,7 +134,7 @@ export class HZNetwork extends EventEmitter {
     const helper = new EmbedBuilder().applyHiZolloSettings(message.member, 'HiZollo Network 中心');
     if (this.checkMessageSafe(message.cleanContent)) {
 
-      this.client.logger.networkUnallowPost(portNo, message.guild, message.author, message);
+      this.client.logger.networkUnallowPost(portNo, message.guild, message.author, message.content);
       message.delete();
       helper.setDescription('你的訊息中含有不合法的字詞，因此我無法傳送');
       tempMessage(message.channel, { embeds: [helper] }, 3);
