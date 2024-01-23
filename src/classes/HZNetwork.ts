@@ -115,7 +115,7 @@ export class HZNetwork extends EventEmitter {
     this.loaded = true;
     this.emit('loaded');
   }
-  public checkMessageSafe(content: string): boolean {
+  private isBannedMessage(content: string): boolean {
     return this.bannedWords.map(s => new RegExp(s)).some(r => r.test(content))
   }
   /**
@@ -132,7 +132,7 @@ export class HZNetwork extends EventEmitter {
     if (!this.ports.get(portNo)?.has(message.channel.id)) return;
 
     const helper = new EmbedBuilder().applyHiZolloSettings(message.member, 'HiZollo Network 中心');
-    if (this.checkMessageSafe(message.cleanContent)) {
+    if (this.isBannedMessage(message.cleanContent)) {
 
       this.client.logger.networkUnallowPost(portNo, message.guild, message.author, message.content);
       message.delete();
