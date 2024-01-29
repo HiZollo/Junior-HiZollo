@@ -64,8 +64,8 @@ export class WebhookLogger {
    * client 已就緒
    */
   public ready(): void {
-    const description = 
-`成功登入 ${this.client.user?.tag}
+    const description =
+      `成功登入 ${this.client.user?.tag}
 版本：${constant.bot.version}
 本分支目前服務 ${this.client.guilds.cache.size} 個伺服器`;
 
@@ -77,8 +77,8 @@ export class WebhookLogger {
    * @param guild 伺服器
    */
   public async joinGuild(guild: Guild): Promise<void> {
-    const description = 
-`加入伺服器：${guild.name}
+    const description =
+      `加入伺服器：${guild.name}
 ID：${guild.id}
 目前服務 ${await this.client.guildCount()} 個伺服器`;
 
@@ -90,8 +90,8 @@ ID：${guild.id}
    * @param guild 伺服器
    */
   public async leaveGuild(guild: Guild): Promise<void> {
-    const description = 
-`離開伺服器：${guild.name}
+    const description =
+      `離開伺服器：${guild.name}
 ID：${guild.id}
 目前服務 ${await this.client.guildCount()} 個伺服器`;
 
@@ -106,17 +106,17 @@ ID：${guild.id}
     const elines = error.stack?.split('\n');
     const ename = elines?.shift() ?? 'No Error Name Specified.';
     const estacks = elines?.map(eline => `\`${eline.trim()}\``) ?? [];
-  
+
     const log = new EmbedBuilder()
       .setAuthor({ name: `Error - ${Date.now()}`, iconURL: this.client.user?.displayAvatarURL() })
       .setColor(0x000000)
       .setDescription(`**${ename}**`);
     this.mainLogger.send({ embeds: [log] });
-  
+
     log.setDescription(`**${ename}**\n${estacks.join('\n')}`)
       .setFooter({ text: `分支編號：${this.client.shard?.ids[0]}` });
     this.errorLogger.send({ embeds: [log] });
-  
+
     console.log(error);
   }
 
@@ -127,8 +127,8 @@ ID：${guild.id}
    * @param args 指令參數
    */
   public commandExecuted(source: Source, commandName: [string, string | undefined], ...args: unknown[]): void {
-    const description = 
-`${source.isChatInput() ? `斜線指令：\`/` : `訊息指令：\`${config.bot.prefix}`}${commandName[0]}${commandName[1] ? ` ${commandName[1]}` : ``}\`
+    const description =
+      `${source.isChatInput() ? `斜線指令：\`/` : `訊息指令：\`${config.bot.prefix}`}${commandName[0]}${commandName[1] ? ` ${commandName[1]}` : ``}\`
 執行者：${source.user}
 參數：${args.join(' ')}
 伺服器：${source.guild.id}`;
@@ -142,8 +142,8 @@ ID：${guild.id}
    * @param commandName 指令名稱
    */
   public hiddenExecuted(message: Message, commandName: string): void {
-    const description = 
-`隱藏指令：${commandName}
+    const description =
+      `隱藏指令：${commandName}
 執行者：${message.author}
 伺服器：${message.guild!.id}`;
 
@@ -157,12 +157,29 @@ ID：${guild.id}
    * @param author 發送者
    */
   public networkCrossPost(portNo: string, guild: Guild, author: User): void {
-    const description = 
-`在 ${portNo} 號埠上發送訊息
+    const description =
+      `在 ${portNo} 號埠上發送訊息
 伺服器：${guild.id}
 使用者：${author.tag}（${author.id}）`;
 
     this.send('Network Log', description, 0x7D7DFF);
+  }
+
+  /**
+ * Network 發送訊息
+ * @param portNo 埠號
+ * @param guild 來源伺服器
+ * @param author 發送者
+ */
+  public networkUnallowPost(portNo: string, guild: Guild, author: User, message: string): void {
+    const description =
+      `在 ${portNo} 號埠上發送訊息
+  伺服器：${guild.id}
+  使用者：${author.tag}（${author.id}）
+  訊息內容：${message}
+  `;
+
+    this.send('Network Log', description, 0xFF5733);
   }
 
   /**
@@ -171,10 +188,10 @@ ID：${guild.id}
    * @param content 廣播內容
    */
   public networkBroadcast(portNo: string, content: string): void {
-    const description = 
-`在 ${portNo} 號埠上全頻廣播
+    const description =
+      `在 ${portNo} 號埠上全頻廣播
 廣播內容：${content}`;
-    
+
     this.send('Network Log', description, 0xFFFF7D);
   }
 
@@ -184,8 +201,8 @@ ID：${guild.id}
    * @param channel 頻道
    */
   public networkJoined(portNo: string, channel: TextChannel): void {
-    const description = 
-`在 ${portNo} 號埠上建立連線
+    const description =
+      `在 ${portNo} 號埠上建立連線
 伺服器：${channel.guild.id}
 頻道：${channel.id}`;
 
@@ -198,8 +215,8 @@ ID：${guild.id}
    * @param channel 頻道
    */
   public networkLeft(portNo: string, channel: TextChannel): void {
-    const description = 
-`在 ${portNo} 號埠上刪除連線
+    const description =
+      `在 ${portNo} 號埠上刪除連線
 伺服器：${channel.guild.id}
 頻道：${channel.id}`;
 
@@ -224,10 +241,10 @@ ID：${guild.id}
    * @param color 嵌入物件的顏色
    */
   private send(target: 'Log' | 'Network Log' | 'Error Log', description: string, color: number): void {
-    const logger = 
+    const logger =
       target === 'Log' ? this.mainLogger :
-      target === 'Network Log' ? this.networkLogger :
-      this.errorLogger;
+        target === 'Network Log' ? this.networkLogger :
+          this.errorLogger;
     logger.send({ embeds: [this.baseEmbed(target).setColor(color).setDescription(description)] });
     if (target === 'Log') console.log(description);
   }

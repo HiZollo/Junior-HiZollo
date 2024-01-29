@@ -24,7 +24,7 @@ import { HZClient } from "./HZClient";
 import config from "@root/config";
 import tempMessage from "../features/utils/tempMessage";
 import { HZNetworkEvents } from "../typings/interfaces";
-
+import removeMd from "../features/utils/removeMd";
 /**
  * HiZollo Network 系統
  * @extends EventEmitter
@@ -59,6 +59,17 @@ export class HZNetwork extends EventEmitter {
    * Network 是否已載入完畢
    */
   private loaded: boolean;
+
+  /**
+   * banded words
+   */
+  private bannedWords: string[] = [
+    'discord.gg/',
+    'discord.com/invite/',
+    'discordapp.com/invite/',
+    '@everyone',
+    '@here'
+  ]
 
   /**
    * 建立 HiZollo Network
@@ -104,7 +115,9 @@ export class HZNetwork extends EventEmitter {
     this.loaded = true;
     this.emit('loaded');
   }
-
+  private isBannedMessage(content: string): boolean {
+    return this.bannedWords.map(s => new RegExp(s)).some(r => r.test(content))
+  }
   /**
    * 轉接第一線的訊息
    * @param message 從 client#on('messageCreate') 得到的訊息
@@ -119,20 +132,16 @@ export class HZNetwork extends EventEmitter {
     if (!this.ports.get(portNo)?.has(message.channel.id)) return;
 
     const helper = new EmbedBuilder().applyHiZolloSettings(message.member, 'HiZollo Network 中心');
+    if (this.isBannedMessage(message.cleanContent)) {
 
-    const content = message.cleanContent
-      .replace(/@everyone/g, `@\u200beveryone`)
-      .replace(/@here/g, `@\u200bhere`)
-      .replace(/\]\(/g, ']\u200b('); // 禁用 Markdown 語法
-
-    const verifiedString = content.replace(/\n| /g, '');
-    const inviteBlocker = /(https?:\/\/)?discord(app)?(.gg|.com\/invite)/gi;
-    if (inviteBlocker.test(verifiedString)) {
+      this.client.logger.networkUnallowPost(portNo, message.guild, message.author, message.content);
       message.delete();
-      helper.setDescription('你的訊息中含有不合法的連結，因此我無法傳送');
+      helper.setDescription('你的訊息中含有不合法的字詞，因此我無法傳送');
       tempMessage(message.channel, { embeds: [helper] }, 3);
       return;
     }
+    const content = removeMd(message.cleanContent)
+
 
     // 附加檔案
     const attachments: ({ attachment: string, name: string })[] = [];
@@ -167,10 +176,7 @@ export class HZNetwork extends EventEmitter {
     if (message.reference?.messageId) {
       const msg = await message.channel.messages.fetch(message.reference.messageId);
       if (msg) {
-        const text = msg.cleanContent
-          .replace(/@everyone/g, `@\u200beveryone`)
-          .replace(/@here/g, `@\u200bhere`)
-          .replace(/\]\(/g, ']\u200b(')
+        const text = removeMd(msg.cleanContent);
 
         reference.content = this.parseReply(text);
         if (msg.attachments.size > 0) reference.content += ' <:attachment:875011591953874955>';
