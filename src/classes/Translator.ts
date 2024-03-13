@@ -121,6 +121,11 @@ export class Translator extends null {
     osu: {
       best: 'bp', 
       user: 'u'
+    },
+    timer: {
+      list: 'tl',
+      clear: 'tc',
+      add: 'ta'
     }
   });
 
