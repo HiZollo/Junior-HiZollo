@@ -2,7 +2,7 @@ name: Build HiZollo
 on:
   push:
   pull_request:
-    types: [opened, reopened, review_requested]
+    types: [opened, reopened, review_requested, workflow_dispatch]
 
 jobs:
   build:
@@ -10,16 +10,16 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.12.1]
+        node-version: [22.14.0]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Cache Node Modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
