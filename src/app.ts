@@ -237,7 +237,6 @@ if (client.devMode) {
 
 /******************* 訊息創建 *******************/
 client.on('messageCreate', message => {
-  client.addonCommand(message);
   client.randomReact(message);
   client.poll(message);
   client.commands.onMessageCreate(message);
