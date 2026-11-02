@@ -63,8 +63,10 @@ export abstract class HiddenCommand {
    * @param epic 彩蛋回應
    * @returns 是否成功回應（必定為 `true`）
    */
-  protected allTimeResponse(message: Message, notEpic: HiddenResponse[], epic: HiddenResponse[]): true {
-const response = Math.random() < 0.02 ? randomElement(epic) : randomElement(notEpic);
+  protected allTimeResponse(message: Message, notEpic: HiddenResponse[], epic: HiddenResponse[]): boolean {
+    if (!message.channel.isSendable()) return false;
+
+    const response = Math.random() < 0.02 ? randomElement(epic) : randomElement(notEpic);
     message.channel.send(format(message, response));
     return true;
   }
@@ -78,6 +80,8 @@ const response = Math.random() < 0.02 ? randomElement(epic) : randomElement(notE
    * @returns 是否成功回應
    */
   protected partialResponse(message: Message, common: HiddenResponse[], rare: HiddenResponse[], epic: HiddenResponse[]): boolean {
+    if (!message.channel.isSendable()) return false;
+    
     const random = Math.random();
 
     let response: HiddenResponse = "";

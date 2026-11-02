@@ -20,7 +20,7 @@
 
 import { ButtonBuilder, ModalBuilder } from "@discordjs/builders";
 import { VoiceConnection } from "@discordjs/voice";
-import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, Collection, EmbedBuilder, Guild, GuildMember, GuildTextBasedChannel, Message, MessageCreateOptions, TextChannel, User, VoiceBasedChannel } from "discord.js";
+import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, Collection, EmbedBuilder, Guild, GuildMember, GuildTextBasedChannel, InteractionEditReplyOptions, Message, MessageCreateOptions, TextChannel, User, VoiceBasedChannel } from "discord.js";
 import { InfoData, YouTubeStream } from "play-dl";
 import { HZClient } from "../classes/HZClient";
 import { Source } from "../classes/Source";
@@ -163,7 +163,7 @@ export interface PageSystemEmbedFieldOptions extends BasePageSystemOptions {
 
 export interface YesNoSystemOptions {
   source: Source;
-  messageOptions: MessageCreateOptions;
+  messageOptions: InteractionEditReplyOptions & MessageCreateOptions;
   labels: [string, string];
   contents: {
     idle: string

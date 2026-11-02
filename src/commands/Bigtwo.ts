@@ -18,11 +18,10 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DjsBigTwo } from "@hizollo/games";
+import { DjsBigTwo } from "../classes/djsgames";
 import { ApplicationCommandOptionType, GuildMember, PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import strings from "../features/info/gameString";
 import { CommandOptionType, CommandType } from "../typings/enums";
 
 export default class Bigtwo extends Command<[GuildMember, GuildMember, GuildMember]> {
@@ -96,7 +95,6 @@ export default class Bigtwo extends Command<[GuildMember, GuildMember, GuildMemb
       players: playerOptions, 
       source: source.source, 
       time: 120e3, 
-      strings: strings.bigTwo
     });
 
     await game.initialize();

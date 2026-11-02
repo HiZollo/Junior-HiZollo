@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, ButtonBuilder, Client, EmbedBuilder, GuildMember, InteractionReplyOptions, MessageCreateOptions, PermissionFlagsBits, StringSelectMenuBuilder, StringSelectMenuInteraction } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandOptionChoiceData, ApplicationCommandOptionType, ButtonBuilder, Client, EmbedBuilder, GuildMember, InteractionReplyOptions, PermissionFlagsBits, StringSelectMenuBuilder, StringSelectMenuInteraction } from "discord.js";
 import config from "@root/config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
@@ -69,7 +69,7 @@ export default class Help extends Command<[string]> {
   }
   
 
-  public getMessageForAllTypes(source: Source): MessageCreateOptions {
+  public getMessageForAllTypes(source: Source) {
     return {
       components: this.getComponentsForAllTypes(), 
       embeds: this.getEmbedsForAllTypes(source)

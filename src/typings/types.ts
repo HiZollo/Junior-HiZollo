@@ -71,7 +71,6 @@ export type PageSystemOptions = PageSystemDescriptionOptions | PageSystemEmbedFi
 
 export type ThrowBallType = "棒球" | "保齡球" | "乒乓球" | "巧克力球";
 
-
 declare module "discord.js" {
   interface BaseChannel {
     isNetwork: () => boolean;

@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { BaseMessageOptions, Client, Guild, GuildMember, GuildTextBasedChannel, InteractionDeferReplyOptions, InteractionResponse, MessageCreateOptions, MessagePayload, User, WebhookMessageEditOptions } from "discord.js";
+import type { BaseMessageOptions, Client, Guild, GuildMember, GuildTextBasedChannel, InteractionDeferReplyOptions, InteractionEditReplyOptions, InteractionResponse, MessageCreateOptions, MessagePayload, User, WebhookMessageEditOptions } from "discord.js";
 import { ChatInputCommandInteraction, Message } from "discord.js";
 import tempMessage from "../features/utils/tempMessage";
 
@@ -44,7 +44,7 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
   /**
    * 機器人的 client
    */
-  public client: Client;
+  public client: Client<true>;
 
   /**
    * 來源的建立時間
@@ -163,7 +163,7 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
    * @param options 上述函式的選項
    * @returns 上述函式的回傳值
    */
-  public async temp(options: string | MessageCreateOptions): Promise<Message> {
+  public async temp(options: string | MessagePayload | InteractionEditReplyOptions & MessageCreateOptions): Promise<Message | null> {
     if (this.source instanceof ChatInputCommandInteraction) {
       return this.source.editReply(options);
     }
@@ -196,14 +196,16 @@ export class Source<T extends ChatInputCommandInteraction<"cached"> | Message<tr
    * @param options 上述函式的選項
    * @returns 上述函式的回傳值
    */
-  public async update(options: string | MessageCreateOptions): Promise<Message> {
+  public async update(options: string | MessagePayload | InteractionEditReplyOptions & MessageCreateOptions): Promise<Message> {
     if (this.source instanceof ChatInputCommandInteraction) {
       return this.source.editReply(options);
     }
     return this.source.channel.send(options)
   }
 
-  public async followUp(options: string | (BaseMessageOptions & { ephemeral?: boolean })): Promise<Message> {
+  public async followUp(options: string | (BaseMessageOptions & { ephemeral: true })): Promise<Message | null>
+  public async followUp(options: string | (BaseMessageOptions & { ephemeral?: false })): Promise<Message>;
+  public async followUp(options: string | (BaseMessageOptions & { ephemeral?: boolean })): Promise<Message | null> {
     if (this.source instanceof ChatInputCommandInteraction) {
       return this.source.followUp(options);
     }

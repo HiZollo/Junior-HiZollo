@@ -186,11 +186,14 @@ export default class Buttonrole extends Command<[Role, string, string, string]> 
     if (!message) return null;
     if (message.author.id !== config.bot.id) return null;
     if (message.components.length !== 1) return null;
-    if (message.components[0].components.length === 5) return null;
-    if (message.components[0].components.some(c => !c.customId?.startsWith('buttonrole_' || c.type !== ComponentType.Button))) return null;
+
+    const components = "components" in message.components[0] ? message.components[0].components : undefined;
+    if (!components) return null;
+    if (components.length === 5) return null;
+    if (components.some(c => !("customId" in c) || !c.customId?.startsWith('buttonrole_') || c.type !== ComponentType.Button)) return null;
 
     const roles: RoleData[] = [];
-    for (const button of message.components[0].components as ButtonComponent[]) {
+    for (const button of components as ButtonComponent[]) {
       roles.push({
         id: button.customId!.slice('buttonrole_'.length),
         name: button.label!,

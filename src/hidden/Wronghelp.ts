@@ -39,6 +39,8 @@ export default class Wronghelp extends HiddenCommand {
   }
 
   public execute(message: Message): boolean {
+    if (!message.channel.isSendable()) return false;
+
     message.channel.send('在尋求幫助時請先確定你會拼英文單字');
     return true;
   }

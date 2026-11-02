@@ -18,11 +18,10 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DjsFlipTrip } from "@hizollo/games";
+import { DjsFlipTrip } from "../classes/djsgames";
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import strings from "../features/info/gameString";
 import { CommandType } from "../typings/enums";
 
 export default class FlipTrip extends Command<[number]> {
@@ -62,7 +61,6 @@ export default class FlipTrip extends Command<[number]> {
       boardSize: boardSize ?? 3, 
       source: source.source, 
       time: 30e3, 
-      strings: strings.flipTrip
     });
 
     await game.initialize();
