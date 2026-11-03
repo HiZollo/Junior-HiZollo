@@ -61,7 +61,6 @@ export class DjsChess extends DjsGameWrapper {
   protected messageFilter(m: Message): boolean {
     if (m.author.id !== this.game.playerManager.nowPlayer.id) return false;
     const move = this.game.parseNotation(m.content);
-    console.log(move, !move.error);
     return !move.error;
   }
 
