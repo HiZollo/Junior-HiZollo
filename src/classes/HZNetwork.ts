@@ -324,7 +324,7 @@ export class HZNetwork extends EventEmitter {
       await Promise.all(Array.from({ length: webhooks.size }, async () => {
         const [channelId, webhook] = iter.next().value!;
         await webhook.send(options as WebhookMessageCreateOptions).catch(() => {
-          const channel = this.client.channels.cache.get(channelId);
+          const channel = client.channels.cache.get(channelId);
           if (channel && channel instanceof TextChannel)
             client.network.unregisterChannel(portNo, channel);
         });
@@ -355,7 +355,7 @@ export class HZNetwork extends EventEmitter {
         }
 
         await webhook.send(options as WebhookMessageCreateOptions).catch(() => {
-          const channel = this.client.channels.cache.get(channelId);
+          const channel = client.channels.cache.get(channelId);
           if (channel && channel instanceof TextChannel)
             client.network.unregisterChannel(portNo, channel);
         });

@@ -11,10 +11,10 @@
     "dev": "tsc-watch --onSuccess resolve-tspaths",
     "build": "tsc",
     "postbuild": "resolve-tspaths",
-    "deploy": "npx dotenv run -- node dist/src/deploy.js",
-    "rg-webhook": "npx dotenv run node dist/src/register-webhook.js",
-    "start": "npx dotenv run node dist/src/index.js",
-    "test": "npx dotenv run node dist/src/index.js dev"
+    "deploy": "dotenv run -- node dist/src/deploy.js",
+    "rg-webhook": "dotenv run -- node dist/src/register-webhook.js",
+    "start": "dotenv run -- node dist/src/index.js",
+    "test": "dotenv run -- node dist/src/index.js dev"
   },
   "repository": {
     "type": "git",
