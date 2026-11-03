@@ -40,13 +40,13 @@
     "emoji-regex": "^11.0.0",
     "ffmpeg-static": "^5.3.0",
     "libsodium-wrappers": "^0.8.4",
-    "play-dl": "^1.9.7",
-    "typescript": "^6.0.3"
+    "play-dl": "^1.9.7"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
     "resolve-tspaths": "^0.8.23",
-    "tsc-watch": "^7.2.1"
+    "tsc-watch": "^7.2.1",
+    "typescript": "^6.0.3"
   },
   "allowScripts": {
     "ffmpeg-static@5.3.0": true
