@@ -7,7 +7,6 @@
     "sourceMap": true,
     "outDir": "./dist",
     "rootDir": ".",
-    "baseUrl": ".",
     "removeComments": true,
     "noEmitOnError": true,
     "esModuleInterop": true,

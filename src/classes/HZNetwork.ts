@@ -322,9 +322,11 @@ export class HZNetwork extends EventEmitter {
 
       const iter = webhooks.entries();
       await Promise.all(Array.from({ length: webhooks.size }, async () => {
-        const [channelId, webhook] = iter.next().value;
-        await webhook.send(options).catch(() => {
-          client.network.unregisterChannel(portNo, channelId);
+        const [channelId, webhook] = iter.next().value!;
+        await webhook.send(options as WebhookMessageCreateOptions).catch(() => {
+          const channel = this.client.channels.cache.get(channelId);
+          if (channel && channel instanceof TextChannel)
+            client.network.unregisterChannel(portNo, channel);
         });
       }));
     }, { context: { portNo, options } });
@@ -341,7 +343,7 @@ export class HZNetwork extends EventEmitter {
 
       const iter = webhooks.entries();
       await Promise.all(Array.from({ length: webhooks.size }, async () => {
-        const [channelId, webhook] = iter.next().value;
+        const [channelId, webhook] = iter.next().value!;
         if (options.embeds?.length) {
           const channel = client.channels.cache.get(channelId) as TextChannel;
           const messages = await channel.messages.fetch({ limit: 20 });
@@ -352,8 +354,10 @@ export class HZNetwork extends EventEmitter {
           })
         }
 
-        await webhook.send(options).catch(() => {
-          client.network.unregisterChannel(portNo, channelId);
+        await webhook.send(options as WebhookMessageCreateOptions).catch(() => {
+          const channel = this.client.channels.cache.get(channelId);
+          if (channel && channel instanceof TextChannel)
+            client.network.unregisterChannel(portNo, channel);
         });
       }));
     }, { context: { portNo, options } });

@@ -5,16 +5,16 @@
   "main": "dist/src/index.js",
   "private": true,
   "engines": {
-    "node": ">=18.2.1"
+    "node": ">=26"
   },
   "scripts": {
     "dev": "tsc-watch --onSuccess resolve-tspaths",
     "build": "tsc",
     "postbuild": "resolve-tspaths",
-    "deploy": "node dist/src/deploy.js",
-    "rg-webhook": "node dist/src/register-webhook.js",
-    "start": "node dist/src/index.js",
-    "test": "node dist/src/index.js dev"
+    "deploy": "npx dotenv run -- node dist/src/deploy.js",
+    "rg-webhook": "npx dotenv run node dist/src/register-webhook.js",
+    "start": "npx dotenv run node dist/src/index.js",
+    "test": "npx dotenv run node dist/src/index.js dev"
   },
   "repository": {
     "type": "git",
@@ -33,19 +33,22 @@
     "@discordjs/voice": "^0.19.2",
     "@hizollo/calculator": "^1.1.1",
     "@hizollo/games": "^3.0.0-beta.0",
-    "@hizollo/osu-api": "^1.2.0",
-    "axios": "^1.4.0",
+    "@hizollo/osu-api": "^1.2.1",
+    "axios": "^1.21.0",
     "discord.js": "^14.28.0",
-    "dotenv": "^16.3.1",
-    "emoji-regex": "^10.2.1",
-    "ffmpeg-static": "^5.1.0",
-    "libsodium-wrappers": "^0.7.11",
-    "play-dl": "^1.9.6"
+    "dotenv": "^18.0.9",
+    "emoji-regex": "^11.0.0",
+    "ffmpeg-static": "^5.3.0",
+    "libsodium-wrappers": "^0.8.4",
+    "play-dl": "^1.9.7",
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
-    "@types/node": "^26.6.5",
-    "resolve-tspaths": "^0.8.15",
-    "tsc-watch": "^6.0.4",
-    "typescript": "^5.2.2"
+    "@types/node": "^26.6.6",
+    "resolve-tspaths": "^0.8.23",
+    "tsc-watch": "^7.2.1"
+  },
+  "allowScripts": {
+    "ffmpeg-static@5.3.0": true
   }
 }
