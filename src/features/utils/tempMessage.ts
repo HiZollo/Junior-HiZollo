@@ -18,16 +18,18 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Message, BaseMessageOptions, MessagePayload, TextBasedChannel } from "discord.js";
+import { Message, MessagePayload, TextBasedChannel, MessageCreateOptions } from "discord.js";
 
 /**
  * 在指定頻道中發送訊息，並在特定秒數後刪除，如果秒數是負數則不會刪除該訊息
  * @param channel 指定頻道
  * @param messageResolvable 要發送的訊息
  * @param duration 訊息留存時間
- * @returns 送出的訊息
+ * @returns 送出的訊息，若無法傳送則回傳 null
  */
-export default async function tempMessage(channel: TextBasedChannel, messageResolvable: string | MessagePayload | BaseMessageOptions, duration: number = 5): Promise<Message> {
+export default async function tempMessage(channel: TextBasedChannel, messageResolvable: string | MessagePayload | MessageCreateOptions, duration: number = 5): Promise<Message | null> {
+  if (!channel.isSendable()) return null;
+
   const message = await channel.send(messageResolvable);
   if (duration >= 0) {
     setTimeout(() => {

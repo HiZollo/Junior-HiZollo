@@ -32,6 +32,8 @@ export default class Useful extends HiddenCommand {
   }
 
   public execute(message: Message): boolean {
+    if (!message.channel.isSendable()) return false;
+
     message.channel.send('這是一個有用的指令，嘿嘿');
     return true;
   }

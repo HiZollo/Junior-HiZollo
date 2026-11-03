@@ -207,7 +207,7 @@ client.hidden.on('executed', (message, commandName) => {
 /**/
 
 /******************* 上線確認 *******************/
-client.on('ready', () => {
+client.on('clientReady', () => {
   client.logger.ready();
   client.initialize();
 });

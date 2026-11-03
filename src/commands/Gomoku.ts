@@ -18,11 +18,10 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DjsGomoku } from "@hizollo/games";
+import { DjsGomoku } from "../classes/djsgames";
 import { ApplicationCommandOptionType, GuildMember, PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import strings from "../features/info/gameString";
 import { CommandOptionType, CommandType } from "../typings/enums";
 
 const symbols = ['🔵', '🔴', '🟢'];
@@ -86,7 +85,6 @@ export default class Gomoku extends Command<[GuildMember, GuildMember]> {
       boardSize: 13, 
       source: source.source, 
       time: 120e3, 
-      strings: strings.gomoku
     });
 
     await game.initialize();

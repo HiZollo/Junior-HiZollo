@@ -18,11 +18,10 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DjsTofe } from "@hizollo/games";
+import { DjsTofe } from "../classes/djsgames";
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import strings from "../features/info/gameString";
 import { CommandType } from "../typings/enums";
 
 export default class Tofe extends Command<[boolean]> {
@@ -61,7 +60,6 @@ export default class Tofe extends Command<[boolean]> {
       hardMode: hardMode ?? false, 
       source: source.source, 
       time: 30e3, 
-      strings: strings.tofe
     });
 
     await game.initialize();

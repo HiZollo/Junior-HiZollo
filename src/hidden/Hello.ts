@@ -50,6 +50,8 @@ export default class Hello extends HiddenCommand {
 
 
   public execute(message: Message): boolean {
+    if (!message.channel.isSendable()) return false;
+
     message.channel.send(`嗨，${message.author}`);
     return true;
   }

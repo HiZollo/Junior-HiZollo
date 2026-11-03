@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 if (!process.env.TOKEN) throw new Error('Bot token not configured.');
 if (!process.env.MAIN_WEBHOOK_URL) throw new Error('Main webhook url not configured.');
 if (!process.env.ERROR_WEBHOOK_URL) throw new Error('Error webhook url not configured.');

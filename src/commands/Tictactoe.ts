@@ -18,11 +18,10 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DjsTicTacToe } from "@hizollo/games";
+import { DjsTicTacToe } from "../classes/djsgames";
 import { ApplicationCommandOptionType, GuildMember, PermissionFlagsBits } from "discord.js";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import strings from "../features/info/gameString";
 import { CommandOptionType, CommandType } from "../typings/enums";
 
 export default class TicTacToe extends Command<[GuildMember, number]> {
@@ -85,7 +84,6 @@ export default class TicTacToe extends Command<[GuildMember, number]> {
       boardSize: boardSize ?? 3, 
       source: source.source, 
       time: 30e3, 
-      strings: strings.ticTacToe
     });
 
     await game.initialize();

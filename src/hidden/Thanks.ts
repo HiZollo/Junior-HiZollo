@@ -32,6 +32,8 @@ export default class Thanks extends HiddenCommand {
   }
 
   public execute(message: Message): boolean {
+    if (!message.channel.isSendable()) return false;
+
     message.channel.send(
       '==========[祈福]========== \n' +
       '           !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \n' +

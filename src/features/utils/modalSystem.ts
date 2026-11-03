@@ -34,16 +34,17 @@ export default async function modalSystem({ source, buttons: { open, close }, mo
   if (buttonIsLink(open.data) || buttonIsLink(close.data)) {
     throw new Error('Some of the buttons are link buttons.');
   }
-  if (!open.data.custom_id || !close.data.custom_id) {
+
+  const openCustomId = "custom_id" in open.data ? open.data.custom_id : undefined;
+  const closeCustomId = "custom_id" in close.data ? close.data.custom_id : undefined;
+  const modalCustomId = "custom_id" in modal.data ? modal.data.custom_id : undefined;
+  if (!openCustomId || !closeCustomId) {
     throw new Error('Some of the buttons don\'t have custom ids set.');
   }
-  if (!modal.data.custom_id) {
+  if (!modalCustomId) {
     throw new Error('The modal doesn\'t have custom id set.');
   }
 
-  const openCustomId = open.data.custom_id;
-  const closeCustomId = close.data.custom_id;
-  const modalCustomId = modal.data.custom_id;
   const { start, success, exit, idle } = getMessageOptions(contents);
 
   start.components = [new ActionRowBuilder<ButtonBuilder>().addComponents(open, close)];

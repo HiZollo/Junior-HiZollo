@@ -5,16 +5,16 @@
   "main": "dist/src/index.js",
   "private": true,
   "engines": {
-    "node": ">=18.2.1"
+    "node": ">=26"
   },
   "scripts": {
     "dev": "tsc-watch --onSuccess resolve-tspaths",
     "build": "tsc",
     "postbuild": "resolve-tspaths",
-    "deploy": "node dist/src/deploy.js",
-    "rg-webhook": "node dist/src/register-webhook.js",
-    "start": "node dist/src/index.js",
-    "test": "node dist/src/index.js dev"
+    "deploy": "dotenv run -- node dist/src/deploy.js",
+    "rg-webhook": "dotenv run -- node dist/src/register-webhook.js",
+    "start": "dotenv run -- node dist/src/index.js",
+    "test": "dotenv run -- node dist/src/index.js dev"
   },
   "repository": {
     "type": "git",
@@ -30,20 +30,20 @@
   },
   "homepage": "https://github.com/HiZollo/Junior-HiZollo#readme",
   "dependencies": {
-    "@discordjs/voice": "^0.17.0",
+    "@discordjs/voice": "^0.19.2",
     "@hizollo/calculator": "^1.1.1",
-    "@hizollo/games": "^2.5.0",
-    "@hizollo/osu-api": "^1.2.0",
-    "discord.js": "^14.15.3",
-    "dotenv": "^16.4.5",
-    "emoji-regex": "^10.3.0",
-    "ffmpeg-static": "^5.2.0",
-    "libsodium-wrappers": "^0.7.15",
+    "@hizollo/games": "^3.0.0-beta.0",
+    "@hizollo/osu-api": "^1.2.1",
+    "discord.js": "^14.28.0",
+    "dotenv": "^18.0.9",
+    "emoji-regex": "^11.0.0",
+    "libsodium-wrappers": "^0.8.4",
     "play-dl": "^1.9.7"
   },
   "devDependencies": {
-    "resolve-tspaths": "^0.8.19",
-    "tsc-watch": "^6.2.0",
-    "typescript": "^5.4.5"
+    "@types/node": "^26.6.6",
+    "resolve-tspaths": "^0.8.23",
+    "tsc-watch": "^7.2.1",
+    "typescript": "^6.0.3"
   }
 }

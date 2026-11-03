@@ -21,7 +21,6 @@
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord.js';
 import { APIWebhook } from 'discord-api-types/v10'
-import 'dotenv/config';
 
 (async () => {
   if (!process.env.TOKEN) {

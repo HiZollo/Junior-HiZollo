@@ -77,6 +77,41 @@ export default {
       }
     }
   },
+  "chess": {
+    "name": "西洋棋",
+    "rows": [
+      "a", "b", "c", "d", "e", "f", "g", "h"
+    ],
+    "columns": [
+      "8", "7", "6", "5", "4", "3", "2", "1"
+    ],
+    "grid": "🔲",
+    "corner": "🔹",
+    "previous": {
+      "move": "上一手 <player> 下了 `<move>`",
+      "idle": "<player> 錯過了他的回合",
+      "leaving": "<player> 想要結束這場遊戲"
+    },
+    "nowPlayer": "現在輪到 <player>（<symbol>）了",
+    "playerLeft": "<player> 已離開遊戲", 
+    "controller": {
+      "leave": "離開遊戲"
+    },
+    "endMessages": {
+      "win": "恭喜 <player> 在這場西洋棋中拿下了勝利",
+      "draw": "這場西洋棋最終平手收場，看來兩位勢均力敵呢",
+      "idle": "遊戲已因閒置過久而自動停止",
+      "stopped": "遊戲已因玩家要求而停止",
+      "deleted": "等等，棋盤呢？棋盤不見是要怎麼下棋？",
+      "gameStats": {
+        "header": "遊戲數據 - <game>",
+        "message": "**總花費時間**：<min>:<sec>\n**總下棋次數**：<step>"
+      },
+      "playerStats": {
+        "message": "**花費時間**：<min>:<sec>\n**下棋次數**：<step>"
+      }
+    }
+  },
   "finalCode": {
     "name": "終極密碼",
     "previous": {
