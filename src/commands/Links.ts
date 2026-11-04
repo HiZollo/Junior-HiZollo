@@ -46,10 +46,10 @@ export default class Links extends Command<[]> {
       value: `HiZollo 官網上各部分的連結，相關資訊都在這裡\n`+
              `● [網站首頁](${websiteLinks.main} "HiZollo 網站首頁")\n`+
              `● [更新日誌](${websiteLinks.changelog} "HiZollo 的更新日誌")\n`+
-             `● [指令列表](${websiteLinks.commands} "HiZollo 的指令列表")\n`+
-             `● [用戶條款](${websiteLinks.tos} "HiZollo 使用者條款")`
+             `● [指令清單](${websiteLinks.commands} "HiZollo 的指令清單")\n`+
+             `● [使用者條款](${websiteLinks.tos} "HiZollo 使用者條款")`
     }, {
-      name: 'Github 專案連結',
+      name: 'GitHub 專案連結',
       value: `HiZollo Organization 的相關連結\n`+
              `● [組織網站](${websiteLinks.github} "HiZollo 組織網站")\n`+
              `● [原始碼](${websiteLinks.source} "HiZollo 原始碼")`
@@ -60,8 +60,8 @@ export default class Links extends Command<[]> {
              `● [DiscordTW](${websiteLinks.dtw} "前往 HiZollo 的 DiscordTW 頁面")`
     }, {
       name: '邀請連結',
-      value: `如果你覺得 HiZollo 很不錯，可以[點此](https://discord.com/api/oauth2/authorize?client_id=584677291318312963&permissions=${source.client.invitePermissions.bitfield}&scope=bot%20applications.commands "邀請 HiZollo！")將他加入你的伺服器\n`+
-             `如果你習慣自己設定權限，可以使用[這個連結](${bot.inviteLink.customized} "邀請 HiZollo！")，`+
+      value: `如果你覺得 HiZollo 很不錯，可以 [點此](https://discord.com/api/oauth2/authorize?client_id=584677291318312963&permissions=${source.client.invitePermissions.bitfield}&scope=bot%20applications.commands "邀請 HiZollo！") 將他加入你的伺服器\n`+
+             `如果你習慣自己設定權限，可以使用 [這個連結](${bot.inviteLink.customized} "邀請 HiZollo！")，`+
              `但使用此連結請不要忘記設定權限，否則將無法使用機器人的功能`
     }, {
       name: mainGuild.name,

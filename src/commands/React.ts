@@ -34,7 +34,7 @@ export default class React extends Command<[string]> {
         type: ApplicationCommandOptionType.String, 
         parseAs: CommandOptionType.Emoji, 
         name: '表情', 
-        description: '要附加在前一則反應上的表情', 
+        description: '要附加在前一則訊息上的表情', 
         required: true
       }], 
       permissions: {

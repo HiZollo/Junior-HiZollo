@@ -24,7 +24,7 @@ import { Source } from "../classes/Source";
 import fixedDigits from "../features/utils/fixedDigits";
 import { CommandType } from "../typings/enums";
 
-type GetmsgAttatchmentResult = {
+type GetmsgAttachmentResult = {
   id: string, 
   name: string | null, 
   url: string, 
@@ -51,7 +51,7 @@ type GetmsgJSONMessagesResult = {
   authorName: string,
   authorId: string,
   authorDiscriminator: string,
-  authotTag: string,
+  authorTag: string,
   date: {
     timestamp: number,
     formatted: string
@@ -60,7 +60,7 @@ type GetmsgJSONMessagesResult = {
   content: string,
   bot: boolean,
   replyTo?: string,
-  attachments: GetmsgAttatchmentResult[],
+  attachments: GetmsgAttachmentResult[],
   embeds: GetmsgEmbedResult[]
 };
 
@@ -77,7 +77,7 @@ export default class Getmsg extends Command<[string, number]> {
     super({
       type: CommandType.Utility, 
       name: 'getmsg', 
-      description: '將頻道最近 100 條訊息匯出成指定格式的檔案', 
+      description: '將頻道最近最多 100 條訊息匯出成指定格式的檔案', 
       options: [{
         type: ApplicationCommandOptionType.String, 
         name: '格式',
@@ -145,7 +145,7 @@ export default class Getmsg extends Command<[string, number]> {
       };
 
       messages.each(msg => {
-        const attachments: GetmsgAttatchmentResult[] = [];
+        const attachments: GetmsgAttachmentResult[] = [];
         msg.attachments.each(att => {
           attachments.unshift({
             id: att.id,
@@ -178,7 +178,7 @@ export default class Getmsg extends Command<[string, number]> {
           authorName: msg.author.username,
           authorId: msg.author.id,
           authorDiscriminator: msg.author.discriminator,
-          authotTag: msg.author.tag,
+          authorTag: msg.author.tag,
 
           date: {
             timestamp: msg.createdTimestamp,

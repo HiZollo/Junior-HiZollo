@@ -24,11 +24,11 @@
 </div>
 
 ## 邀請連結
-你可以[點擊此處](https://hizollo.ddns.net/invite)邀請他加入你的伺服器。
+你可以 [點擊此處](https://hizollo.ddns.net/invite) 邀請他加入你的伺服器。
 
 ## 功能
 - `/2048`：在 Discord 中玩一場 2048
-- `/buttonrole`：設置讓使用者獲取身份的按鈕
+- `/buttonrole`：設置讓使用者獲取身分組的按鈕
 - `/calc`：計算一個數學算式
 - `/confession`：和伺服器中的一位成員告白
 - `/getmsg`：匯出你和朋友的聊天記錄
@@ -39,10 +39,10 @@
 - `/useless`：???
 
 當然，HiZollo 的功能絕對不只這些，你可以使用 `z!help` 或 `/help` 來查看他的指令清單。
-你也可以到 [HiZollo 的官方網站](https://hizollo.ddns.net)上瀏覽他的[指令列表](https://hizollo.ddns.net/commands)。
+你也可以到 [HiZollo 的官方網站](https://hizollo.ddns.net) 上瀏覽他的 [指令清單](https://hizollo.ddns.net/commands)。
 
 ## 複製一臺
-Junior HiZollo 需要在 node.js v18.2.1 以上的版本中才能運行，你可以使用 `node -v` 來確定你的版本是否足夠。
+Junior HiZollo 需要在 Node.js v18.2.1 以上的版本中才能運行，你可以使用 `node -v` 來確定你的版本是否足夠。
 
 在你把整份專案複製回去後，在根目錄創建一個叫做 `.env` 的檔案，並把下方模板中的缺項補齊：
 ```
@@ -69,7 +69,7 @@ BLOCKED_USERS="[
 - HiZollo Network 無效
 - 測試頻道以外使用的指令不會被回應
 
-在複製或使用 HiZollo 的原始碼時，請注意[我們的授權方式](#授權)。
+在複製或使用 HiZollo 的原始碼時，請注意 [我們的授權方式](#授權)。
 
 ### Webhook
 在創建回報系統的 Webhook 時，我們建議你使用由應用程式創建的 Webhook，按鈕才能正常顯示。
@@ -88,15 +88,15 @@ Name: Cool Webhook
 URL: https://discord.com/api/webhooks/1022496087895973898/DYewdMZ138jskaXgFalU_JJ_wKBTjaC6kdgYnF2lyqnkb-HrU2y0JdY2xdpr7Do-P6zl
 ```
 
-### Youtube 音樂功能
-因應 Youtube 的聲明，Discord 會將被發現在播放 Youtube 音樂的機器人取消驗證。
+### YouTube 音樂功能
+因應 YouTube 的聲明，Discord 會將被發現在播放 YouTube 音樂的機器人取消驗證。
 
-為了避免遭受處分，我們在程式中將播放 Youtube 音樂的功能上了鎖。如果你希望在你的複製品中可以啟用此功能，可以在你的 `.env` 檔案中加上新的一行 `ENABLE_YT=1`，或是把 `/src/commands/Music/Play` 中 `<Lock></Lock>` 的部分刪掉。另外，你也需要自行在執行環境安裝 FFmpeg，或是使用 `npm install ffmpeg-static` 下載。
+為了避免遭受處分，我們在程式中將播放 YouTube 音樂的功能上了鎖。如果你希望在你的複製品中可以啟用此功能，可以在你的 `.env` 檔案中加上新的一行 `ENABLE_YT=1`，或是把 `/src/commands/Music/Play` 中 `<Lock></Lock>` 的部分刪掉。另外，你也需要自行在執行環境安裝 FFmpeg，或是使用 `npm install ffmpeg-static` 下載。
 
 由於在未來我們可能會對音樂系統做改寫，啟用此功能的方法亦可能改變，對於使用此功能的人，請關注本章節和更新日誌。
 
 ## 官方伺服器
-如果有碰到任何使用上的問題，你都可以到我們的[官方伺服器](https://hizollo.ddns.net/server)中詢問。
+如果有碰到任何使用上的問題，你都可以到我們的 [官方伺服器](https://hizollo.ddns.net/server) 中詢問。
 
 ## 授權
 Junior HiZollo 的原始碼是以 GPL-3.0-or-later 條款授權給所有人使用，你可以在該條款之下對其做任意的分發、修改。對於更詳細的說明，請參見 [COPYING](https://github.com/HiZollo/Junior-HiZollo/blob/main/COPYING) 或 [Google](https://www.google.com/search?q=gpl-3.0-or-later)。

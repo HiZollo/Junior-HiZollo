@@ -32,8 +32,8 @@ export default class Bullsandcows extends Command<[boolean]> {
       description: '開啟一場猜 AB 遊戲', 
       extraDescription:
         `**遊戲規則：**\n`+
-        `HiZollo 會隨機產生一個四位數字，這四個數字一定不會重複，而且有可能以 0 開頭）\n`+
-        `你每次可以輸入一個四位數字（數字需互不重複），而 HiZollo 會給你一個 「nAmB」的提示\n`+
+        `HiZollo 會隨機產生一個四位數字，這四個數字一定不會重複，而且有可能以 0 開頭\n`+
+        `你每次可以輸入一個四位數字（數字需互不重複），而 HiZollo 會給你一個「nAmB」的提示\n`+
         `「nA」代表的是你有 n 個數字猜對了，且這些數字都在正確的位置上\n`+
         `「mB」則代表你有 m 個數字猜對了，但這些數字的位置是不正確的\n`+
         `請運用你的智慧，在 HiZollo 的提示下，試著以最少次的猜測來猜中正確答案\n`+

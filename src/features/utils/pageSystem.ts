@@ -166,7 +166,7 @@ function newButtons(pageCount: number): ActionRowBuilder<ButtonBuilder> {
  * 在使用者翻頁時需要呼叫此函式以調整按鈕可不可以被操作
  * @param actionRow 按鈕所屬的動作列
  * @param pageCount 總頁數
- * @param index 當前頁的駐標
+ * @param index 當前頁面的索引
  */
 function modifyButtons(actionRow: ActionRowBuilder<ButtonBuilder>, pageCount: number, index: number): void {
   if (pageCount === 1) return;

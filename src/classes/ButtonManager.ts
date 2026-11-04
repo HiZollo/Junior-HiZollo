@@ -34,7 +34,7 @@ export class ButtonManager {
   public client: HZClient;
 
   /**
-   * 按鈕識別ID－回應方式的鍵值對
+   * 按鈕識別 ID—回應方式的鍵值對
    */
   private data: Map<string, (interaction: ButtonInteraction<"cached">) => Promise<void>>;
 

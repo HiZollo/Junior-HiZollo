@@ -65,7 +65,7 @@ export default class Chef extends Command<[User]> {
   private chefHiZollo = [
     "謝謝，我知道我最強", 
     "我強到被廚了一次",
-    "我不需用你這麼爛的人來廚我", 
+    "我不需要你這麼爛的人來廚我", 
     "我知道我超強的", 
     "拜託，我超勇的", 
     "我電起來連我自己都怕好嗎", 

@@ -33,7 +33,7 @@ export default class TicTacToe extends Command<[GuildMember, number]> {
       extraDescription:
         `**遊戲規則：**\n`+
         '簡單的圈圈叉叉，你的目標是比對手先將自己的棋子連成三顆一線\n'+
-        '開始遊戲後，可以棋盤上對應的位置按下按鈕來下棋，使用指令者為先手\n'+
+        '開始遊戲後，可以在棋盤上對應的位置按下按鈕來下棋，使用指令者為先手\n'+
         '注意當其中一名玩家閒置超過 30 秒時，就會視為棄子，如果兩位玩家都棄子，遊戲會直接結束\n',
       aliases: ['ttt'], 
       options: [{

@@ -60,7 +60,7 @@ export default class Confession extends Command<[GuildMember]> {
       return;
     }
     if (to.user.bot) {
-      await source.update('你已經沒人要到要找機器告白了嗎？醒。');
+      await source.update('你已經沒人要到要找機器人告白了嗎？醒。');
       return;
     }
   

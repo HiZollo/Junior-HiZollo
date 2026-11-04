@@ -63,7 +63,7 @@ export class HiddenCommandManager extends EventEmitter {
    * @param dirPath 要載入的資料夾
    */
   public async load(dirPath: string): Promise<void> {
-    if (this.loaded) throw new Error('Autocomplete has already been loaded.');
+    if (this.loaded) throw new Error('HiddenCommands have already been loaded.');
 
     const commandFiles = fs.readdirSync(dirPath);
     for (const file of commandFiles) {

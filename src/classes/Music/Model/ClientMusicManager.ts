@@ -158,7 +158,7 @@ export class ClientMusicManager {
   /**
    * 移除某個伺服器的待播清單中一部分的連續歌曲
    * @param guildId 伺服器的 ID
-   * @param start 起始駐標
+   * @param start 起始索引
    * @param length 連續歌曲的數量
    */
   public spliceQueue(guildId: string, start: number, length: number): void {
@@ -179,7 +179,7 @@ export class ClientMusicManager {
   /**
    * 在某個伺服器中播放歌曲
    * @param source 觸發指令的來源
-   * @param keywordOrUrl 要查詢的關鍵字或歌曲的 Youtube 連結
+   * @param keywordOrUrl 要查詢的關鍵字或歌曲的 YouTube 連結
    */
   public async play(source: Source, keywordOrUrl: string): Promise<void> {
     const manager = this.guilds.get(source.guild.id);
@@ -188,7 +188,7 @@ export class ClientMusicManager {
   }
 
   /**
-   * 中斷與某個伺服器之間的語音連結
+   * 中斷與某個伺服器之間的語音連線
    * @param guildId 伺服器的 ID
    */
   public leave(guildId: string): void {

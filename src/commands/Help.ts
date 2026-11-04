@@ -59,7 +59,7 @@ export default class Help extends Command<[string]> {
     const command = source.client.commands.search([commandName, undefined]);
     if (!command || (command instanceof Command && command.type === CommandType.Developer && !source.channel?.isTestChannel())) {
       await source.defer({ ephemeral: true });
-      await source.update(`這個指令不存在，請使用 \`${config.bot.prefix}help\` 或 \`/help\` 查看當前的指令列表`);
+      await source.update(`這個指令不存在，請使用 \`${config.bot.prefix}help\` 或 \`/help\` 查看當前的指令清單`);
       return;
     }
 
@@ -98,7 +98,7 @@ export default class Help extends Command<[string]> {
   public getEmbedsForAllTypes(source: Source): EmbedBuilder[] {
     const embed = new EmbedBuilder()
       .applyHiZolloSettings(source.member, 'HiZollo 的幫助中心', '使用指令時不須連同 [] 或 <> 一起輸入')
-      .setDescription(`以下是我的指令列表，你可以使用 \`${config.bot.prefix}help 指令名稱\` 或 \`/help 指令名稱\` 來查看特定指令的使用方法`)
+      .setDescription(`以下是我的指令清單，你可以使用 \`${config.bot.prefix}help 指令名稱\` 或 \`/help 指令名稱\` 來查看特定指令的使用方法`)
       .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null);
 
     let counter = 0;

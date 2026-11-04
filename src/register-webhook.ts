@@ -24,7 +24,7 @@ import { APIWebhook } from 'discord-api-types/v10'
 
 (async () => {
   if (!process.env.TOKEN) {
-    console.error("Please configure your bot token in .env before registering webhook");
+    console.error("Please configure your bot token in .env before registering a webhook");
     process.exit(1);
   }
 
@@ -32,7 +32,7 @@ import { APIWebhook } from 'discord-api-types/v10'
   const channelId = process.argv[2];
 
   if (!channelId) {
-    console.error("Please provide the id of target channel");
+    console.error("Please provide the id of the target channel");
     process.exit(1);
   }
 

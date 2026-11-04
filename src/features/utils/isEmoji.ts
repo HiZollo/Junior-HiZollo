@@ -20,7 +20,7 @@
 
 import emojiRegex from "emoji-regex";
 /**
- * 檢查一個一串是不是表情符號，或是否符合 Discord 的表情符號格式
+ * 檢查一個字串是不是表情符號，或是否符合 Discord 的表情符號格式
  */
 export default function isEmoji(target: string): boolean {
   target = target.trim();

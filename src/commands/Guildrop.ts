@@ -33,8 +33,8 @@ export default class Guildrop extends Command<[string]> {
     super({
       type: CommandType.Developer, 
       name: 'guildrop', 
-      description: '傳送 guildrop 訊息給指定伺服器', 
-      extraDescription: '不填參數時可以查看有開啟 guildrop 的伺服器清單', 
+      description: '傳送 Guild Drop 訊息給指定伺服器', 
+      extraDescription: '不填參數時可以查看有開啟 Guild Drop 的伺服器清單', 
       aliases: ['hzdrop'], 
       options: [{
         type: ApplicationCommandOptionType.String, 

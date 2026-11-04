@@ -113,7 +113,7 @@ export class CommandManager extends EventEmitter {
     const commandName: [string, string | undefined] = [interaction.commandName, interaction.options.getSubcommand(false) ?? undefined];
     const command = this.search(commandName);
 
-    // 重新佈署的全域指令有可能因為快取問題而無法使用
+    // 重新部署的全域指令有可能因為快取問題而無法使用
     if (!command) {
       this.emit('unavailable', new Source(interaction, channel, member));
       return;

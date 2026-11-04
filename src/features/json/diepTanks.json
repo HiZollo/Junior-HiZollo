@@ -141,6 +141,7 @@
     "name": "Flank Guard",
     "nameChinese": "側衛",
     "aliases": [
+      "flankguard",
       "flankgurad"
     ],
     "type": "可升級坦克",
@@ -170,8 +171,8 @@
     "upgradeFrom": "Flank Guard",
     "damage": "前砲管：1\n後兩個砲管：0.2"
   },
-  "Mega Destroter": {
-    "name": "Mega Destroter",
+  "Mega Destroyer": {
+    "name": "Mega Destroyer",
     "nameChinese": "超級破壞者",
     "aliases": [
       "megadestroyer"
@@ -283,7 +284,7 @@
     "type": "特殊坦克",
     "image": "https://static.wikia.nocookie.net/diepio/images/e/e5/Arena_Closer.png/revision/latest?cb=20161101111212&path-prefix=zh",
     "link": "https://diepio.fandom.com/zh/wiki/%E4%BC%BA%E6%9C%8D%E5%99%A8%E6%B8%85%E9%99%A4%E8%80%85",
-    "description": "Arena Closer 中譯為伺服器清除者，它是一個實體坦克，在伺服器關閉時，它們會在地圖四個角落外生成且會把所有玩家殺死。伺服器清除者有無限的血量，因此它們永遠不可能被殺死。當你被伺服器清除者殺死時，你的死亡畫面將被帶向中央經驗區，再來就會被強制進入一個新的伺服器。有時伺服器在打開時會出現停頓或卡當，伺服器也會立即產生伺服器清除者。",
+    "description": "Arena Closer 中譯為伺服器清除者，它是一個實體坦克，在伺服器關閉時，它們會在地圖四個角落外生成且會把所有玩家殺死。伺服器清除者有無限的血量，因此它們永遠不可能被殺死。當你被伺服器清除者殺死時，你的死亡畫面將被帶向中央經驗區，再來就會被強制進入一個新的伺服器。有時伺服器在打開時會出現停頓或卡頓，伺服器也會立即產生伺服器清除者。",
     "id": "19",
     "tier": "N/A",
     "weapons": "砲管（X1）",
@@ -327,7 +328,7 @@
     "type": "可升級坦克",
     "image": "https://static.wikia.nocookie.net/diepio/images/4/4b/Hunter.png/revision/latest?cb=20170423083527&path-prefix=zh",
     "link": "https://diepio.fandom.com/zh/wiki/Hunter",
-    "description": "Hunter 直譯為獵殺者，意義為輕型眺望者。它是 Sniper 的四種升級之一，可以升級到 Predator 及 Streamliner。",
+    "description": "Hunter 直譯為獵殺者，意譯為輕型眺望者。它是 Sniper 的四種升級之一，可以升級到 Predator 及 Streamliner。",
     "id": "22",
     "tier": "3",
     "weapons": "砲管（X2）",
@@ -499,7 +500,7 @@
     "type": "可升級坦克",
     "image": "https://static.wikia.nocookie.net/diepio/images/7/73/Sprayer.png/revision/latest?cb=20170423084332&path-prefix=zh",
     "link": "https://diepio.fandom.com/zh/wiki/Sprayer",
-    "description": "Sprayer 直譯為噴霧器，意譯為重型機關槍。他是 Machine Gun 的三種升級之一，但只能在 Machine Gun 45 級時升級，無法再升級到別台坦克。",
+    "description": "Sprayer 直譯為噴霧器，意譯為重型機關槍。它是 Machine Gun 的三種升級之一，但只能在 Machine Gun 45 級時升級，無法再升級到別台坦克。",
     "id": "34",
     "tier": "4",
     "weapons": "砲管（X2）",
@@ -850,7 +851,7 @@
     "type": "已移除坦克",
     "image": "https://static.wikia.nocookie.net/diepio/images/1/1d/Mounted_Turret.PNG/revision/latest?cb=20170120034355&path-prefix=zh",
     "link": "https://diepio.fandom.com/zh/wiki/Mounted_Turret",
-    "description": "Mounted Turret 直意為安裝轉塔，意譯為安裝砲塔，它是一台已移除坦克，階級未知（疑似為三階坦克），這是遊戲中唯一可以操控同隊自動砲管的坦克，只要在同隊的 Auto Smasher、Auto Trapper 及 Auto Gunner 旁按下「H」就可以控制他們的自動砲管了。",
+    "description": "Mounted Turret 直譯為安裝轉塔，意譯為安裝砲塔，它是一台已移除坦克，階級未知（疑似為三階坦克），這是遊戲中唯一可以操控同隊自動砲管的坦克，只要在同隊的 Auto Smasher、Auto Trapper 及 Auto Gunner 旁按下「H」就可以控制他們的自動砲管了。",
     "id": "57",
     "tier": "N/A",
     "weapons": "自動砲管（X1）",
@@ -864,7 +865,7 @@
     "type": "已移除坦克",
     "image": "https://static.wikia.nocookie.net/diepio/images/5/58/Ball.PNG/revision/latest?cb=20170120033528&path-prefix=zh",
     "link": "https://diepio.fandom.com/zh/wiki/Ball",
-    "description": "Ball，中譯為球，在遊戲中並未被賦予名稱，它是在 2017 年 1 月 13 日時被秘密添加，且具有神祕性質的坦克。它的外型看起來像是 Mounted Turret，但與其不同的是，Ball 沒辦法操控其他人的自動砲管，大家猜測這台坦克與 Mounted Turret 無關。",
+    "description": "Ball，中譯為球，在遊戲中並未被賦予名稱，它是在 2017 年 1 月 13 日時被祕密添加，且具有神祕性質的坦克。它的外型看起來像是 Mounted Turret，但與其不同的是，Ball 沒辦法操控其他人的自動砲管，大家猜測這台坦克與 Mounted Turret 無關。",
     "id": "58",
     "tier": "N/A",
     "weapons": "N/A",

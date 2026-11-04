@@ -61,7 +61,7 @@ export default class DiepTank extends Command<[string]> {
         { name: '坦克 ID', value: tank.id, inline: true },
         { name: '使用武器', value: tank.weapons, inline: true },
         { name: '傷害係數', value: tank.damage, inline: true },
-        { name: '更多資訊', value: `點擊[此處](${tank.link})以獲得更多資訊`},
+        { name: '更多資訊', value: `點擊 [此處](${tank.link}) 以獲得更多資訊`},
       );
 
     await source.update({ embeds: [info] });

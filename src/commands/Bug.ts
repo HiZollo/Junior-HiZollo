@@ -108,7 +108,7 @@ function newBugEmbed(source: Source, content: string): EmbedBuilder {
       value: `<t:${~~(Date.now()/1000)}>`
     }, {
       name: '伺服器', 
-      value: `${removeMd(source.guild?.name) ?? '私人頻道'}（ID: ${source.guild?.id ?? '無'}）`
+      value: `${removeMd(source.guild?.name) ?? '私人頻道'}（ID：${source.guild?.id ?? '無'}）`
     }, {
       name: '回報內容', 
       value: content

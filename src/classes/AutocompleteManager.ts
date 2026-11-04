@@ -36,7 +36,7 @@ export class AutocompleteManager {
   public client: HZClient;
 
   /**
-   * 斜線指令名稱－回應資訊的鍵值對
+   * 斜線指令名稱—回應資訊的鍵值對
    */
   private data: Map<string, AutocompleteData>;
 
