@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { APIEmbed, Awaitable, Channel, ChannelType, EmbedBuilder, Guild, Message, PermissionFlagsBits, TextChannel, User, Webhook, WebhookMessageCreateOptions } from "discord.js";
+import { APIEmbed, Awaitable, Channel, ChannelType, EmbedBuilder, Guild, GuildTextBasedChannel, Message, PermissionFlagsBits, User, Webhook, WebhookMessageCreateOptions } from "discord.js";
 import { EventEmitter } from "node:events";
 import { HZClient } from "./HZClient";
 import tempMessage from "../features/utils/tempMessage";
@@ -100,7 +100,7 @@ export class HZNetwork extends EventEmitter {
     }
 
     const promises = this.client.channels.cache
-      .filter((channel): channel is TextChannel => {
+      .filter((channel): channel is GuildTextBasedChannel => {
         if (channel.type !== ChannelType.GuildText) return false;
         if (!channel.name.startsWith(this.portPrefix)) return false;
         return this.publicPortNo.has(channel.name.slice(config.bot.network.portPrefix.length));
@@ -325,7 +325,7 @@ export class HZNetwork extends EventEmitter {
         const [channelId, webhook] = iter.next().value!;
         await webhook.send(options as WebhookMessageCreateOptions).catch(() => {
           const channel = client.channels.cache.get(channelId);
-          if (channel && channel instanceof TextChannel)
+          if (channel && channel.isTextBased() && !channel.isDMBased())
             client.network.unregisterChannel(portNo, channel);
         });
       }));
@@ -345,7 +345,8 @@ export class HZNetwork extends EventEmitter {
       await Promise.all(Array.from({ length: webhooks.size }, async () => {
         const [channelId, webhook] = iter.next().value!;
         if (options.embeds?.length) {
-          const channel = client.channels.cache.get(channelId) as TextChannel;
+          const channel = client.channels.cache.get(channelId)
+          if (!channel?.isSendable()) return
           const messages = await channel.messages.fetch({ limit: 20 });
           messages.forEach(async m => {
             if (m.content == (options.embeds?.[0].title) && m.author.username == options.embeds[0].author?.name) {
@@ -356,7 +357,7 @@ export class HZNetwork extends EventEmitter {
 
         await webhook.send(options as WebhookMessageCreateOptions).catch(() => {
           const channel = client.channels.cache.get(channelId);
-          if (channel && channel instanceof TextChannel)
+          if (channel && channel.isTextBased() && !channel.isDMBased())
             client.network.unregisterChannel(portNo, channel);
         });
       }));
@@ -374,7 +375,8 @@ export class HZNetwork extends EventEmitter {
    * @param isInitialize 註冊頻道的動作是不是在初始化時執行
    * @returns 原有或新建立的 webhook，可能因為機器人權限不足而無法註冊
    */
-  private async registerChannel(portNo: string, channel: TextChannel, isInitialize?: boolean): Promise<Webhook | void> {
+  private async registerChannel(portNo: string, channel: GuildTextBasedChannel, isInitialize?: boolean): Promise<Webhook | void> {
+    if (channel.isThread()) return;
     const webhooks = await channel.fetchWebhooks().catch(() => { });
     if (!webhooks) return;
 
@@ -413,7 +415,7 @@ export class HZNetwork extends EventEmitter {
    * @param portNo 指定的埠號
    * @param channel 指定的頻道
    */
-  private unregisterChannel(portNo: string, channel: TextChannel): void {
+  private unregisterChannel(portNo: string, channel: GuildTextBasedChannel): void {
     const success = this.ports.get(portNo)?.delete(channel.id) ?? false;
     if (success) this.emit('left', portNo, channel);
   }
