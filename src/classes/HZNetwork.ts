@@ -346,13 +346,14 @@ export class HZNetwork extends EventEmitter {
         const [channelId, webhook] = iter.next().value!;
         if (options.embeds?.length) {
           const channel = client.channels.cache.get(channelId)
-          if (!channel?.isSendable()) return
-          const messages = await channel.messages.fetch({ limit: 20 });
-          messages.forEach(async m => {
-            if (m.content == (options.embeds?.[0].title) && m.author.username == options.embeds[0].author?.name) {
-              options.embeds[0].url = m.url;
-            }
-          })
+          if (channel?.isSendable()) {
+            const messages = await channel.messages.fetch({ limit: 20 });
+            messages.forEach(async m => {
+              if (m.content == (options.embeds?.[0].title) && m.author.username == options.embeds[0].author?.name) {
+                options.embeds[0].url = m.url;
+              }
+            })
+          }
         }
 
         await webhook.send(options as WebhookMessageCreateOptions).catch(() => {
