@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { APIEmbed, Awaitable, Channel, ChannelType, EmbedBuilder, Guild, GuildTextBasedChannel, Message, PermissionFlagsBits, User, Webhook, WebhookMessageCreateOptions } from "discord.js";
+import { APIEmbed, Awaitable, Channel, ChannelType, EmbedBuilder, Guild, Message, PermissionFlagsBits, TextChannel, User, Webhook, WebhookMessageCreateOptions } from "discord.js";
 import { EventEmitter } from "node:events";
 import { HZClient } from "./HZClient";
 import tempMessage from "../features/utils/tempMessage";
@@ -100,7 +100,7 @@ export class HZNetwork extends EventEmitter {
     }
 
     const promises = this.client.channels.cache
-      .filter((channel): channel is GuildTextBasedChannel => {
+      .filter((channel): channel is TextChannel => {
         if (channel.type !== ChannelType.GuildText) return false;
         if (!channel.name.startsWith(this.portPrefix)) return false;
         return this.publicPortNo.has(channel.name.slice(config.bot.network.portPrefix.length));
@@ -316,7 +316,7 @@ export class HZNetwork extends EventEmitter {
    * @param isBroadcast 是否為官方全頻公告
    */
   public async crosspost(portNo: string, options: WebhookMessageCreateOptions, isBroadcast?: boolean): Promise<void> {
-    await this.client.shard?.broadcastEval(async (client, { portNo, options }) => {
+    await this.client.shard?.broadcastEval(async (client, { portNo, options, ChannelType }) => {
       const webhooks = client.network.ports.get(portNo);
       if (!webhooks) return;
 
@@ -325,11 +325,11 @@ export class HZNetwork extends EventEmitter {
         const [channelId, webhook] = iter.next().value!;
         await webhook.send(options as WebhookMessageCreateOptions).catch(() => {
           const channel = client.channels.cache.get(channelId);
-          if (channel && channel.isTextBased() && !channel.isDMBased())
+          if (channel?.type === ChannelType.GuildText)
             client.network.unregisterChannel(portNo, channel);
         });
       }));
-    }, { context: { portNo, options } });
+    }, { context: { portNo, options, ChannelType } });
 
     if (isBroadcast) {
       this.emit('broadcast', portNo, options.content ?? '[無訊息內容]');
@@ -337,7 +337,7 @@ export class HZNetwork extends EventEmitter {
   }
 
   private async crosspost_message(portNo: string, options: WebhookMessageCreateOptions, isBroadcast?: boolean): Promise<void> {
-    await this.client.shard?.broadcastEval(async (client, { portNo, options }) => {
+    await this.client.shard?.broadcastEval(async (client, { portNo, options, ChannelType }) => {
       const webhooks = client.network.ports.get(portNo);
       if (!webhooks) return;
 
@@ -358,11 +358,11 @@ export class HZNetwork extends EventEmitter {
 
         await webhook.send(options as WebhookMessageCreateOptions).catch(() => {
           const channel = client.channels.cache.get(channelId);
-          if (channel && channel.isTextBased() && !channel.isDMBased())
+          if (channel?.type === ChannelType.GuildText)
             client.network.unregisterChannel(portNo, channel);
         });
       }));
-    }, { context: { portNo, options } });
+    }, { context: { portNo, options, ChannelType } });
 
     if (isBroadcast) {
       this.emit('broadcast', portNo, options.content ?? '[無訊息內容]');
@@ -376,8 +376,7 @@ export class HZNetwork extends EventEmitter {
    * @param isInitialize 註冊頻道的動作是不是在初始化時執行
    * @returns 原有或新建立的 webhook，可能因為機器人權限不足而無法註冊
    */
-  private async registerChannel(portNo: string, channel: GuildTextBasedChannel, isInitialize?: boolean): Promise<Webhook | void> {
-    if (channel.isThread()) return;
+  private async registerChannel(portNo: string, channel: TextChannel, isInitialize?: boolean): Promise<Webhook | void> {
     const webhooks = await channel.fetchWebhooks().catch(() => { });
     if (!webhooks) return;
 
@@ -416,7 +415,7 @@ export class HZNetwork extends EventEmitter {
    * @param portNo 指定的埠號
    * @param channel 指定的頻道
    */
-  private unregisterChannel(portNo: string, channel: GuildTextBasedChannel): void {
+  private unregisterChannel(portNo: string, channel: TextChannel): void {
     const success = this.ports.get(portNo)?.delete(channel.id) ?? false;
     if (success) this.emit('left', portNo, channel);
   }

@@ -20,7 +20,7 @@
 
 import { ButtonBuilder, ModalBuilder } from "@discordjs/builders";
 import { VoiceConnection } from "@discordjs/voice";
-import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, Collection, EmbedBuilder, Guild, GuildMember, GuildTextBasedChannel, InteractionEditReplyOptions, Message, MessageCreateOptions, User, VoiceBasedChannel } from "discord.js";
+import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, Collection, EmbedBuilder, Guild, GuildMember, GuildTextBasedChannel, InteractionEditReplyOptions, Message, MessageCreateOptions, TextChannel, User, VoiceBasedChannel } from "discord.js";
 import { InfoData, YouTubeStream } from "play-dl";
 import { HZClient } from "../classes/HZClient";
 import { Source } from "../classes/Source";
@@ -47,8 +47,8 @@ export interface HZNetworkEvents {
   loaded: [];
   broadcast: [portNo: string, content: string];
   crosspost: [portNo: string, guild: Guild, author: User];
-  joined: [portNo: string, channel: GuildTextBasedChannel];
-  left: [portNo: string, channel: GuildTextBasedChannel];
+  joined: [portNo: string, channel: TextChannel];
+  left: [portNo: string, channel: TextChannel];
 }
 
 export interface CommandManagerEvents {
