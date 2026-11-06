@@ -316,7 +316,7 @@ export class HZNetwork extends EventEmitter {
    * @param isBroadcast 是否為官方全頻公告
    */
   public async crosspost(portNo: string, options: WebhookMessageCreateOptions, isBroadcast?: boolean): Promise<void> {
-    await this.client.shard?.broadcastEval(async (client, { portNo, options }) => {
+    await this.client.shard?.broadcastEval(async (client, { portNo, options, ChannelType }) => {
       const webhooks = client.network.ports.get(portNo);
       if (!webhooks) return;
 
@@ -325,11 +325,11 @@ export class HZNetwork extends EventEmitter {
         const [channelId, webhook] = iter.next().value!;
         await webhook.send(options as WebhookMessageCreateOptions).catch(() => {
           const channel = client.channels.cache.get(channelId);
-          if (channel && channel instanceof TextChannel)
+          if (channel?.type === ChannelType.GuildText)
             client.network.unregisterChannel(portNo, channel);
         });
       }));
-    }, { context: { portNo, options } });
+    }, { context: { portNo, options, ChannelType } });
 
     if (isBroadcast) {
       this.emit('broadcast', portNo, options.content ?? '[無訊息內容]');
@@ -337,7 +337,7 @@ export class HZNetwork extends EventEmitter {
   }
 
   private async crosspost_message(portNo: string, options: WebhookMessageCreateOptions, isBroadcast?: boolean): Promise<void> {
-    await this.client.shard?.broadcastEval(async (client, { portNo, options }) => {
+    await this.client.shard?.broadcastEval(async (client, { portNo, options, ChannelType }) => {
       const webhooks = client.network.ports.get(portNo);
       if (!webhooks) return;
 
@@ -345,22 +345,24 @@ export class HZNetwork extends EventEmitter {
       await Promise.all(Array.from({ length: webhooks.size }, async () => {
         const [channelId, webhook] = iter.next().value!;
         if (options.embeds?.length) {
-          const channel = client.channels.cache.get(channelId) as TextChannel;
-          const messages = await channel.messages.fetch({ limit: 20 });
-          messages.forEach(async m => {
-            if (m.content == (options.embeds?.[0].title) && m.author.username == options.embeds[0].author?.name) {
-              options.embeds[0].url = m.url;
-            }
-          })
+          const channel = client.channels.cache.get(channelId)
+          if (channel?.isSendable()) {
+            const messages = await channel.messages.fetch({ limit: 20 });
+            messages.forEach(async m => {
+              if (m.content == (options.embeds?.[0].title) && m.author.username == options.embeds[0].author?.name) {
+                options.embeds[0].url = m.url;
+              }
+            })
+          }
         }
 
         await webhook.send(options as WebhookMessageCreateOptions).catch(() => {
           const channel = client.channels.cache.get(channelId);
-          if (channel && channel instanceof TextChannel)
+          if (channel?.type === ChannelType.GuildText)
             client.network.unregisterChannel(portNo, channel);
         });
       }));
-    }, { context: { portNo, options } });
+    }, { context: { portNo, options, ChannelType } });
 
     if (isBroadcast) {
       this.emit('broadcast', portNo, options.content ?? '[無訊息內容]');
