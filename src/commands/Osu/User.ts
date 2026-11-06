@@ -76,13 +76,13 @@ export default class OsuUser extends Command<[string, number]> {
       .setThumbnail(user.avatarURL())
       .addFields([
         { name: '玩家', value: `[${username}](${user.profileURL()})` },
-        { name: 'SS總數', value: `${ssh + ss}`, inline: true },
+        { name: 'SS 總數', value: `${ssh + ss}`, inline: true },
         { name: 'SS+', value: `${ssh || 0}`, inline: true },
         { name: 'SS', value: `${ss || 0}`, inline: true },
-        { name: 'S總數', value: `${sh + s}`, inline: true },
+        { name: 'S 總數', value: `${sh + s}`, inline: true },
         { name: 'S+', value: `${sh || 0}`, inline: true },
         { name: 'S', value: `${s || 0}`, inline: true },
-        { name: 'A總數', value: `${a || 0}` },
+        { name: 'A 總數', value: `${a || 0}` },
         { name: '等級', value: `${~~(level)}`, inline: true },
         { name: '總遊玩次數', value: `${playcount || 0}`, inline: true },
         { name: '\u200b', value: '\u200b', inline: true },

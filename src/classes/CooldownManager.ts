@@ -31,7 +31,7 @@ export default class CooldownManager {
   public client: HZClient;
 
   /**
-   * 指令名稱－（使用者 ID－冷卻結束時間戳）的鍵值對
+   * 指令名稱—（使用者 ID—冷卻結束時間戳）的鍵值對
    */
   private data: Map<string, Map<string, number>>;
 
@@ -139,7 +139,7 @@ export default class CooldownManager {
   /**
    * 查看一位使用者對於某個指令的冷卻結束時間戳，這個操作只會對單個分支進行
    * @param options 
-   * @returns 剩餘冷卻時間戳
+   * @returns 冷卻結束時間戳
    */
   private _checkUser({ commandName, userId }: CooldownManagerMethodOptions) {
     return this.data.get(commandName)?.get(userId);

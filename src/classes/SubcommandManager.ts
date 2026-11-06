@@ -36,7 +36,7 @@ export class SubcommandManager {
   public client: HZClient;
 
   /**
-   * 群組名稱－指令群的鍵值對
+   * 群組名稱—指令群的鍵值對
    */
   public data: Collection<string, SubcommandGroup>;
 

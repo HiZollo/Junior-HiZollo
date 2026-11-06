@@ -34,7 +34,7 @@ export class SelectMenuManager {
   public client: HZClient;
 
   /**
-   * 選單識別ID－回應方式的鍵值對
+   * 選單識別 ID—回應方式的鍵值對
    */
   private data: Map<string, (interaction: AnySelectMenuInteraction<"cached">) => Promise<void>>;
 

@@ -156,7 +156,7 @@ export class HZClient extends Client {
   }
 
   /**
-   * HiZolo 是否正在生某個使用者的氣
+   * HiZollo 是否正在生某個使用者的氣
    * @param userId 該使用者的 ID
    */
   public async isAngryAt(userId: string): Promise<number> {

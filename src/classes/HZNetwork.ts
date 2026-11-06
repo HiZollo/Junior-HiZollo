@@ -43,7 +43,7 @@ export class HZNetwork extends EventEmitter {
   public publicPortNo: Set<string>;
 
   /**
-   * 埠號－（頻道 ID－Webhook）的鍵值對
+   * 埠號—（頻道 ID—Webhook）的鍵值對
    */
   public ports: Map<string, Map<string, Webhook>>;
 
@@ -63,7 +63,7 @@ export class HZNetwork extends EventEmitter {
   private loaded: boolean;
 
   /**
-   * banded words
+   * banned words
    */
   private bannedWords: string[] = [
     'discord.gg/',
@@ -158,7 +158,7 @@ export class HZNetwork extends EventEmitter {
 
     if (totalSize > 512 * 1024) {
       message.delete();
-      helper.setDescription('訊息的總檔案大小已超過 512kb，請先將檔案壓縮再傳進 HiZollo Netwrok 中');
+      helper.setDescription('訊息的總檔案大小已超過 512 kb，請先將檔案壓縮再傳進 HiZollo Network 中');
       tempMessage(message.channel, { embeds: [helper] }, 3);
       return;
     }
@@ -264,7 +264,7 @@ export class HZNetwork extends EventEmitter {
       await this.registerChannel(newPortNo, newChannel);
     }
 
-    // 舊頻道是 HiZollo Network 時，將其移出聯絡網中
+    // 舊頻道是 HiZollo Network 時，將其移出聯絡網
     if (oldPortNo && oldChannel.type === ChannelType.GuildText) {
       this.unregisterChannel(oldPortNo, oldChannel);
     }

@@ -149,7 +149,7 @@ declare module "discord.js" {
     replyHook: WebhookClient;
 
     /**
-     * 被 HiZollo 討厭的使用者 ID－氣消時間
+     * 被 HiZollo 討厭的使用者 ID—氣消時間
      */
     angryList: Collection<string, number>;
 

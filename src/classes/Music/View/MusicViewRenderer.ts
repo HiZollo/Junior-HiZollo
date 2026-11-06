@@ -165,7 +165,7 @@ export class MusicViewRenderer {
    */
   public async noPermOnStage(channel: GuildTextBasedChannel): Promise<void> {
     const embed = this.baseEmbed
-      .setDescription('我沒有辦法在這舞台頻道上發言！請你給我發言權或是讓我成為舞台版主');
+      .setDescription('我沒有辦法在這個舞台頻道上發言！請你給我發言權或是讓我成為舞台版主');
     tempMessage(channel, { embeds: [embed] }, 5);
   }
 

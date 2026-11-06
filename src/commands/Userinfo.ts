@@ -72,7 +72,7 @@ export default class Userinfo extends Command<[GuildMember]> {
         { name: '加入伺服器時間', value: joinedTimestamp ? `<t:${~~(joinedTimestamp/1000)}>` : '查無資訊', inline: true },
         { name: '\u200b', value: '\u200b', inline: true },
 
-        { name: '擁有的身份組', value: rolesText }
+        { name: '擁有的身分組', value: rolesText }
       );
 
     await source.update({ embeds: [info] });

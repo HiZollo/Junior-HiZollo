@@ -33,13 +33,13 @@ export default class Guildrop extends Command<[string]> {
     super({
       type: CommandType.Developer, 
       name: 'guildrop', 
-      description: '傳送 guildrop 訊息給指定伺服器', 
-      extraDescription: '不填參數時可以查看有開啟 guildrop 的伺服器清單', 
+      description: '傳送 GuildDrop 訊息給指定伺服器', 
+      extraDescription: '不填參數時可以查看有開啟 GuildDrop 的伺服器清單', 
       aliases: ['hzdrop'], 
       options: [{
         type: ApplicationCommandOptionType.String, 
         name: '伺服器',
-        description: '有開啟 Guild Drop 的伺服器 ID',
+        description: '有開啟 GuildDrop 的伺服器 ID',
         required: false
       }], 
       cooldown: 30
@@ -54,7 +54,7 @@ export default class Guildrop extends Command<[string]> {
     }
     if (!source.guild.channels.cache.some(channel => channel.type === ChannelType.GuildText && channel.name === 'hz-guildrop')) {
       await source.defer({ ephemeral: true });
-      await source.update('你的伺服器必須也開啟 Guild Drop 功能才能使用！\n開啟方法：建立一個名稱為 #hz-guildrop 的頻道');
+      await source.update('你的伺服器必須也開啟 GuildDrop 功能才能使用！\n開啟方法：建立一個名稱為 #hz-guildrop 的頻道');
       return;
     }
 
@@ -70,7 +70,7 @@ export default class Guildrop extends Command<[string]> {
     let guildInfo = guildInfoArray.find(g => g.id === guildId);
     if (guildId && !guildInfo) {
       await source.defer({ ephemeral: true });
-      await source.update('找不到你輸入的伺服器，原因可能是：\n　● 你的輸入有誤\n　● 對方沒有開啟 Guild Drop');
+      await source.update('找不到你輸入的伺服器，原因可能是：\n　● 你的輸入有誤\n　● 對方沒有開啟 GuildDrop');
       return;
     }
 
@@ -79,13 +79,13 @@ export default class Guildrop extends Command<[string]> {
     // 沒給任何參數就顯示清單
     if (!guildId) {
       const pages = this.getGuildList(source, guildInfoArray);
-      const embed = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo Guild Drop');
+      const embed = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo GuildDrop');
 
       guildInfo = (await pageSystem({
         mode: PageSystemMode.Description, 
         source: source, 
         embed: embed, 
-        description: '請選擇一個伺服器以對該伺服器傳送 Guild Drop',
+        description: '請選擇一個伺服器以對該伺服器傳送 GuildDrop',
         pages: pages, 
         allowSelect: true, 
         contents: {

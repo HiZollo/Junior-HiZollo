@@ -47,9 +47,9 @@ export default class Links extends Command<[]> {
              `● [網站首頁](${websiteLinks.main} "HiZollo 網站首頁")\n`+
              `● [更新日誌](${websiteLinks.changelog} "HiZollo 的更新日誌")\n`+
              `● [指令列表](${websiteLinks.commands} "HiZollo 的指令列表")\n`+
-             `● [用戶條款](${websiteLinks.tos} "HiZollo 使用者條款")`
+             `● [使用者條款](${websiteLinks.tos} "HiZollo 使用者條款")`
     }, {
-      name: 'Github 專案連結',
+      name: 'GitHub 專案連結',
       value: `HiZollo Organization 的相關連結\n`+
              `● [組織網站](${websiteLinks.github} "HiZollo 組織網站")\n`+
              `● [原始碼](${websiteLinks.source} "HiZollo 原始碼")`

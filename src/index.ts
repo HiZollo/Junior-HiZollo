@@ -33,7 +33,7 @@ manager.spawn({ timeout: -1 }).then(() => {
   console.log('分支已全數上線');
 });
 
-// 當主程式結束時，必須確實的結束每一個 shard，不然會有很麻煩的問題
+// 當主程式結束時，必須確實地結束每一個 shard，不然會有很麻煩的問題
 // 這些 Listener 會聆聽各種不同的結束事件，並作出清理 Shard 的動作
 ['SIGINT', 'SIGUSR1', 'SIGUSR2', 'SIGTERM', 'exit'].forEach(eventName => {
   process.on(eventName, cleanShards);

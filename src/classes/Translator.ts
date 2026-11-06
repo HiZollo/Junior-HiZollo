@@ -125,7 +125,7 @@ export class Translator extends null {
   });
 
   /**
-   * 權限－中文名稱對照表
+   * 權限—中文名稱對照表
    */
   static readonly PermissionChinese = Object.freeze({
     /* (1 <<  0) */ "CREATE_INSTANT_INVITE": "建立邀請",
@@ -214,7 +214,7 @@ export class Translator extends null {
   });
 
   /**
-   * 指令分類－中文名稱對照表
+   * 指令分類—中文名稱對照表
    */
   static readonly CommandTypeChinese: { [key in CommandType]: string } = Object.freeze({
     [CommandType.Contact]: '聯繫', 
@@ -230,7 +230,7 @@ export class Translator extends null {
   });
 
   /**
-   * 指令分類－中文描述對照表
+   * 指令分類—中文描述對照表
    */
   static readonly CommandTypeChineseDescription: { [key in CommandType]: string } = Object.freeze({
     [CommandType.Contact]: '與 HiZollo 的開發者聯絡', 
@@ -246,7 +246,7 @@ export class Translator extends null {
   });
 
   /**
-   * 選項形別－中文名稱對照表
+   * 選項形別—中文名稱對照表
    */
   static readonly ApplicationCommandOptionTypeChinese: { [key in ApplicationCommandOptionType]: string } = Object.freeze({
     [ApplicationCommandOptionType.Attachment]: '檔案', 
@@ -263,7 +263,7 @@ export class Translator extends null {
   });
 
   /**
-   * 擴展的選項型別－中文名稱對照表
+   * 擴展的選項型別—中文名稱對照表
    */
   static readonly CommandOptionTypeChinese: { [key in CommandOptionType]: string } = Object.freeze({
     [CommandOptionType.Attachment]: '檔案', 

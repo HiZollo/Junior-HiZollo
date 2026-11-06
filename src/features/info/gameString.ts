@@ -10,15 +10,15 @@ export default {
       "menu": "請選擇一到五張牌", 
       "pass": "跳過", 
       "play": "出牌", 
-      "selected": "**你選擇的牌組**：[<cards>] (<trick>)\n當遊戲輪到你時，你可以按下綠色按鈕來出牌", 
-      "played": "成功打出 [<cards>] (<trick>)", 
+      "selected": "**你選擇的牌組**：[<cards>]（<trick>）\n當遊戲輪到你時，你可以按下綠色按鈕來出牌", 
+      "played": "成功打出 [<cards>]（<trick>）", 
       "passed": "你跳過了這個回合", 
       "invalid": "[<cards>] 並不是合法的牌組，請重新選擇你要打出的牌組", 
       "notYourTurn": "還沒輪到你，等輪到你你再動作", 
       "noSelection": "你還沒選擇任何牌組"
     }, 
     "previous": {
-      "play": "<player> 打出了 **<trick>**.", 
+      "play": "<player> 打出了 **<trick>**", 
       "pass": "<player> 跳過了這個回合", 
       "idle": "<player> 錯過了他的回合"
     },

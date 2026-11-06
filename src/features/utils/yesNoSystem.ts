@@ -89,7 +89,7 @@ function newButtons(yes: string, no: string): ActionRowBuilder<ButtonBuilder> {
 }
 
 /**
- * 有其他使用者試圖與按下按鈕時所給出的錯誤提示
+ * 有其他使用者試圖按下按鈕時所給出的錯誤提示
  * @returns 錯誤提示
  */
 function noYou(): string {

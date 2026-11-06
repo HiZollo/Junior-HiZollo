@@ -32,7 +32,7 @@ export default class Help extends Command<[string]> {
     super({
       type: CommandType.Information, 
       name: 'help', 
-      description: '顯示 HiZollo 的指令清單或查詢指令用法', 
+      description: '顯示 HiZollo 的指令列表或查詢指令用法', 
       options: [{ 
         type: ApplicationCommandOptionType.String, 
         name: '指令名稱', 
@@ -176,7 +176,7 @@ export default class Help extends Command<[string]> {
   public getEmbedForSubcommandGroup(source: { client: Client, member: GuildMember }, groupName: string, commands: SubcommandGroup): EmbedBuilder {
     const embed = new EmbedBuilder()
       .applyHiZolloSettings(source.member, 'HiZollo 的幫助中心', '使用指令時不須連同 [] 或 <> 一起輸入')
-      .setDescription(`這是 HiZollo 的 ${groupName} 指令清單`)
+      .setDescription(`這是 HiZollo 的 ${groupName} 指令列表`)
       .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null);
 
     commands.data.each(command => {

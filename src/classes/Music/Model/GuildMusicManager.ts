@@ -150,7 +150,7 @@ export class GuildMusicManager {
   /**
    * 在這個伺服器中播放歌曲
    * @param source 觸發指令的來源
-   * @param keywordOrUrl 要查詢的關鍵字或歌曲的 Youtube 連結
+   * @param keywordOrUrl 要查詢的關鍵字或歌曲的 YouTube 連結
    */
   public async play(source: Source, keywordOrUrl: string): Promise<void> {
     let resources: { stream: YouTubeStream, info: InfoData }[] | { stream: YouTubeStream, info: InfoData } | void;
@@ -283,7 +283,7 @@ export class GuildMusicManager {
   }
 
   /**
-   * 解析 Youtube 播放清單
+   * 解析 YouTube 播放清單
    * @param source 觸發指令的來源
    * @param url 播放清單的連結
    * @returns 播放清單中前 100 首歌曲的相關數據
@@ -313,7 +313,7 @@ export class GuildMusicManager {
   }
 
   /**
-   * 解析 Youtube 影片
+   * 解析 YouTube 影片
    * @param source 觸發指令的來源
    * @param url 影片的連結
    * @returns 這部影片的相關資料
@@ -328,7 +328,7 @@ export class GuildMusicManager {
   }
 
   /**
-   * 在 Youtube 中搜尋關鍵字，並給使用者從搜尋結果中選出一首
+   * 在 YouTube 中搜尋關鍵字，並給使用者從搜尋結果中選出一首
    * @param source 觸發指令的來源
    * @param keyword 使用者給出的關鍵字
    * @returns 使用者選出的影片的相關資料
@@ -356,7 +356,7 @@ export class GuildMusicManager {
   }
 
   /**
-   * 取得一部 Youtube 影片的資料
+   * 取得一部 YouTube 影片的資料
    * @param url 影片的連結
    * @returns 這部影片的相關資料
    */

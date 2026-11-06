@@ -30,7 +30,7 @@ export default class Hznetwork extends Command<[string]> {
     super({
       type: CommandType.Developer, 
       name: 'hznetwork', 
-      description: '查看 HiZolllo Network 的即時資訊', 
+      description: '查看 HiZollo Network 的即時資訊', 
       aliases: ['hzn'], 
       options: [{
         type: ApplicationCommandOptionType.String, 

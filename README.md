@@ -28,7 +28,7 @@
 
 ## 功能
 - `/2048`：在 Discord 中玩一場 2048
-- `/buttonrole`：設置讓使用者獲取身份的按鈕
+- `/buttonrole`：設置讓使用者獲取身分組的按鈕
 - `/calc`：計算一個數學算式
 - `/confession`：和伺服器中的一位成員告白
 - `/getmsg`：匯出你和朋友的聊天記錄
@@ -38,11 +38,11 @@
 - `/say`：讓機器人代替你說一句話
 - `/useless`：???
 
-當然，HiZollo 的功能絕對不只這些，你可以使用 `z!help` 或 `/help` 來查看他的指令清單。
+當然，HiZollo 的功能絕對不只這些，你可以使用 `z!help` 或 `/help` 來查看他的指令列表。
 你也可以到 [HiZollo 的官方網站](https://hizollo.ddns.net)上瀏覽他的[指令列表](https://hizollo.ddns.net/commands)。
 
 ## 複製一臺
-Junior HiZollo 需要在 node.js v18.2.1 以上的版本中才能運行，你可以使用 `node -v` 來確定你的版本是否足夠。
+Junior HiZollo 需要在 Node.js v26.13.0 以上的版本中才能運行，你可以使用 `node -v` 來確定你的版本是否足夠。
 
 在你把整份專案複製回去後，在根目錄創建一個叫做 `.env` 的檔案，並把下方模板中的缺項補齊：
 ```
@@ -88,10 +88,10 @@ Name: Cool Webhook
 URL: https://discord.com/api/webhooks/1022496087895973898/DYewdMZ138jskaXgFalU_JJ_wKBTjaC6kdgYnF2lyqnkb-HrU2y0JdY2xdpr7Do-P6zl
 ```
 
-### Youtube 音樂功能
-因應 Youtube 的聲明，Discord 會將被發現在播放 Youtube 音樂的機器人取消驗證。
+### YouTube 音樂功能
+因應 YouTube 的聲明，Discord 會將被發現在播放 YouTube 音樂的機器人取消驗證。
 
-為了避免遭受處分，我們在程式中將播放 Youtube 音樂的功能上了鎖。如果你希望在你的複製品中可以啟用此功能，可以在你的 `.env` 檔案中加上新的一行 `ENABLE_YT=1`，或是把 `/src/commands/Music/Play` 中 `<Lock></Lock>` 的部分刪掉。另外，你也需要自行在執行環境安裝 FFmpeg，或是使用 `npm install ffmpeg-static` 下載。
+為了避免遭受處分，我們在程式中將播放 YouTube 音樂的功能上了鎖。如果你希望在你的複製品中可以啟用此功能，可以在你的 `.env` 檔案中加上新的一行 `ENABLE_YT=1`，或是把 `/src/commands/Music/Play` 中 `<Lock></Lock>` 的部分刪掉。另外，你也需要自行在執行環境安裝 FFmpeg，或是使用 `npm install ffmpeg-static` 下載。
 
 由於在未來我們可能會對音樂系統做改寫，啟用此功能的方法亦可能改變，對於使用此功能的人，請關注本章節和更新日誌。
 
