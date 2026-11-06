@@ -141,8 +141,7 @@
     "name": "Flank Guard",
     "nameChinese": "側衛",
     "aliases": [
-      "flankguard",
-      "flankgurad"
+      "flankguard"
     ],
     "type": "可升級坦克",
     "image": "https://static.wikia.nocookie.net/diepio/images/9/9e/Flank_Guard.png/revision/latest?cb=20170423083525&path-prefix=zh",

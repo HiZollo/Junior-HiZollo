@@ -60,7 +60,7 @@ export default class MusicPlay extends Command<[string]> {
 
 在這之前，你可以考慮使用 Discord 的 WatchTogether 功能來在語音頻道中播放來自 YouTube 的音樂。
 
-如果有任何問題或意見，你可以查看我們的 [最近公告](${Constant.websiteLinks.announcement}) 或加入 [HiZollo 官方伺服器](${Constant.mainGuild.inviteLink})。
+如果有任何問題或意見，你可以查看我們的[最近公告](${Constant.websiteLinks.announcement})或加入 [HiZollo 官方伺服器](${Constant.mainGuild.inviteLink})。
 `);
       await source.defer();
       await source.update({ embeds: [embed] });

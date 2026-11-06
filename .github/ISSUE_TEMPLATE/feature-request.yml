@@ -14,9 +14,9 @@ body:
       description: |
         請告訴我們你想要什麼樣的一個新功能
       placeholder: |
-        使用上常常會覺得……
-        如果有這樣的功能……
-        其它的機器人……
+        使用上常常會覺得⋯⋯
+        如果有這樣的功能⋯⋯
+        其它的機器人⋯⋯
     validations:
       required: true
   - type: textarea

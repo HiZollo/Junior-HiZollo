@@ -18,7 +18,7 @@ export default {
       "noSelection": "你還沒選擇任何牌組"
     }, 
     "previous": {
-      "play": "<player> 打出了 **<trick>**。", 
+      "play": "<player> 打出了 **<trick>**", 
       "pass": "<player> 跳過了這個回合", 
       "idle": "<player> 錯過了他的回合"
     },

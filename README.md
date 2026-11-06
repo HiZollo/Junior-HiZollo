@@ -24,7 +24,7 @@
 </div>
 
 ## 邀請連結
-你可以 [點擊此處](https://hizollo.ddns.net/invite) 邀請他加入你的伺服器。
+你可以[點擊此處](https://hizollo.ddns.net/invite)邀請他加入你的伺服器。
 
 ## 功能
 - `/2048`：在 Discord 中玩一場 2048
@@ -38,11 +38,11 @@
 - `/say`：讓機器人代替你說一句話
 - `/useless`：???
 
-當然，HiZollo 的功能絕對不只這些，你可以使用 `z!help` 或 `/help` 來查看他的指令清單。
-你也可以到 [HiZollo 的官方網站](https://hizollo.ddns.net) 上瀏覽他的 [指令清單](https://hizollo.ddns.net/commands)。
+當然，HiZollo 的功能絕對不只這些，你可以使用 `z!help` 或 `/help` 來查看他的指令列表。
+你也可以到 [HiZollo 的官方網站](https://hizollo.ddns.net)上瀏覽他的[指令列表](https://hizollo.ddns.net/commands)。
 
 ## 複製一臺
-Junior HiZollo 需要在 Node.js v18.2.1 以上的版本中才能運行，你可以使用 `node -v` 來確定你的版本是否足夠。
+Junior HiZollo 需要在 Node.js v26.13.0 以上的版本中才能運行，你可以使用 `node -v` 來確定你的版本是否足夠。
 
 在你把整份專案複製回去後，在根目錄創建一個叫做 `.env` 的檔案，並把下方模板中的缺項補齊：
 ```
@@ -69,7 +69,7 @@ BLOCKED_USERS="[
 - HiZollo Network 無效
 - 測試頻道以外使用的指令不會被回應
 
-在複製或使用 HiZollo 的原始碼時，請注意 [我們的授權方式](#授權)。
+在複製或使用 HiZollo 的原始碼時，請注意[我們的授權方式](#授權)。
 
 ### Webhook
 在創建回報系統的 Webhook 時，我們建議你使用由應用程式創建的 Webhook，按鈕才能正常顯示。
@@ -96,7 +96,7 @@ URL: https://discord.com/api/webhooks/1022496087895973898/DYewdMZ138jskaXgFalU_J
 由於在未來我們可能會對音樂系統做改寫，啟用此功能的方法亦可能改變，對於使用此功能的人，請關注本章節和更新日誌。
 
 ## 官方伺服器
-如果有碰到任何使用上的問題，你都可以到我們的 [官方伺服器](https://hizollo.ddns.net/server) 中詢問。
+如果有碰到任何使用上的問題，你都可以到我們的[官方伺服器](https://hizollo.ddns.net/server)中詢問。
 
 ## 授權
 Junior HiZollo 的原始碼是以 GPL-3.0-or-later 條款授權給所有人使用，你可以在該條款之下對其做任意的分發、修改。對於更詳細的說明，請參見 [COPYING](https://github.com/HiZollo/Junior-HiZollo/blob/main/COPYING) 或 [Google](https://www.google.com/search?q=gpl-3.0-or-later)。
