@@ -24,6 +24,5 @@ export * from './Hizollo';
 export * from './Human';
 export * from './Math';
 export * from './Nature';
-export * from './Subject';
-export * from './Useful';
 export * from './World';
+export * from './Useful';
