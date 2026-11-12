@@ -19,6 +19,7 @@
  */
 
 export * from './Anecdote';
+export * from './Computer';
 export * from './Discord';
 export * from './Hizollo';
 export * from './Human';
