@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const Subject = [
+export const World = [
   // 世界之最
   '海拔最高的山是聖母峰，但離地心最遠的山卻是厄瓜多的欽博拉索山，比聖母峰足足遠了 2.15 公里',
   '南極是地球上最廣大的無人領地，也是唯一沒有永久居民的大陸',

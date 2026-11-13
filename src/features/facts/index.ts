@@ -25,5 +25,5 @@ export * from './Hizollo';
 export * from './Human';
 export * from './Math';
 export * from './Nature';
-export * from './World';
 export * from './Useful';
+export * from './World';
