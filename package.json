@@ -12,6 +12,7 @@
     "build": "tsc",
     "postbuild": "resolve-tspaths",
     "deploy": "dotenv run -- node dist/src/deploy.js",
+    "clean": "dotenv run -- node dist/src/deploy.js --clean",
     "rg-webhook": "dotenv run -- node dist/src/register-webhook.js",
     "start": "dotenv run -- node dist/src/index.js",
     "test": "dotenv run -- node dist/src/index.js dev"

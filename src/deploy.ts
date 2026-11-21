@@ -19,7 +19,7 @@
  */
 import path from "node:path";
 import { REST } from "@discordjs/rest";
-import { ApplicationCommandOptionAllowedChannelTypes, ApplicationCommandOptionType, RESTPostAPIApplicationCommandsJSONBody, Routes, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
+import { ApplicationCommandOptionAllowedChannelTypes, ApplicationCommandOptionType, Collection, RESTPostAPIApplicationCommandsJSONBody, Routes, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
 import config from "@root/config";
 import constant from "@root/constant.json";
 import { Command } from "./classes/Command";
@@ -29,157 +29,197 @@ import { CommandType } from "./typings/enums";
 import { HZCommandOptionData } from "./typings/types";
 import { Translator } from "./classes/Translator";
 
-(async () => {
-  const rest = new REST({ version: '10' }).setToken(config.bot.token);
-  const { globalCommands, devCommands } = loadCommands(path.join(__dirname, './commands'));
+type CommandScope = "global" | "dev" | "all";
 
+(async () => {
   try {
-    console.log('正在註冊全域指令');
+    const rest = new REST({ version: "10" }).setToken(config.bot.token);
+    const guildId = getGuildId();
+
+    // 清空指令
+    if (process.argv.includes("--clean")) {
+      if (guildId) {
+        console.log(`正在清空伺服器指令`);
+
+        await rest.put(
+          Routes.applicationGuildCommands(config.bot.id, guildId),
+          { body: [] }
+        );
+
+        console.log(`已清空伺服器指令`);
+      } else {
+        console.log("正在清空全域指令");
+
+        await rest.put(
+          Routes.applicationCommands(config.bot.id),
+          { body: [] }
+        );
+
+        console.log("全域指令已清空");
+      }
+
+      return;
+    }
+
+    // 正常部署
+    const dirPath = path.join(__dirname, "./commands");
+    const commands = CommandLoader.load(dirPath);
+
+    if (guildId) {
+      const guildCommands = loadCommands(commands, "all");
+
+      console.log(`正在註冊伺服器指令`);
+      await rest.put(
+        Routes.applicationGuildCommands(config.bot.id, guildId),
+        { body: guildCommands }
+      );
+      console.log(`伺服器指令註冊成功`);
+      return;
+    }
+
+    const globalCommands = loadCommands(commands, "global");
+    const devCommands = loadCommands(commands, "dev");
+
+    console.log("正在註冊全域指令");
     await rest.put(
-      Routes.applicationCommands(config.bot.id), 
+      Routes.applicationCommands(config.bot.id),
       { body: globalCommands }
     );
-    console.log('全域指令註冊成功');
+    console.log("全域指令註冊成功");
 
-    console.log('正在註冊私人指令');
+    console.log("正在註冊私人指令");
     await rest.put(
-      Routes.applicationGuildCommands(config.bot.id, constant.devGuild.id), 
+      Routes.applicationGuildCommands(config.bot.id, constant.devGuild.id),
       { body: devCommands }
     );
-    console.log('私人指令註冊成功');
+    console.log("私人指令註冊成功");
   } catch (error) {
     console.error(error);
+    process.exitCode = 1;
   }
 })();
 
 /**
- * 把指定資料夾裡的指令都轉成 API 看得懂的資料
- * @param dirPath 要讀取的資料夾
- * @returns 
+ * 尋找 GuildId 參數
+ * 支援以下方法
+ * npm run deploy -- --guild <guild-id>
+ * npm run deploy -- --guild=<guild-id>
+ * DEPLOY_GUILD_ID=<guild-id> npm run deploy
  */
-function loadCommands(dirPath: string): {
-  globalCommands: RESTPostAPIApplicationCommandsJSONBody[],
-  devCommands: RESTPostAPIApplicationCommandsJSONBody[]
-} {
-  const globalCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
-  const devCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
+function getGuildId(): string | undefined {
+  const inlineArgument = process.argv.find(argument => argument.startsWith("--guild="));
+  const guildIndex = process.argv.indexOf("--guild");
 
-  const zGlobalCommands: SlashCommandSubcommandBuilder[] = [];
-  const zDevCommands: SlashCommandSubcommandBuilder[] = [];
+  const guildId = inlineArgument !== undefined
+    ? inlineArgument.slice("--guild=".length)
+    : guildIndex !== -1
+      ? process.argv[guildIndex + 1]
+      : process.env.DEPLOY_GUILD_ID;
 
-  const commands = CommandLoader.load(dirPath);
-
-  for (const command of commands.values()) {
-    if (!(command instanceof CommandGroup)) {
-      const target = command.type === CommandType.Developer ? devCommands : globalCommands;
-      target.push(parseCommand(command));
-      continue;
-    }
-
-    const globalBuilder = createGroupBuilder(command);
-    const devBuilder = createGroupBuilder(command);
-
-    let globalExist = false;
-    let devExist = false;
-
-    for (const child of command.children.values()) {
-      if (child instanceof CommandGroup) {
-        const globalGroup = parseNestedGroup(child, "global");
-        const devGroup = parseNestedGroup(child, "dev");
-
-        if (globalGroup) {
-          globalBuilder.addSubcommandGroup(globalGroup);
-          globalExist = true;
-        }
-
-        if (devGroup) {
-          devBuilder.addSubcommandGroup(devGroup);
-          devExist = true;
-        }
-
-        continue;
-      }
-
-      const shortcut = Translator.getZShortcut(child.path);
-
-      if (child.type === CommandType.Developer) {
-        devBuilder.addSubcommand(parseSubcommand(child));
-        devExist = true;
-
-        if (shortcut) {
-          zDevCommands.push(parseSubcommand(child).setName(shortcut));
-        }
-      } else {
-        globalBuilder.addSubcommand(parseSubcommand(child));
-        globalExist = true;
-
-        if (shortcut) {
-          zGlobalCommands.push(parseSubcommand(child).setName(shortcut));
-        }
-      }
-    }
-
-    if (globalExist) globalCommands.push(globalBuilder.toJSON());
-    if (devExist) devCommands.push(devBuilder.toJSON());
+  if ((inlineArgument !== undefined || guildIndex !== -1) && !guildId) {
+    throw new Error("使用 --guild 時必須提供 Guild ID");
   }
 
-  // 處理 z 指令
-  if (zGlobalCommands.length) {
-    const builder = new SlashCommandBuilder()
-      .setName("z")
-      .setDescription("執行 z 指令")
-      .setDMPermission(false);
+  if (!guildId) return;
 
-    zGlobalCommands.forEach(command => builder.addSubcommand(command));
-    globalCommands.push(builder.toJSON());
+  if (!/^\d{17,20}$/.test(guildId)) {
+    throw new Error(`無效的 Guild ID：${guildId}`);
   }
 
-  if (zDevCommands.length) {
-    const builder = new SlashCommandBuilder()
-      .setName("z")
-      .setDescription("執行 z 指令")
-      .setDMPermission(false);
-
-    zDevCommands.forEach(command => builder.addSubcommand(command));
-    devCommands.push(builder.toJSON());
-  }
-
-  return { globalCommands, devCommands };
-}
-
-function createGroupBuilder(command: CommandGroup): SlashCommandBuilder {
-  return new SlashCommandBuilder()
-    .setName(command.name)
-    .setDescription(command.description)
-    .setDMPermission(false);
-}
-
-function parseNestedGroup(group: CommandGroup, scope: "global" | "dev"): SlashCommandSubcommandGroupBuilder | null {
-  const builder = new SlashCommandSubcommandGroupBuilder()
-    .setName(group.name)
-    .setDescription(group.description);
-
-  let exists = false;
-
-  for (const command of group.children.values()) {
-    if (command instanceof CommandGroup) throw new Error(`Discord Application Command 目前不支援此命令深度：${command.path.join(" ")}`);
-
-    const isDeveloper = command.type === CommandType.Developer;
-    if (isDeveloper !== (scope === "dev")) continue;
-
-    builder.addSubcommand(parseSubcommand(command));
-    exists = true;
-  }
-
-  return exists ? builder : null;
+  return guildId;
 }
 
 /**
- * 把 {@link Command} 轉換成 API 看得懂的資料，這邊用很多 `as` 是因為 discord.js 的型別好像寫爛了
- * @param command 指令本人
+ * 把指定資料夾裡的指令都轉成 API 看得懂的資料
+ * @param commands 已透過 CommandLoader 載入的指令
+ * @param scope 要部署的指令範圍
  * @returns 
  */
-function parseCommand(command: Command): RESTPostAPIApplicationCommandsJSONBody {
+function loadCommands(
+  commands: Collection<string, Command>,
+  scope: CommandScope
+): RESTPostAPIApplicationCommandsJSONBody[] {
+  const result: RESTPostAPIApplicationCommandsJSONBody[] = [];
+  const zCommands: SlashCommandSubcommandBuilder[] = [];
+
+  for (const command of commands.values()) {
+    if (!(command instanceof CommandGroup)) {
+      if (isCommandInScope(command, scope)) {
+        result.push(parseCommand(command));
+      }
+      continue;
+    }
+
+    if (command.options?.length) {
+      throw new Error(`指令群組不能設定一般選項：${command.path.join(" ")}`);
+    }
+
+    const builder = createCommandBuilder(command);
+    let optionCount = 0;
+
+    for (const child of command.children.values()) {
+      if (child instanceof CommandGroup) {
+        if (!hasCommandsInScope(child, scope)) continue;
+
+        const nestedGroup = parseNestedGroup(child, scope);
+        if (!nestedGroup) continue;
+
+        builder.addSubcommandGroup(nestedGroup);
+      } else {
+        if (!isCommandInScope(child, scope)) continue;
+
+        builder.addSubcommand(parseSubcommand(child));
+      }
+
+      optionCount++;
+
+      const shortcut = Translator.getZShortcut(child.path);
+      if (shortcut) {
+        zCommands.push(parseSubcommand(child).setName(shortcut));
+      }
+    }
+
+    if (!optionCount) continue;
+
+    if (optionCount > 25) {
+      throw new Error(`指令 ${command.name} 超過 Discord 的 25 個選項上限`);
+    }
+
+    result.push(builder.toJSON());
+  }
+
+  // 處理 z 指令
+  if (zCommands.length) {
+    const builder = new SlashCommandBuilder()
+      .setName("z")
+      .setDescription("執行 z 指令")
+      .setDMPermission(false);
+
+    zCommands.forEach(command => builder.addSubcommand(command));
+    result.push(builder.toJSON());
+  }
+
+  return result;
+}
+
+function isCommandInScope(command: Command, scope: CommandScope): boolean {
+  if (scope === "all") return true;
+  return (command.type === CommandType.Developer) === (scope === "dev");
+}
+
+function hasCommandsInScope(group: CommandGroup, scope: CommandScope): boolean {
+  for (const child of group.children.values()) {
+    if (child instanceof CommandGroup) {
+      if (hasCommandsInScope(child, scope)) return true;
+    } else if (isCommandInScope(child, scope)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function createCommandBuilder(command: Command): SlashCommandBuilder {
   const builder = new SlashCommandBuilder()
     .setName(command.name)
     .setDescription(command.description)
@@ -189,8 +229,45 @@ function parseCommand(command: Command): RESTPostAPIApplicationCommandsJSONBody 
     builder.setDefaultMemberPermissions(command.permissions.user.reduce((acc, cur) => acc | cur, 0n));
   }
 
+  return builder;
+}
+
+function parseNestedGroup(group: CommandGroup, scope: CommandScope): SlashCommandSubcommandGroupBuilder | null {
+  if (group.options?.length) {
+    throw new Error(`Discord Application Command 的指令群組不可設定一般選項：${group.path.join(" ")}`);
+  }
+
+  const builder = new SlashCommandSubcommandGroupBuilder()
+    .setName(group.name)
+    .setDescription(group.description);
+
+  let exists = false;
+
+  for (const command of group.children.values()) {
+    if (command instanceof CommandGroup) {
+      if (hasCommandsInScope(command, scope)) throw new Error(`Discord Application Command 目前不支援此指令群組深度：${command.path.join(" ")}`);
+      continue;
+    }
+
+    if (!isCommandInScope(command, scope)) continue;
+
+    builder.addSubcommand(parseSubcommand(command));
+    exists = true;
+  }
+
+  return exists ? builder : null;
+}
+
+/**
+ * 把 {@link Command} 轉換成 API 看得懂的資料
+ * @param command 指令本人
+ * @returns 
+ */
+function parseCommand(command: Command): RESTPostAPIApplicationCommandsJSONBody {
+  const builder = createCommandBuilder(command);
+
   command.options?.forEach(option => addOption(builder, option));
-  
+
   return builder.toJSON();
 }
 
@@ -204,7 +281,7 @@ function parseSubcommand(command: Command): SlashCommandSubcommandBuilder {
   const subcommandbuilder = new SlashCommandSubcommandBuilder()
     .setName(command.name)
     .setDescription(command.description);
-  
+
   command.options?.forEach(option => addOption(subcommandbuilder, option));
   return subcommandbuilder;
 }
@@ -215,10 +292,10 @@ function parseSubcommand(command: Command): SlashCommandSubcommandBuilder {
  * @param option 從 {@link Command} 來的選項
  */
 function addOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder, option: HZCommandOptionData): void {
-
   for (let i = 1; i <= (option.repeat ? 5 : 1); i++) {
-    const name = option.name.replaceAll('%i', `${i}`);
-    const description = option.description.replaceAll('%i', `${i}`);
+    const name = option.name.replaceAll("%i", `${i}`);
+    const description = option.description.replaceAll("%i", `${i}`);
+
     switch (option.type) {
       case ApplicationCommandOptionType.Attachment:
         builder.addAttachmentOption(o => o
@@ -227,7 +304,7 @@ function addOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
           .setRequired(!!option.required)
         );
         break;
-  
+
       case ApplicationCommandOptionType.Boolean:
         builder.addBooleanOption(o => o
           .setName(name)
@@ -235,7 +312,7 @@ function addOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
           .setRequired(!!option.required)
         );
         break;
-      
+
       case ApplicationCommandOptionType.Channel:
         builder.addChannelOption(o => o
           .setName(name)
@@ -244,7 +321,7 @@ function addOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
           .addChannelTypes(...((option.channelTypes ?? []) as ApplicationCommandOptionAllowedChannelTypes[]))
         );
         break;
-      
+
       case ApplicationCommandOptionType.Integer:
         builder.addIntegerOption(o => {
           o.setName(name)
@@ -261,7 +338,7 @@ function addOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
           return o;
         });
         break;
-      
+
       case ApplicationCommandOptionType.Mentionable:
         builder.addMentionableOption(o => o
           .setName(name)
@@ -269,7 +346,7 @@ function addOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
           .setRequired(!!option.required)
         );
         break;
-    
+
       case ApplicationCommandOptionType.Number:
         builder.addNumberOption(o => {
           o.setName(name)
@@ -286,7 +363,7 @@ function addOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
           return o;
         });
         break;
-      
+
       case ApplicationCommandOptionType.Role:
         builder.addRoleOption(o => o
           .setName(name)
@@ -294,7 +371,7 @@ function addOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
           .setRequired(!!option.required)
         );
         break;
-      
+
       case ApplicationCommandOptionType.String:
         builder.addStringOption(o => {
           o.setName(name)
@@ -311,7 +388,7 @@ function addOption(builder: SlashCommandBuilder | SlashCommandSubcommandBuilder,
           return o;
         });
         break;
-    
+
       case ApplicationCommandOptionType.User:
         builder.addUserOption(o => o
           .setName(name)
