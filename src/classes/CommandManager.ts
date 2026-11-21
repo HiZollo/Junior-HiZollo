@@ -165,7 +165,7 @@ export class CommandManager extends EventEmitter {
       this.client.cooldown.addUser({
         commandName: cooldownKey,
         userId: interaction.user.id,
-        duration: command.cooldown
+        duration: this.getEffectiveCooldown(command)
       });
     }
     /**/
@@ -262,7 +262,7 @@ export class CommandManager extends EventEmitter {
       message.client.cooldown.addUser({
         userId: message.author.id,
         commandName: cooldownKey,
-        duration: command.cooldown
+        duration: this.getEffectiveCooldown(command)
       });
     }
     /**/
@@ -409,6 +409,23 @@ export class CommandManager extends EventEmitter {
       user: [...user],
       bot: [...bot]
     };
+  }
+
+  /**
+   * 取得指令的有效冷卻時間
+   *
+   * 冷卻繼承規則：
+   * 1. 優先使用指令本身的冷卻時間（0 不會當成 false 而是停用冷卻）。
+   * 2. 未設定時，繼承最近一層父指令的冷卻時間。
+   * 3. 若所有父指令都未設定，則不使用冷卻。
+   */
+  private getEffectiveCooldown(command: Command): number {
+    for (let depth = command.path.length; depth > 0; depth--) {
+      const current = this.get(command.path.slice(0, depth));
+      if (current?.cooldown !== undefined) return current.cooldown;
+    }
+
+    return 0;
   }
 
   public *walk(commands: Collection<string, Command> = this.commands): IterableIterator<Command> {
