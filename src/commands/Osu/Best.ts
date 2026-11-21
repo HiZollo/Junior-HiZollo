@@ -76,7 +76,7 @@ export default class OsuBest extends Command<[string, number]> {
     const thumbnails: (string | null)[] = [];
 
     scores.forEach((score, i) => {
-      const { title, difficulty: { rating }, maxCombo } = beatmaps[i];
+      const { title, difficulty: { rating }, maxCombo } = beatmaps[i]!;
       const {
         score: scoring, rank, perfect, accuracy, pp,
         statistics: { countMiss }, maxCombo: maxComboAchieve
@@ -84,7 +84,7 @@ export default class OsuBest extends Command<[string, number]> {
 
       const field: APIEmbedField[] = [
         { name: '玩家', value: `[${user.username}](${user.profileURL()})` },
-        { name: '譜面名稱', value: `[${title}](${beatmaps[i].beatmapURL()})` },
+        { name: '譜面名稱', value: `[${title}](${beatmaps[i]!.beatmapURL()})` },
         { name: '難度', value: `${~~(rating * 100) / 100}` },
         { name: '分數', value: `${scoring}`, inline: true },
         { name: '等第', value: ScoreRank[rank].replace('H', '+').replace('X', 'SS'), inline: true },
@@ -97,7 +97,7 @@ export default class OsuBest extends Command<[string, number]> {
       field.push({ name: 'Mods', value: this.modResolve(score.enabledMods).join(' ') });
 
       fields.push(field);
-      thumbnails.push(beatmaps[i].coverThumbnailURL());
+      thumbnails.push(beatmaps[i]!.coverThumbnailURL());
     });
 
     const helper = new EmbedBuilder().applyHiZolloSettings(source.member, 'HiZollo 的 osu! 中心');
