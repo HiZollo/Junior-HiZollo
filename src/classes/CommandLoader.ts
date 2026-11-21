@@ -28,7 +28,10 @@ import type { CommandPath } from "../typings/types";
 
 export class CommandLoader extends null {
   /**
-   * 遞迴載入命令
+   * 遞迴載入指令
+   * @param dirPath 要載入的資料夾
+   * @param parenthPath 父節點的路徑，會被加入到載入的指令路徑上
+   * @return{Collection<string, Command>} 包含指令物件的列表
    */
   static load(dirPath: string, parentPath: CommandPath = []): Collection<string, Command> {
     const commands = new Collection<string, Command>();
