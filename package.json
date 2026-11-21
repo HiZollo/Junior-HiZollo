@@ -33,7 +33,7 @@
     "@discordjs/voice": "^0.19.2",
     "@hizollo/calculator": "^1.1.1",
     "@hizollo/games": "^3.0.0-beta.0",
-    "@hizollo/osu-api": "^1.2.1",
+    "@hizollo/osu-api": "^1.2.4",
     "discord.js": "^14.28.1",
     "dotenv": "^18.0.9",
     "emoji-regex": "^11.0.0",
