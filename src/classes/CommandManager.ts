@@ -155,13 +155,14 @@ export class CommandManager extends EventEmitter {
 
     /***** 檢查冷卻 *****/
     if (!channel.isTestChannel()) {
-      const timeLeft = await this.client.cooldown.checkUser({ commandName: command.name, userId: interaction.user.id });
+      const cooldownKey = command.path.join(" ");
+      const timeLeft = await this.client.cooldown.checkUser({ commandName: cooldownKey, userId: interaction.user.id });
       if (timeLeft) {
         this.emit('reject', new Source(interaction, channel, member), { reason: CommandManagerRejectReason.InCooldown, args: [timeLeft] });
         return;
       }
       this.client.cooldown.addUser({
-        commandName: command.name,
+        commandName: cooldownKey,
         userId: interaction.user.id,
         duration: command.cooldown
       });
@@ -250,14 +251,15 @@ export class CommandManager extends EventEmitter {
 
     /***** 檢查冷卻 *****/
     if (!message.channel.isTestChannel()) {
-      const timeLeft = await message.client.cooldown.checkUser({ commandName: command.name, userId: message.author.id });
+      const cooldownKey = command.path.join(" ");
+      const timeLeft = await message.client.cooldown.checkUser({ commandName: cooldownKey, userId: message.author.id });
       if (timeLeft) {
         this.emit('reject', new Source(message, channel, member), { reason: CommandManagerRejectReason.InCooldown, args: [timeLeft] });
         return;
       }
       message.client.cooldown.addUser({
         userId: message.author.id,
-        commandName: command.name,
+        commandName: cooldownKey,
         duration: command.cooldown
       });
     }
