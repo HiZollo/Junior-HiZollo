@@ -93,8 +93,16 @@ export class AutocompleteManager {
       
       commandName = zAlias.join("_");
     }
-    else if (interaction.options.getSubcommand(false)) {
-      commandName += '_' + interaction.options.getSubcommand(false);
+    else {
+      const commandPath = [interaction.commandName];
+
+      const subcommandGroup = interaction.options.getSubcommandGroup(false);
+      const subcommand = interaction.options.getSubcommand(false);
+
+      if (subcommandGroup) commandPath.push(subcommandGroup);
+      if (subcommand) commandPath.push(subcommand);
+
+      commandName = commandPath.join("_");
     }
 
     const option = interaction.options.getFocused(true);
