@@ -20,7 +20,7 @@
 
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandOptionType, CommandType } from "../typings/enums";
-import { HZCommandOptionData } from "../typings/types";
+import { CommandPath, HZCommandOptionData } from "../typings/types";
 
 /**
  * 掌管常數與字串的轉換
@@ -32,7 +32,9 @@ export class Translator extends null {
    * @param commandName 由群組名稱及指令名稱構成的群組指令全名
    * @returns 捷徑名稱
    */
-  static getZShortcut([groupName, commandname]: [string, string]): string | void {
+  static getZShortcut(path: CommandPath): string | void {
+    if (path.length !== 2) return;
+    const [groupName, commandname] = path;
     if (!(groupName in this.ZShortcut)) return;
     const nextLayer = this.ZShortcut[groupName as keyof typeof this.ZShortcut];
 
@@ -45,7 +47,7 @@ export class Translator extends null {
    * @param zShortcut z 指令的捷徑名稱
    * @returns 群組指令全名
    */
-  static getFullCommandName(zShortcut: string): [string, string] | void {
+  static getFullCommandName(zShortcut: string): CommandPath | void {
     for (const groupName in this.ZShortcut) {
       const nextLayer = this.ZShortcut[groupName as keyof typeof this.ZShortcut];
       for (const commandName in nextLayer) {
