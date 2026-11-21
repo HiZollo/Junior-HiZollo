@@ -21,6 +21,7 @@
 import { StringSelectMenuInteraction } from "discord.js";
 import Help from "../commands/Help";
 import { CommandGroup } from "../classes/CommandGroup";
+import { CommandHelpRenderer } from "../classes/CommandHelpRenderer";
 
 export default async function help(interaction: StringSelectMenuInteraction<"cached">): Promise<void> {
   const help = interaction.client.commands.search(['help']) as Help;
@@ -37,8 +38,8 @@ export default async function help(interaction: StringSelectMenuInteraction<"cac
     if (!command) return;
 
     const embed = command instanceof CommandGroup
-      ? help.getEmbedForSubcommandGroup(interaction, command)
-      : help.getEmbedForCommand(interaction, command);
+      ? CommandHelpRenderer.getGroupEmbed(interaction, command)
+      : CommandHelpRenderer.getCommandEmbed(interaction, command);
 
     await interaction.reply({ ephemeral: true, embeds: [embed] });
     return;

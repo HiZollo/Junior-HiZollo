@@ -44,6 +44,8 @@ export class CommandGroup extends Command<[]> {
    * 預設行為是顯示此指令群組的指令列表
    */
   public override async execute(source: Source): Promise<void> {
-    await CommandHelpRenderer.show(source, this.path.join(' '), this.children);
+    await source.defer();
+    const embed = CommandHelpRenderer.getGroupEmbed(source, this);
+    await source.update({ embeds: [embed] });
   }
 }
