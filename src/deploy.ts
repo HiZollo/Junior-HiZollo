@@ -1,6 +1,6 @@
 /*
  * 
- * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
+ * Copyright 2022, 2026 HiZollo Dev Team <https://github.com/hizollo>
  * 
  * This file is a part of Junior HiZollo.
  * 
@@ -17,14 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
-
-import fs from "node:fs";
 import path from "node:path";
 import { REST } from "@discordjs/rest";
-import { ApplicationCommandOptionAllowedChannelTypes, ApplicationCommandOptionType, RESTPostAPIApplicationCommandsJSONBody, Routes, SlashCommandBuilder, SlashCommandSubcommandBuilder } from "discord.js";
+import { ApplicationCommandOptionAllowedChannelTypes, ApplicationCommandOptionType, RESTPostAPIApplicationCommandsJSONBody, Routes, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
 import config from "@root/config";
 import constant from "@root/constant.json";
 import { Command } from "./classes/Command";
+import { CommandGroup } from "./classes/CommandGroup";
+import { CommandLoader } from "./classes/CommandLoader";
 import { CommandType } from "./typings/enums";
 import { HZCommandOptionData } from "./typings/types";
 import { Translator } from "./classes/Translator";
@@ -52,96 +52,126 @@ import { Translator } from "./classes/Translator";
   }
 })();
 
-
 /**
  * 把指定資料夾裡的指令都轉成 API 看得懂的資料
  * @param dirPath 要讀取的資料夾
  * @returns 
  */
 function loadCommands(dirPath: string): {
-  globalCommands: RESTPostAPIApplicationCommandsJSONBody[], 
+  globalCommands: RESTPostAPIApplicationCommandsJSONBody[],
   devCommands: RESTPostAPIApplicationCommandsJSONBody[]
 } {
   const globalCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
   const devCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
 
-  const zGlobalCommands: [string, SlashCommandSubcommandBuilder][] = [];
-  const zDevCommands: [string, SlashCommandSubcommandBuilder][] = [];
+  const zGlobalCommands: SlashCommandSubcommandBuilder[] = [];
+  const zDevCommands: SlashCommandSubcommandBuilder[] = [];
 
-  const commandFiles = fs.readdirSync(dirPath);
-  for (const file of commandFiles) {
-    if (!file.endsWith('.js')) continue;
-    let filePath = path.join(dirPath, file);
+  const commands = CommandLoader.load(dirPath);
 
-    const C: new () => Command = require(filePath).default;
-    const command = new C();
-
-    // 非指令群的指令就直接加進去
-    if (command.type !== CommandType.SubcommandGroup) {
-      (command.type === CommandType.Developer ? devCommands : globalCommands).push(parseCommand(command));
+  for (const command of commands.values()) {
+    if (!(command instanceof CommandGroup)) {
+      const target = command.type === CommandType.Developer ? devCommands : globalCommands;
+      target.push(parseCommand(command));
       continue;
     }
 
-    // 指令群就去讀群組指令
-    const globalBuilder = new SlashCommandBuilder()
-      .setName(command.name)
-      .setDescription(command.description)
-      .setDMPermission(false);
-    const devBuilder = new SlashCommandBuilder()
-      .setName(command.name)
-      .setDescription(command.description)
-      .setDMPermission(false);
-    let globalExist = false, devExist = false;
+    const globalBuilder = createGroupBuilder(command);
+    const devBuilder = createGroupBuilder(command);
 
-    filePath = filePath.slice(0, -3);
-    const subcommandFiles = fs.readdirSync(filePath);
-    for (const subcommandFile of subcommandFiles) {
-      if (!subcommandFile.endsWith('.js')) continue;
-      
-      const C: new () => Command = require(path.join(filePath, subcommandFile)).default;
-      const subcommand = new C();
+    let globalExist = false;
+    let devExist = false;
 
-      const subcommandBuilder = parseSubcommand(subcommand);
-      (subcommand.type === CommandType.Developer ? devBuilder : globalBuilder).addSubcommand(subcommandBuilder);
-      (subcommand.type === CommandType.Developer ? zDevCommands : zGlobalCommands).push([command.name, subcommandBuilder])
-      globalExist ||= subcommand.type !== CommandType.Developer;
-      devExist ||= subcommand.type === CommandType.Developer;
+    for (const child of command.children.values()) {
+      if (child instanceof CommandGroup) {
+        const globalGroup = parseNestedGroup(child, "global");
+        const devGroup = parseNestedGroup(child, "dev");
+
+        if (globalGroup) {
+          globalBuilder.addSubcommandGroup(globalGroup);
+          globalExist = true;
+        }
+
+        if (devGroup) {
+          devBuilder.addSubcommandGroup(devGroup);
+          devExist = true;
+        }
+
+        continue;
+      }
+
+      const shortcut = Translator.getZShortcut(child.path);
+
+      if (child.type === CommandType.Developer) {
+        devBuilder.addSubcommand(parseSubcommand(child));
+        devExist = true;
+
+        if (shortcut) {
+          zDevCommands.push(parseSubcommand(child).setName(shortcut));
+        }
+      } else {
+        globalBuilder.addSubcommand(parseSubcommand(child));
+        globalExist = true;
+
+        if (shortcut) {
+          zGlobalCommands.push(parseSubcommand(child).setName(shortcut));
+        }
+      }
     }
 
     if (globalExist) globalCommands.push(globalBuilder.toJSON());
     if (devExist) devCommands.push(devBuilder.toJSON());
   }
 
-
   // 處理 z 指令
   if (zGlobalCommands.length) {
     const builder = new SlashCommandBuilder()
-      .setName('z')
-      .setDescription('執行 z 指令')
+      .setName("z")
+      .setDescription("執行 z 指令")
       .setDMPermission(false);
-    zGlobalCommands.forEach(([parent, command]) => {
-      const shortcut = Translator.getZShortcut([parent, command.name]);
-      if (!shortcut) return;
-      command.setName(shortcut);
-      builder.addSubcommand(command);
-    });
+
+    zGlobalCommands.forEach(command => builder.addSubcommand(command));
     globalCommands.push(builder.toJSON());
   }
+
   if (zDevCommands.length) {
     const builder = new SlashCommandBuilder()
-      .setName('z')
-      .setDescription('執行 z 指令')
+      .setName("z")
+      .setDescription("執行 z 指令")
       .setDMPermission(false);
-    zDevCommands.forEach(([parent, command]) => {
-      const shortcut = Translator.getZShortcut([parent, command.name]);
-      if (!shortcut) return;
-      command.setName(shortcut);
-      builder.addSubcommand(command);
-    });
+
+    zDevCommands.forEach(command => builder.addSubcommand(command));
     devCommands.push(builder.toJSON());
   }
 
   return { globalCommands, devCommands };
+}
+
+function createGroupBuilder(command: CommandGroup): SlashCommandBuilder {
+  return new SlashCommandBuilder()
+    .setName(command.name)
+    .setDescription(command.description)
+    .setDMPermission(false);
+}
+
+function parseNestedGroup(group: CommandGroup, scope: "global" | "dev"): SlashCommandSubcommandGroupBuilder | null {
+  const builder = new SlashCommandSubcommandGroupBuilder()
+    .setName(group.name)
+    .setDescription(group.description);
+
+  let exists = false;
+
+  for (const command of group.children.values()) {
+    if (command instanceof CommandGroup) throw new Error(`Discord Application Command 目前不支援此命令深度：${command.path.join(" ")}`);
+
+    const isDeveloper = command.type === CommandType.Developer;
+    if (isDeveloper !== (scope === "dev")) continue;
+
+    builder.addSubcommand(parseSubcommand(command));
+    exists = true;
+  }
+
+  return exists ? builder : null;
 }
 
 /**
