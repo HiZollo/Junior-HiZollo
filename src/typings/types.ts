@@ -32,6 +32,8 @@ import { WebhookLogger } from "../classes/WebhookLogger";
 import { ArgumentParseType, CommandManagerRejectReason, CommandOptionType } from "./enums";
 import { CommandParserOptionFailWithChoicesResult, CommandParserOptionFailWithLimitResult, CommandParserOptionFailWithPureStatusResult, CommandParserOptionPassResult, PageSystemDescriptionOptions, PageSystemEmbedFieldOptions } from "./interfaces";
 
+export type CommandPath = readonly string[];
+
 export type CommandParserOptionResult =
   | CommandParserOptionPassResult
   | CommandParserOptionFailWithPureStatusResult

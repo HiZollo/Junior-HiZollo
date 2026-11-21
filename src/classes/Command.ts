@@ -22,7 +22,7 @@ import { ChatInputCommandInteraction, GuildMember, GuildTextBasedChannel, Messag
 import { Source } from "./Source";
 import { ArgumentParseType, CommandType } from "../typings/enums";
 import { CommandOptions, CommandPermission } from "../typings/interfaces";
-import { ArgumentParseMethod, HZCommandOptionData } from "../typings/types";
+import { ArgumentParseMethod, CommandPath, HZCommandOptionData } from "../typings/types";
 import { Promisable } from "../typings/utils";
 
 /**
@@ -39,6 +39,11 @@ export abstract class Command<T = unknown> {
    * 指令的父指令
    */
   public parent: string | null;
+
+  /**
+   * 完整的指令路徑
+   */
+  public path: CommandPath;
 
   /**
    * 指令名稱
@@ -94,6 +99,7 @@ export abstract class Command<T = unknown> {
    */
   constructor(options: CommandOptions) {
     this.type = options.type;
+    this.path = options.parent ? [options.parent, options.name] : [options.name];
     this.parent = options.parent ?? null;
     this.name = options.name;
     this.description = options.description;
