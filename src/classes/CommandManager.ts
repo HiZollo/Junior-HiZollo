@@ -30,7 +30,7 @@ import { Translator } from "./Translator";
 import config from '@root/config';
 import missingPermissions from "../features/utils/missingPermissions";
 import { CommandManagerRejectReason, CommandParserOptionResultStatus, CommandType } from "../typings/enums";
-import { CommandManagerEvents } from "../typings/interfaces";
+import { CommandManagerEvents, CommandPermission } from "../typings/interfaces";
 import { CommandManagerRejectInfo, CommandPath } from "../typings/types";
 
 interface MessageCommandResolution {
@@ -140,13 +140,14 @@ export class CommandManager extends EventEmitter {
     /**/
 
     /***** 檢查執行權限 *****/
-    const userMissing = missingPermissions(command.permissions?.user ?? [], channel, member);
+    const effectivePermissions = this.getEffectivePermissions(command);
+    const userMissing = missingPermissions(effectivePermissions.user ?? [], channel, member);
     if (userMissing.length) {
       this.emit('reject', new Source(interaction, channel, member), { reason: CommandManagerRejectReason.UserMissingPermission, args: [userMissing] });
       return;
     }
 
-    const botMissing = missingPermissions(command.permissions?.bot ?? [], channel, interaction.guild.members.me);
+    const botMissing = missingPermissions(effectivePermissions.bot ?? [], channel, interaction.guild.members.me);
     if (botMissing.length) {
       this.emit('reject', new Source(interaction, channel, member), { reason: CommandManagerRejectReason.BotMissingPermission, args: [botMissing] });
       return;
@@ -236,13 +237,14 @@ export class CommandManager extends EventEmitter {
     /**/
 
     /***** 檢查執行權限 *****/
-    const userMissing = missingPermissions(command.permissions?.user ?? [], message.channel, message.member);
+    const effectivePermissions = this.getEffectivePermissions(command);
+    const userMissing = missingPermissions(effectivePermissions.user ?? [], message.channel, message.member);
     if (userMissing.length) {
       this.emit('reject', new Source(message, channel, member), { reason: CommandManagerRejectReason.UserMissingPermission, args: [userMissing] });
       return;
     }
 
-    const botMissing = missingPermissions(command.permissions?.bot ?? [], message.channel, message.guild.members.me);
+    const botMissing = missingPermissions(effectivePermissions.bot ?? [], message.channel, message.guild.members.me);
     if (botMissing.length) {
       this.emit('reject', new Source(message, channel, member), { reason: CommandManagerRejectReason.BotMissingPermission, args: [botMissing] });
       return;
@@ -285,7 +287,7 @@ export class CommandManager extends EventEmitter {
   }
 
   /**
-   * 從 Message tokens 找出最長的有效命令路徑
+   * 從 Message tokens 找出最長有效指令
    */
   private resolveMessage(tokens: string[]): MessageCommandResolution | null {
     if (!tokens.length) return null;
@@ -374,6 +376,39 @@ export class CommandManager extends EventEmitter {
     if (root) return this.get(path);
 
     return this.findSubcommandShortcut(path[0]);
+  }
+
+  /**
+   * 取得指令的有效權限
+   *
+   * 權限繼承規則：
+   * 1. 所有所屬指令群組的權限都會繼承。
+   * 2. 指令本身的權限也會加入。
+   * 3. 不會覆蓋父層權限。
+   * 4. 重複的權限會自動去除。
+   */
+  private getEffectivePermissions(command: Command): CommandPermission {
+    const user = new Set<bigint>();
+    const bot = new Set<bigint>();
+
+    for (let depth = 1; depth <= command.path.length; depth++) {
+      const current = this.get(command.path.slice(0, depth));
+
+      if (!current) continue;
+
+      for (const permission of current.permissions?.user ?? []) {
+        user.add(permission);
+      }
+
+      for (const permission of current.permissions?.bot ?? []) {
+        bot.add(permission);
+      }
+    }
+
+    return {
+      user: [...user],
+      bot: [...bot]
+    };
   }
 
   public *walk(commands: Collection<string, Command> = this.commands): IterableIterator<Command> {
