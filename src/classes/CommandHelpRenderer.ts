@@ -24,6 +24,7 @@ import type { Source } from "./Source";
 import { HZCommandOptionData } from "../typings/types";
 import { Translator } from "./Translator";
 import { CommandGroup } from "./CommandGroup";
+import { CommandType } from "../typings/enums";
 
 type HelpSource = Pick<Source, 'client' | 'member'>
 
@@ -45,14 +46,13 @@ export class CommandHelpRenderer extends null {
   /**
    * 建立指定群組的指令列表 Embed
    */
-  static getGroupEmbed(source: HelpSource, command: CommandGroup): EmbedBuilder {
+  static getGroupEmbed(source: HelpSource, command: CommandGroup, canViewDeveloper = false): EmbedBuilder {
     const groupName = command.path.join(" ");
+    const hasVisibleCommands = [...command.children.values()].some(child => this.isCommandVisible(child, canViewDeveloper));
     const description = [
       `**${groupName}**`,
       command.description,
-      command.children.size
-        ? "請從下方選單選擇要查看的指令。"
-        : "此群組目前沒有可用指令。"
+      hasVisibleCommands ? "請從下方選單選擇要查看的指令。" : "此群組目前沒有可用指令。"
     ].join("\n\n");
 
     return this.createEmbed(source, description);
@@ -110,21 +110,22 @@ export class CommandHelpRenderer extends null {
     return choice.name === choice.value.toString() ? `\`${choice.name}\`` : `\`${choice.name}\`/\`${choice.value}\``;
   }
 
-  public static getGroupMessage(source: HelpSource, command: CommandGroup) {
+  public static getGroupMessage(source: HelpSource, command: CommandGroup, canViewDeveloper = false) {
     return {
-      embeds: [this.getGroupEmbed(source, command)],
-      components: this.getGroupComponents(command)
+      embeds: [this.getGroupEmbed(source, command, canViewDeveloper)],
+      components: this.getGroupComponents(command, canViewDeveloper)
     };
   }
 
-  public static getGroupComponents(command: CommandGroup): ActionRowBuilder<StringSelectMenuBuilder>[] {
-    if (!command.children.size) return [];
+  public static getGroupComponents(command: CommandGroup, canViewDeveloper = false): ActionRowBuilder<StringSelectMenuBuilder>[] {
+    const children = [...command.children.values()].filter(child => this.isCommandVisible(child, canViewDeveloper));
+    if (!children.length) return [];
 
     const menu = new StringSelectMenuBuilder()
       .setCustomId(`help_menu_group`)
       .setPlaceholder("請選擇一個指令");
 
-    for (const child of command.children.values()) {
+    for (const child of children) {
       menu.addOptions({
         label: child.name,
         description: child.description.slice(0, 100),
@@ -134,5 +135,16 @@ export class CommandHelpRenderer extends null {
     }
 
     return [new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(menu)];
+  }
+
+  /**
+   * 判斷指令是否可以在目前環境中顯示
+   *
+   * 開發者指令只會在測試頻道中顯示。
+   * 群組指令只顯示可見的子指令，如果完全沒有則隱藏。
+   */
+  public static isCommandVisible(command: Command, canViewDeveloper: boolean): boolean {
+    if (command instanceof CommandGroup) return [...command.children.values()].some(child => this.isCommandVisible(child, canViewDeveloper));
+    return command.type !== CommandType.Developer || canViewDeveloper;
   }
 }

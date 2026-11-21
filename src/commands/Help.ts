@@ -60,8 +60,9 @@ export default class Help extends Command<[string]> {
 
     // 給參數就顯示特定指令
     const command = source.client.commands.search(commandName.trim().split(/\s+/));
+    const canViewDeveloper = source.channel.isTestChannel();
 
-    if (!command || (command instanceof Command && command.type === CommandType.Developer && !source.channel?.isTestChannel())) {
+    if (!command || !CommandHelpRenderer.isCommandVisible(command, canViewDeveloper)) {
       await source.defer({ ephemeral: true });
       await source.update(`這個指令不存在，請使用 \`${config.bot.prefix}help\` 或 \`/help\` 查看當前的指令列表`);
       return;
@@ -70,7 +71,7 @@ export default class Help extends Command<[string]> {
     await source.defer();
 
     if (command instanceof CommandGroup) {
-      await source.update(CommandHelpRenderer.getGroupMessage(source, command));
+      await source.update(CommandHelpRenderer.getGroupMessage(source, command, canViewDeveloper));
       return;
     }
 
@@ -144,8 +145,9 @@ export default class Help extends Command<[string]> {
       .setCustomId('help_menu_type')
       .setPlaceholder('請選擇一個指令');
 
+    const canViewDeveloper = interaction.channel?.isTestChannel() ?? false;
     const commands = interaction.client.commands.commands
-      .filter(command => command.type === type)
+      .filter(command => command.type === type && CommandHelpRenderer.isCommandVisible(command, canViewDeveloper))
       .map(command => command);
 
     commands.forEach(command => {
@@ -161,8 +163,9 @@ export default class Help extends Command<[string]> {
   }
 
   public getEmbedsForType(interaction: StringSelectMenuInteraction<"cached">, type: CommandType) {
+    const canViewDeveloper = interaction.channel?.isTestChannel() ?? false;
     const commands = interaction.client.commands.commands
-      .filter(command => command.type === type);
+      .filter(command => command.type === type && CommandHelpRenderer.isCommandVisible(command, canViewDeveloper));
 
     const description =
       `以下是所有**${Translator.getCommandTypeChinese(type)}**分類中的指令\n` +
