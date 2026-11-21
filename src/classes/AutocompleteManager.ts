@@ -20,7 +20,6 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import constant from '@root/constant.json';
 import { AutocompleteData } from "../typings/types";
 import { HZClient } from "./HZClient";
 import { Interaction, InteractionType } from 'discord.js';
@@ -80,7 +79,7 @@ export class AutocompleteManager {
     if (interaction.type !== InteractionType.ApplicationCommandAutocomplete) return;
     if (!interaction.inCachedGuild()) return;
     if (interaction.user.blocked) return;
-    if (this.client.devMode && interaction.guild.id !== constant.mainGuild.id) return;
+    if (this.client.devMode && !interaction.channel?.isTestChannel()) return;
 
     let commandName = interaction.commandName;
     if (commandName === "z") {
@@ -118,7 +117,7 @@ export class AutocompleteManager {
     // 選出符合正則表達式的選項
     const result = this.data.get(commandName)?.[option.name]?.filter(({ name, devOnly }) => {
       if (!regExp.test(name.toLowerCase())) return false;
-      if (devOnly && interaction.guild.id !== constant.devGuild.id) return false;
+      if (devOnly && !interaction.channel?.isTestChannel()) return false;
       return true;
     });
     if (!result) return interaction.respond([]);
