@@ -22,7 +22,7 @@ import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, Interact
 import config from "@root/config";
 import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
-import { CommandType } from "../typings/enums";
+import { ArgumentParseType, CommandType } from "../typings/enums";
 import { CommandGroup } from "../classes/CommandGroup";
 import { Translator } from "../classes/Translator";
 import { CommandHelpRenderer } from "../classes/CommandHelpRenderer";
@@ -39,7 +39,10 @@ export default class Help extends Command<[string]> {
         description: '要查詢的特定指令', 
         required: false, 
         autocomplete: true
-      }], 
+      }],
+      argumentParseMethod: {
+        type: ArgumentParseType.None
+      },
       permissions: {
         bot: [PermissionFlagsBits.EmbedLinks]
       }
