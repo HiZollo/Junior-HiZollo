@@ -39,7 +39,7 @@ interface MessageCommandResolution {
 }
 
 /**
- * 掌管所有與指令相關的操作，並支援單層的群組指令，必須保證 help 指令存在
+ * 掌管所有與指令相關的操作，支援多層群組指令，必須保證 help 指令存在
  * @extends EventEmitter
  */
 export class CommandManager extends EventEmitter {
@@ -333,27 +333,22 @@ export class CommandManager extends EventEmitter {
    * 依完整路徑取得指令
    */
   public get(path: CommandPath): Command | null {
+    if (!path.length) return null
+
     let commands = this.commands;
     let command: Command | null = null;
 
-    for (const name of path) {
-      command = this.findCommand(commands, name);
-
+    for (let i = 0; i < path.length; i++) {
+      command = this.findCommand(commands, path[i]);
       if (!command) return null;
-
-      if (name !== path[path.length - 1] && !(command instanceof CommandGroup)) {
-        return null;
-      }
-
-      if (command instanceof CommandGroup) {
-        commands = command.children;
-      }
+      if (i < path.length - 1 && !(command instanceof CommandGroup)) return null;
+      if (command instanceof CommandGroup) commands = command.children;
     }
 
     return command;
   }
 
-  private findSubcommandShortcut(name: string): Command | undefined {
+  private findSubcommandShortcut(name: string): Command | null {
     const key = name.toLowerCase();
 
     for (const group of this.commands.values()) {
@@ -364,7 +359,7 @@ export class CommandManager extends EventEmitter {
       if (command) return command;
     }
 
-    return undefined;
+    return null;
   }
 
   /**
@@ -372,12 +367,11 @@ export class CommandManager extends EventEmitter {
    * @param path 要搜尋的指令路徑
    * @returns 找到的指令或指令群
    */
-  public search(path: CommandPath): Command | undefined {
-    const command = this.get(path);
-    if (command) return command;
-    if (path.length) return this.findSubcommandShortcut(path[0]);
+  public search(path: CommandPath): Command | null {
+    const root = this.findCommand(this.commands, path[0]);
+    if (root) return this.get(path);
 
-    return undefined;
+    return this.findSubcommandShortcut(path[0]);
   }
 
   public *walk(commands: Collection<string, Command> = this.commands): IterableIterator<Command> {
