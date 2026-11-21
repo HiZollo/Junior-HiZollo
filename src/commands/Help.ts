@@ -60,6 +60,7 @@ export default class Help extends Command<[string]> {
 
     // 給參數就顯示特定指令
     const command = source.client.commands.search(commandName.trim().split(/\s+/));
+
     if (!command || (command instanceof Command && command.type === CommandType.Developer && !source.channel?.isTestChannel())) {
       await source.defer({ ephemeral: true });
       await source.update(`這個指令不存在，請使用 \`${config.bot.prefix}help\` 或 \`/help\` 查看當前的指令列表`);
@@ -67,7 +68,13 @@ export default class Help extends Command<[string]> {
     }
 
     await source.defer();
-    const embed = command instanceof CommandGroup ? CommandHelpRenderer.getGroupEmbed(source, command) : CommandHelpRenderer.getCommandEmbed(source, command);
+
+    if (command instanceof CommandGroup) {
+      await source.update(CommandHelpRenderer.getGroupMessage(source, command));
+      return;
+    }
+
+    const embed = CommandHelpRenderer.getCommandEmbed(source, command);
     await source.update({ embeds: [embed] });
   }
   
@@ -146,7 +153,7 @@ export default class Help extends Command<[string]> {
         label: command.name, 
         description: command.description, 
         emoji: '🔹', 
-        value: command.name
+        value: command.path.join("/")
       })
     });
 

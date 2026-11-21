@@ -18,7 +18,7 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ApplicationCommandOptionChoiceData, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandOptionChoiceData, EmbedBuilder, StringSelectMenuBuilder } from "discord.js";
 import { Command } from "./Command";
 import type { Source } from "./Source";
 import { HZCommandOptionData } from "../typings/types";
@@ -46,15 +46,16 @@ export class CommandHelpRenderer extends null {
    * 建立指定群組的指令列表 Embed
    */
   static getGroupEmbed(source: HelpSource, command: CommandGroup): EmbedBuilder {
-    const groupName = command.path.join(' ');
-    const commands = command.children;
-    const embed = this.createEmbed(source, `這是 HiZollo 的 ${groupName} 指令列表`);
+    const groupName = command.path.join(" ");
+    const description = [
+      `**${groupName}**`,
+      command.description,
+      command.children.size
+        ? "請從下方選單選擇要查看的指令。"
+        : "此群組目前沒有可用指令。"
+    ].join("\n\n");
 
-    commands.each(command => {
-      const description = `** - 指令功能：**${command.description}\n` + this.getDescriptionForCommand(command, true);
-      embed.addFields({ name: command.path.join(" "), value: description });
-    });
-    return embed;
+    return this.createEmbed(source, description);
   }
 
   /**
@@ -107,5 +108,31 @@ export class CommandHelpRenderer extends null {
 
   private static getChoiceString(choice: ApplicationCommandOptionChoiceData): string {
     return choice.name === choice.value.toString() ? `\`${choice.name}\`` : `\`${choice.name}\`/\`${choice.value}\``;
+  }
+
+  public static getGroupMessage(source: HelpSource, command: CommandGroup) {
+    return {
+      embeds: [this.getGroupEmbed(source, command)],
+      components: this.getGroupComponents(command)
+    };
+  }
+
+  public static getGroupComponents(command: CommandGroup): ActionRowBuilder<StringSelectMenuBuilder>[] {
+    if (!command.children.size) return [];
+
+    const menu = new StringSelectMenuBuilder()
+      .setCustomId(`help_menu_group`)
+      .setPlaceholder("請選擇一個指令");
+
+    for (const child of command.children.values()) {
+      menu.addOptions({
+        label: child.name,
+        description: child.description.slice(0, 100),
+        emoji: "🔹",
+        value: child.path.join("/")
+      });
+    }
+
+    return [new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(menu)];
   }
 }

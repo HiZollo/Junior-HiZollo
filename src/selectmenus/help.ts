@@ -25,7 +25,7 @@ import { CommandHelpRenderer } from "../classes/CommandHelpRenderer";
 
 export default async function help(interaction: StringSelectMenuInteraction<"cached">): Promise<void> {
   const help = interaction.client.commands.search(['help']) as Help;
-  const scope = interaction.customId.slice('help_menu_'.length);
+  const scope = interaction.customId.slice("help_menu_".length);
   const selected = interaction.values[0];
 
   if (scope === 'main') {
@@ -33,15 +33,19 @@ export default async function help(interaction: StringSelectMenuInteraction<"cac
     await interaction.reply({ ephemeral: true, ...message });
     return;
   }
-  if (scope === 'type') {
-    const command = interaction.client.commands.search([selected]);
-    if (!command) return;
 
-    const embed = command instanceof CommandGroup
-      ? CommandHelpRenderer.getGroupEmbed(interaction, command)
-      : CommandHelpRenderer.getCommandEmbed(interaction, command);
+  if (scope !== "type" && scope !== "group") return;
+  const command = interaction.client.commands.get(selected.split("/"));
 
-    await interaction.reply({ ephemeral: true, embeds: [embed] });
+  if (!command) {
+    await interaction.reply({ ephemeral: true, content: '找不到這個指令' });
     return;
   }
+
+  if (command instanceof CommandGroup) {
+    await interaction.reply({ ephemeral: true, ...CommandHelpRenderer.getGroupMessage(interaction, command) });
+    return;
+  }
+
+  await interaction.reply({ ephemeral: true, embeds: [CommandHelpRenderer.getCommandEmbed(interaction, command)] });
 }

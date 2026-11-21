@@ -18,11 +18,9 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 import { Collection } from "discord.js";
-
 import { Command } from "./Command";
 import { CommandHelpRenderer } from "./CommandHelpRenderer";
 import { Source } from "./Source";
-
 import { CommandType } from "../typings/enums";
 import { CommandOptions } from "../typings/interfaces";
 
@@ -44,8 +42,7 @@ export class CommandGroup extends Command<[]> {
    * 預設行為是顯示此指令群組的指令列表
    */
   public override async execute(source: Source): Promise<void> {
-    await source.defer();
-    const embed = CommandHelpRenderer.getGroupEmbed(source, this);
-    await source.update({ embeds: [embed] });
+    await source.defer({ ephemeral: true });
+    await source.update(CommandHelpRenderer.getGroupMessage(source, this));
   }
 }
