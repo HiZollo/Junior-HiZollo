@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
+ * Copyright 2022, 2026 HiZollo Dev Team <https://github.com/hizollo>
  *
  * This file is a part of Junior HiZollo.
  *
@@ -18,21 +18,25 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import fs from "node:fs";
-import path from "node:path";
 import { EventEmitter } from "node:events";
 import { Awaitable, Collection, Interaction, Message, PermissionFlagsBits } from "discord.js";
 import { Command } from "./Command";
+import { CommandGroup } from "./CommandGroup";
+import { CommandLoader } from "./CommandLoader";
 import { CommandParser } from "./CommandParser";
 import { HZClient } from "./HZClient";
 import { Source } from "./Source";
+import { Translator } from "./Translator";
 import config from '@root/config';
 import missingPermissions from "../features/utils/missingPermissions";
 import { CommandManagerRejectReason, CommandParserOptionResultStatus, CommandType } from "../typings/enums";
-import { CommandManagerEvents, SubcommandGroup } from "../typings/interfaces";
-import { CommandManagerRejectInfo } from "../typings/types";
-import { SubcommandManager } from "./SubcommandManager";
-import { Translator } from "./Translator";
+import { CommandManagerEvents } from "../typings/interfaces";
+import { CommandManagerRejectInfo, CommandPath } from "../typings/types";
+
+interface MessageCommandResolution {
+  command: Command;
+  consumed: number;
+}
 
 /**
  * 掌管所有與指令相關的操作，並支援單層的群組指令，必須保證 help 指令存在
@@ -50,11 +54,6 @@ export class CommandManager extends EventEmitter {
   public commands: Collection<string, Command>;
 
   /**
-   * 群組指令管家
-   */
-  public subcommands: SubcommandManager;
-
-  /**
    * 指令是否已載入完畢
    */
   private loaded: boolean;
@@ -67,7 +66,6 @@ export class CommandManager extends EventEmitter {
     super();
     this.client = client;
     this.commands = new Collection();
-    this.subcommands = new SubcommandManager(client);
     this.loaded = false;
   }
 
@@ -76,25 +74,12 @@ export class CommandManager extends EventEmitter {
    * @param dirPath 要載入的資料夾
    */
   public async load(dirPath: string): Promise<void> {
-    if (this.loaded) throw new Error('Commands have already been loaded.');
+    if (this.loaded) throw new Error("Commands have already been loaded.");
 
-    const commandFiles = fs.readdirSync(dirPath);
-    for (const file of commandFiles) {
-      if (!file.endsWith('.js')) continue;
-
-      const C: new () => Command = require(path.join(dirPath, file)).default;
-      const instance = new C();
-
-      if (instance.type === CommandType.SubcommandGroup) {
-        this.subcommands.load(path.join(dirPath, file.slice(0, -3)), instance);
-      }
-      else {
-        this.commands.set(instance.name, instance);
-      }
-    }
+    this.commands = CommandLoader.load(dirPath);
 
     this.loaded = true;
-    this.emit('loaded');
+    this.emit("loaded");
   }
 
   /**
@@ -110,8 +95,23 @@ export class CommandManager extends EventEmitter {
     const member = interaction.member;
     if (!channel || !member) return;
 
-    const commandName: [string, string | undefined] = [interaction.commandName, interaction.options.getSubcommand(false) ?? undefined];
-    const command = this.search(commandName);
+
+    const subcommandGroup = interaction.options.getSubcommandGroup(false);
+    const subcommand = interaction.options.getSubcommand(false);
+
+    let commandPath: CommandPath = [
+      interaction.commandName,
+      ...(subcommandGroup ? [subcommandGroup] : []),
+      ...(subcommand ? [subcommand] : [])
+    ];
+
+    // /z 的既有 shortcut
+    if (interaction.commandName === "z" && subcommand) {
+      commandPath = Translator.getFullCommandName(subcommand) ?? commandPath;
+    }
+
+    const command = this.get(commandPath);
+    const commandName = command?.path ?? commandPath;
 
     // 重新部署的全域指令有可能因為快取問題而無法使用
     if (!command) {
@@ -206,27 +206,16 @@ export class CommandManager extends EventEmitter {
     if (!message.content.startsWith(config.bot.prefix)) return;
 
     const content = message.content.slice(config.bot.prefix.length).trim();
-    const [firstArg, secondArg] = content.split(/ +/, 2);
-    if (!firstArg) return;
+    const tokens = content.split(/\s+/);
+    const resolution = this.resolveMessage(tokens);
+    if (!resolution) return;
 
-    let commandName: [string, string | undefined] = [firstArg, secondArg];
-    let command = message.client.commands.search(commandName);
-    if (!command) return;
+    const { command, consumed } = resolution;
+    const commandName = command.path;
 
-    let rawArgs = content.slice(firstArg.length).trim();
-    if (command instanceof Command) {
-      commandName = command.parent ? [command.parent, command.name] : [command.name, undefined];
-
-      const matchingNames = [command.name, ...(command.aliases ?? [])];
-      if (!matchingNames.includes(firstArg) && matchingNames.includes(secondArg)) {
-        rawArgs = rawArgs.slice(secondArg.length).trim();
-      }
-    }
-    else {
-      commandName = ['help', command.name];
-      rawArgs = `${command.name} ${rawArgs}`;
-      command = message.client.commands.search(commandName) as Command;
-    }
+    const matches = [...content.matchAll(/\S+/g)];
+    const lastMatch = matches[consumed - 1];
+    const rawArgs = content.slice(lastMatch.index! + lastMatch[0].length).trim();
 
     if (command.type === CommandType.Developer && !message.channel.isTestChannel()) return;
 
@@ -294,28 +283,111 @@ export class CommandManager extends EventEmitter {
   }
 
   /**
-   * 尋找並回傳指令或指令群，支援群組指令、捷徑用法
-   * @param commandName 要搜尋的指令名稱，支援群組指令、捷徑用法
-   * @returns 找到的指令或指令群
+   * 從 Message tokens 找出最長的有效命令路徑
    */
-  public search(commandName: [string, string | undefined]): Command | SubcommandGroup | void {
-    let first = commandName[0].toLowerCase();
-    let second = commandName[1]?.toLowerCase();
+  private resolveMessage(tokens: string[]): MessageCommandResolution | null {
+    if (!tokens.length) return null;
 
-    // 先找 z 指令
-    if (first === 'z' && second) {
-      const zCommandName = Translator.getFullCommandName(second);
-      if (zCommandName) {
-        [first, second] = zCommandName;
+    // 先找 z 指令捷徑
+    if (tokens[0].toLowerCase() === "z" && tokens[1]) {
+      const path = Translator.getFullCommandName(tokens[1].toLowerCase());
+
+      if (path) {
+        const command = this.get(path);
+        if (command) return { command, consumed: 2 };
       }
     }
 
-    // 一般指令優先
-    const command = this.commands.get(first) || this.commands.find(c => !!c.aliases?.includes(first));
-    if (command) return command;
+    let commands = this.commands;
+    let current: Command | null = null;
+    let consumed = 0;
 
-    // 群組指令
-    return this.subcommands.search([first, second]);
+    for (const token of tokens) {
+      const command = this.findCommand(commands, token);
+      if (!command) break;
+
+      current = command;
+      consumed++;
+
+      if (!(command instanceof CommandGroup)) break;
+      commands = command.children;
+    }
+
+    if (current) return { command: current, consumed };
+
+    // 如果沒找到，還有可能是指令捷徑
+    const shortcut = this.findSubcommandShortcut(tokens[0]);
+    if (shortcut) return { command: shortcut, consumed: 1 };
+    return null;
+  }
+
+  /**
+   * 在指定 Collection 中尋找指令，可以使用別名
+   */
+  private findCommand(commands: Collection<string, Command>, name: string): Command | null {
+    const key = name.toLowerCase();
+    return commands.get(key) ?? commands.find(command => command.aliases?.includes(key)) ?? null;
+  }
+
+  /**
+   * 依完整路徑取得指令
+   */
+  public get(path: CommandPath): Command | null {
+    let commands = this.commands;
+    let command: Command | null = null;
+
+    for (const name of path) {
+      command = this.findCommand(commands, name);
+
+      if (!command) return null;
+
+      if (name !== path[path.length - 1] && !(command instanceof CommandGroup)) {
+        return null;
+      }
+
+      if (command instanceof CommandGroup) {
+        commands = command.children;
+      }
+    }
+
+    return command;
+  }
+
+  private findSubcommandShortcut(name: string): Command | undefined {
+    const key = name.toLowerCase();
+
+    for (const group of this.commands.values()) {
+      if (!(group instanceof CommandGroup)) continue;
+
+      const command = this.findCommand(group.children, key);
+
+      if (command) return command;
+    }
+
+    return undefined;
+  }
+
+  /**
+   * 尋找並回傳指令或指令群，支援群組指令、捷徑用法
+   * @param path 要搜尋的指令路徑
+   * @returns 找到的指令或指令群
+   */
+  public search(path: CommandPath): Command | undefined {
+    const command = this.get(path);
+    if (command) return command;
+    if (path.length) return this.findSubcommandShortcut(path[0]);
+
+    return undefined;
+  }
+
+  public *walk(commands: Collection<string, Command> = this.commands): IterableIterator<Command> {
+    for (const command of commands.values()) {
+      yield command;
+
+      if (command instanceof CommandGroup) {
+        yield* this.walk(command.children);
+      }
+    }
   }
 
   public each(fn: (value: Command, key: string, collection: Collection<string, Command>) => void): Collection<string, Command> {

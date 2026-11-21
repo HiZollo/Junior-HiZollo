@@ -36,11 +36,6 @@ export abstract class Command<T = unknown> {
   public type: CommandType;
 
   /**
-   * 指令的父指令
-   */
-  public parent: string | null;
-
-  /**
    * 完整的指令路徑
    */
   public path: CommandPath;
@@ -99,8 +94,7 @@ export abstract class Command<T = unknown> {
    */
   constructor(options: CommandOptions) {
     this.type = options.type;
-    this.path = options.parent ? [options.parent, options.name] : [options.name];
-    this.parent = options.parent ?? null;
+    this.path = [options.name];
     this.name = options.name;
     this.description = options.description;
     this.extraDescription = options.extraDescription;

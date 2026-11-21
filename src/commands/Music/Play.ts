@@ -28,7 +28,6 @@ export default class MusicPlay extends Command<[string]> {
   constructor() {
     super({
       type: CommandType.Utility,
-      parent: 'music',
       name: 'play',
       description: '讓我在語音頻道中播一首歌',
       aliases: ['p'],

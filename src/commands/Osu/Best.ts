@@ -29,7 +29,6 @@ export default class OsuBest extends Command<[string, number]> {
   constructor() {
     super({
       type: CommandType.Information,
-      parent: 'osu',
       name: 'best',
       description: '取得一名玩家在 osu! 上最高成績的資料',
       aliases: ['bp'],

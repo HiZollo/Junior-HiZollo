@@ -27,7 +27,6 @@ export default class MusicJoin extends Command<[boolean]> {
   constructor() {
     super({
       type: CommandType.Utility, 
-      parent: 'music', 
       name: 'join', 
       description: '讓我加入你所在的語音頻道', 
       aliases: ['j'], 

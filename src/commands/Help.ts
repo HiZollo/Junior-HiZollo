@@ -1,6 +1,6 @@
 /*
  * 
- * Copyright 2022 HiZollo Dev Team <https://github.com/hizollo>
+ * Copyright 2022, 2026 HiZollo Dev Team <https://github.com/hizollo>
  * 
  * This file is a part of Junior HiZollo.
  * 
@@ -24,7 +24,7 @@ import { Command } from "../classes/Command";
 import { Source } from "../classes/Source";
 import { CommandType } from "../typings/enums";
 import { HZCommandOptionData } from "../typings/types";
-import { SubcommandGroup } from "../typings/interfaces";
+import { CommandGroup } from "../classes/CommandGroup";
 import { Translator } from "../classes/Translator";
 
 export default class Help extends Command<[string]> {
@@ -56,7 +56,7 @@ export default class Help extends Command<[string]> {
     }
 
     // 給參數就顯示特定指令
-    const command = source.client.commands.search([commandName, undefined]);
+    const command = source.client.commands.search(commandName.trim().split(/\s+/));
     if (!command || (command instanceof Command && command.type === CommandType.Developer && !source.channel?.isTestChannel())) {
       await source.defer({ ephemeral: true });
       await source.update(`這個指令不存在，請使用 \`${config.bot.prefix}help\` 或 \`/help\` 查看當前的指令列表`);
@@ -64,7 +64,7 @@ export default class Help extends Command<[string]> {
     }
 
     await source.defer();
-    const embed = command instanceof Command ? this.getEmbedForCommand(source, command) : this.getEmbedForSubcommandGroup(source, commandName, command);
+    const embed = command instanceof CommandGroup ? this.getEmbedForSubcommandGroup(source, command) : this.getEmbedForCommand(source, command);
     await source.update({ embeds: [embed] });
   }
   
@@ -131,9 +131,10 @@ export default class Help extends Command<[string]> {
     const menu = new StringSelectMenuBuilder()
       .setCustomId('help_menu_type')
       .setPlaceholder('請選擇一個指令');
-    const commands = type === CommandType.SubcommandGroup ?
-      interaction.client.commands.subcommands.map(c => c) :
-      interaction.client.commands.map(c => c).filter(c => c.type === type);
+
+    const commands = interaction.client.commands.commands
+      .filter(command => command.type === type)
+      .map(command => command);
 
     commands.forEach(command => {
       menu.addOptions({
@@ -152,9 +153,9 @@ export default class Help extends Command<[string]> {
       `以下是所有**${Translator.getCommandTypeChinese(type)}**分類中的指令\n` +
       `你可以使用 \`${config.bot.prefix}help 指令名稱\` 或 \`/help 指令名稱\` 來查看特定指令的使用方法\n\n`;
 
-    const commands = type === CommandType.SubcommandGroup ?
-      interaction.client.commands.subcommands.map(c => c) :
-      interaction.client.commands.map(c => c).filter(c => c.type === type);
+    const commands = interaction.client.commands.commands
+      .filter(command => command.type === type)
+      .map(command => command);
     
     description += commands.map(c => `\`${c.name}\``).join('．');
 
@@ -173,16 +174,25 @@ export default class Help extends Command<[string]> {
       .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null);
   }
 
-  public getEmbedForSubcommandGroup(source: { client: Client, member: GuildMember }, groupName: string, commands: SubcommandGroup): EmbedBuilder {
+  public getEmbedForSubcommandGroup(source: { client: Client, member: GuildMember }, group: CommandGroup): EmbedBuilder {
+    const groupName = group.path.join(' ');
+
     const embed = new EmbedBuilder()
       .applyHiZolloSettings(source.member, 'HiZollo 的幫助中心', '使用指令時不須連同 [] 或 <> 一起輸入')
       .setDescription(`這是 HiZollo 的 ${groupName} 指令列表`)
       .setThumbnail(source.client.user?.displayAvatarURL({ extension: 'png', size: 2048 }) ?? null);
 
-    commands.data.each(command => {
-      let description = `** - 指令功能：**${command.description}\n` + this.getDescriptionForCommand(command, true);
-      embed.addFields({ name: `${groupName} ${command.name}`, value: description });
+    group.children.each(command => {
+      const description =
+        `** - 指令功能：**${command.description}\n` +
+        this.getDescriptionForCommand(command, true);
+
+      embed.addFields({
+        name: command.path.join(' '),
+        value: description
+      });
     });
+
     return embed;
   }
 

@@ -28,7 +28,6 @@ export default class DiepTank extends Command<[string]> {
   constructor() {
     super({
       type: CommandType.Information, 
-      parent: 'diep', 
       name: 'tank', 
       description: '查看一台 Diep.io 坦克的資訊',
       options: [{
