@@ -428,25 +428,6 @@ export class CommandManager extends EventEmitter {
     return 0;
   }
 
-  public *walk(commands: Collection<string, Command> = this.commands): IterableIterator<Command> {
-    for (const command of commands.values()) {
-      yield command;
-
-      if (command instanceof CommandGroup) {
-        yield* this.walk(command.children);
-      }
-    }
-  }
-
-  public each(fn: (value: Command, key: string, collection: Collection<string, Command>) => void): Collection<string, Command> {
-    return this.commands.each(fn);
-  }
-
-  public map<T>(fn: (value: Command, key: string, collection: Collection<string, Command>) => T): T[] {
-    return this.commands.map(fn);
-  }
-
-
   public on(event: "reject", listener: (source: Source, info: CommandManagerRejectInfo) => Awaitable<void>): this;
   public on<K extends keyof CommandManagerEvents>(event: K, listener: (...args: CommandManagerEvents[K]) => Awaitable<void>): this;
   public on<S extends string | symbol>(event: Exclude<S, keyof CommandManagerEvents | "reject">, listener: (...args: any[]) => Awaitable<void>): this;
