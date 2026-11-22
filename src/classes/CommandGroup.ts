@@ -43,6 +43,6 @@ export class CommandGroup extends Command<[]> {
    */
   public override async execute(source: Source): Promise<void> {
     await source.defer({ ephemeral: true });
-    await source.update(CommandHelpRenderer.getGroupMessage(source, this));
+    await source.update(CommandHelpRenderer.getGroupMessage(source, this, source.channel.isTestChannel()));
   }
 }
