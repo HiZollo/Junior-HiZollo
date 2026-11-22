@@ -93,9 +93,6 @@ export default class CooldownManager {
     if (duration === 0) return;
     const list = this.getCommandList(commandName, true);
     list.set(userId, Date.now() + duration * 1000);
-    setTimeout(() => {
-      if (list.has(userId)) list.delete(userId);
-    }, duration * 1000);
   }
 
   /**
