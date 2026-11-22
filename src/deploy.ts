@@ -40,22 +40,24 @@ type CommandScope = "global" | "dev" | "all";
     if (process.argv.includes("--clean")) {
       if (guildId) {
         console.log(`正在清空伺服器指令`);
-
         await rest.put(
           Routes.applicationGuildCommands(config.bot.id, guildId),
           { body: [] }
         );
-
         console.log(`已清空伺服器指令`);
       } else {
         console.log("正在清空全域指令");
-
         await rest.put(
           Routes.applicationCommands(config.bot.id),
           { body: [] }
         );
-
         console.log("全域指令已清空");
+        console.log("正在清空私人指令");
+        rest.put(
+          Routes.applicationGuildCommands(config.bot.id, constant.devGuild.id),
+          { body: [] }
+        );
+        console.log("已清空私人指令");
       }
 
       return;
