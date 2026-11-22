@@ -68,12 +68,12 @@ export class CommandHelpRenderer extends null {
   /**
    * 取得指令的詳細說明文字
    */
-  static getDescriptionForCommand(command: Command, isSubcommand = false): string {
-    let description = !isSubcommand ? `\`${command.name}\`\n${command.description}\n` : "";
-    if (!isSubcommand && command.extraDescription) description += `${command.extraDescription}\n`;
-    if (!isSubcommand) description += "\n";
+  static getDescriptionForCommand(command: Command): string {
+    let description = `\`${command.path.join(' ')}\`\n${command.description}\n`;
+    if (command.extraDescription) description += `${command.extraDescription}\n`;
+    description += "\n";
     if (command.aliases) description += `** - 替代名稱：**${command.aliases.map(a => `\`${a}\``).join(", ")}\n`;
-    if (!isSubcommand && command.type) description += `** - 分類位置：**${Translator.getCommandTypeChinese(command.type)}\n`;
+    if (command.type) description += `** - 分類位置：**${Translator.getCommandTypeChinese(command.type)}\n`;
     if (command.options) description += `** - 指令參數：**${this.optionsToString(command.options)}`;
     if (command.cooldown) description += `** - 冷卻時間：**${command.cooldown} 秒\n`;
     return description;
