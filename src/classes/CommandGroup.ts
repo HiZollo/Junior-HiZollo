@@ -34,7 +34,7 @@ export class CommandGroup extends Command<[]> {
   public children: Collection<string, Command>;
 
   constructor(options: Omit<CommandOptions, "type">) {
-    super({ ...options, type: CommandType.SubcommandGroup });
+    super({ ...options, type: CommandType.CommandGroup });
     this.children = new Collection();
   }
 

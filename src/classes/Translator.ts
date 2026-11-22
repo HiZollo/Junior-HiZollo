@@ -227,7 +227,7 @@ export class Translator extends null {
     [CommandType.Information]: '資訊', 
     [CommandType.Miscellaneous]: '雜項', 
     [CommandType.Network]: '聯絡網', 
-    [CommandType.SubcommandGroup]: '指令群', 
+    [CommandType.CommandGroup]: '指令群', 
     [CommandType.Utility]: '功能'
   });
 
@@ -243,7 +243,7 @@ export class Translator extends null {
     [CommandType.Information]: '顯示 HiZollo 的相關資訊', 
     [CommandType.Miscellaneous]: '開發者懶得分類的指令', 
     [CommandType.Network]: '查看 HiZollo 聯絡網的相關功能', 
-    [CommandType.SubcommandGroup]: '集合很多指令的指令', 
+    [CommandType.CommandGroup]: '集合很多指令的指令', 
     [CommandType.Utility]: 'HiZollo 多少還是會一些有用的功能好嗎'
   });
 

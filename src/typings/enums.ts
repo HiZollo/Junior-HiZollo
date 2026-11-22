@@ -44,7 +44,7 @@ export enum CommandType {
   SinglePlayerGame,
   MultiPlayerGame,
   Information,
-  SubcommandGroup,
+  CommandGroup,
   Contact,
   Network,
   Miscellaneous,
