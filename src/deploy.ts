@@ -53,7 +53,7 @@ type CommandScope = "global" | "dev" | "all";
         );
         console.log("全域指令已清空");
         console.log("正在清空私人指令");
-        rest.put(
+        await rest.put(
           Routes.applicationGuildCommands(config.bot.id, constant.devGuild.id),
           { body: [] }
         );
