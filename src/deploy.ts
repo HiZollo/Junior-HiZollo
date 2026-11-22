@@ -161,10 +161,10 @@ function loadCommands(
       if (child instanceof CommandGroup) {
         if (!hasCommandsInScope(child, scope)) continue;
 
-        const nestedGroup = parseNestedGroup(child, scope);
-        if (!nestedGroup) continue;
+        const subcommandGroup = parseSubcommandGroup(child, scope);
+        if (!subcommandGroup) continue;
 
-        builder.addSubcommandGroup(nestedGroup);
+        builder.addSubcommandGroup(subcommandGroup);
       } else {
         if (!isCommandInScope(child, scope)) continue;
 
@@ -180,10 +180,7 @@ function loadCommands(
     }
 
     if (!optionCount) continue;
-
-    if (optionCount > 25) {
-      throw new Error(`指令 ${command.name} 超過 Discord 的 25 個選項上限`);
-    }
+    if (optionCount > 25) throw new Error(`指令 ${command.path.join(' ')} 超過 Discord 的 25 個選項上限`);
 
     result.push(builder.toJSON());
   }
@@ -202,11 +199,24 @@ function loadCommands(
   return result;
 }
 
+/**
+ * 檢查 {@link Command} 在當下範圍是否可見
+ * @param command 指令本人
+ * @param 目前可見範圍
+ * @returns
+ */
 function isCommandInScope(command: Command, scope: CommandScope): boolean {
   if (scope === "all") return true;
   return (command.type === CommandType.Developer) === (scope === "dev");
 }
 
+/**
+ * 檢查 {@link CommandGroup} 在當下範圍是否可見
+ * 必須所有子指令都不可見才判定為不可見
+ * @param group 群組本人
+ * @param 目前可見範圍
+ * @returns
+ */
 function hasCommandsInScope(group: CommandGroup, scope: CommandScope): boolean {
   for (const child of group.children.values()) {
     if (child instanceof CommandGroup) {
@@ -219,6 +229,12 @@ function hasCommandsInScope(group: CommandGroup, scope: CommandScope): boolean {
   return false;
 }
 
+/**
+ * 建立一個基本的 {@link SlashCommandBuilder}，並帶入 {@link Command} 的基本資料
+ * 帶入資料為名字、資訊、權限，並將 DMPermission 設為 false
+ * @param command 指令本人
+ * @returns
+ */
 function createCommandBuilder(command: Command): SlashCommandBuilder {
   const builder = new SlashCommandBuilder()
     .setName(command.name)
@@ -232,7 +248,27 @@ function createCommandBuilder(command: Command): SlashCommandBuilder {
   return builder;
 }
 
-function parseNestedGroup(group: CommandGroup, scope: CommandScope): SlashCommandSubcommandGroupBuilder | null {
+/**
+ * 把 {@link Command} 轉換成 API 看得懂的資料
+ * @param command 指令本人
+ * @returns 
+ */
+function parseCommand(command: Command): RESTPostAPIApplicationCommandsJSONBody {
+  const builder = createCommandBuilder(command);
+
+  command.options?.forEach(option => addOption(builder, option));
+
+  return builder.toJSON();
+}
+
+
+/**
+ * 把第二層的 {@link CommandGroup} 轉換成 SubcommandGroup
+ * @param group 群組本人
+ * @param 目前可見範圍
+ * @returns 建立好的 {@link SlashCommandSubcommandBuilder} 或是 null 如果所有子指令都不可見
+ */
+function parseSubcommandGroup(group: CommandGroup, scope: CommandScope): SlashCommandSubcommandGroupBuilder | null {
   if (group.options?.length) {
     throw new Error(`Discord Application Command 的指令群組不可設定一般選項：${group.path.join(" ")}`);
   }
@@ -259,21 +295,7 @@ function parseNestedGroup(group: CommandGroup, scope: CommandScope): SlashComman
 }
 
 /**
- * 把 {@link Command} 轉換成 API 看得懂的資料
- * @param command 指令本人
- * @returns 
- */
-function parseCommand(command: Command): RESTPostAPIApplicationCommandsJSONBody {
-  const builder = createCommandBuilder(command);
-
-  command.options?.forEach(option => addOption(builder, option));
-
-  return builder.toJSON();
-}
-
-/**
- * 幫 {@link SlashCommandBuilder} 加上一個群組指令
- * @param builder 建築師本人
+ * 建立一個群組指令的子指令
  * @param command 群組指令本人
  * @returns 群組指令
  */
