@@ -77,10 +77,19 @@ export default class CooldownManager {
   }
 
   /**
+   * 取得實際的冷卻時間
+   * @param duration 冷卻的時間，如果是 undefined 則使用 {@link CooldownManager} 預設值
+   */
+  public resolveDuration(duration?: number): number {
+    return duration ?? CooldownManager.DefaultCooldown;
+  }
+
+  /**
    * 新增一位使用者到指定指令的冷卻表中，這個操作只會對單個分支進行
    * @param options 
    */
-  public addUser({ commandName, userId, duration = CooldownManager.DefaultCooldown }: CooldownManagerAddUserOptions): void {
+  public addUser({ commandName, userId, duration }: CooldownManagerAddUserOptions): void {
+    duration = this.resolveDuration(duration);
     if (duration === 0) return;
     const list = this.getCommandList(commandName, true);
     list.set(userId, Date.now() + duration * 1000);

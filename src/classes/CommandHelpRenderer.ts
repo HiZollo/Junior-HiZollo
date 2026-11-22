@@ -62,20 +62,21 @@ export class CommandHelpRenderer extends null {
    * 建立單一指令的詳細說明 Embed
    */
   static getCommandEmbed(source: HelpSource, command: Command): EmbedBuilder {
-    return this.createEmbed(source, this.getDescriptionForCommand(command));
+    return this.createEmbed(source, this.getDescriptionForCommand(source, command));
   }
 
   /**
    * 取得指令的詳細說明文字
    */
-  static getDescriptionForCommand(command: Command): string {
+  static getDescriptionForCommand(source: HelpSource, command: Command): string {
     let description = `\`${command.path.join(' ')}\`\n${command.description}\n`;
     if (command.extraDescription) description += `${command.extraDescription}\n`;
     description += "\n";
-    if (command.aliases) description += `** - 替代名稱：**${command.aliases.map(a => `\`${a}\``).join(", ")}\n`;
-    if (command.type) description += `** - 分類位置：**${Translator.getCommandTypeChinese(command.type)}\n`;
-    if (command.options) description += `** - 指令參數：**${this.optionsToString(command.options)}`;
-    if (command.cooldown) description += `** - 冷卻時間：**${command.cooldown} 秒\n`;
+    if (command.aliases) description += `- 替代名稱：${command.aliases.map(a => `\`${a}\``).join(", ")}\n`;
+    if (command.type) description += `- 分類位置：${Translator.getCommandTypeChinese(command.type)}\n`;
+    if (command.options) description += `- 指令參數：${this.optionsToString(command.options)}`;
+    const cooldown = source.client.cooldown.resolveDuration(source.client.commands.getEffectiveCooldown(command));
+    if (cooldown > 0) description += `- 冷卻時間：${cooldown} 秒\n`;
     return description;
   }
 
@@ -83,18 +84,18 @@ export class CommandHelpRenderer extends null {
     let description = '';
     description += `\`${options.map(option => this.getOptionNameString(option)).join(" ")}\`\n`;
     for (const option of options) {
-      description += ` \`${this.getOptionNameString(option)}\`\n`;
-      description += `　- 選項說明：${option.description}\n`;
-      description += `　- 規範型別：${Translator.getCommandOptionTypeChinese(option)}\n`;
+      description += `  - \`${this.getOptionNameString(option)}\`\n`;
+      description += `    - 選項說明：${option.description}\n`;
+      description += `    - 規範型別：${Translator.getCommandOptionTypeChinese(option)}\n`;
       if ('choices' in option && option.choices) {
-        description += `　- 規範選項：${option.choices.map(choice => this.getChoiceString(choice)).join("．")}\n`;
+        description += `    - 規範選項：${option.choices.map(choice => this.getChoiceString(choice)).join("．")}\n`;
       }
 
       if ('minValue' in option || 'maxValue' in option) {
-        description += `　- 數值範圍：\`${option.minValue !== undefined ? `[${option.minValue}` : '(-∞'}, ${option.maxValue !== undefined ? `${option.maxValue}]` : '∞)'}\``;
+        description += `    - 數值範圍：\`${option.minValue !== undefined ? `[${option.minValue}` : '(-∞'}, ${option.maxValue !== undefined ? `${option.maxValue}]` : '∞)'}\`\n`;
       }
       if ('minLength' in option || 'maxLength' in option) {
-        description += `　- 長度範圍：\`${option.minLength !== undefined ? `[${option.minLength}` : '(0'}, ${option.maxLength !== undefined ? `${option.maxLength}]` : '∞)'}\``;
+        description += `    - 長度範圍：\`${option.minLength !== undefined ? `[${option.minLength}` : '(0'}, ${option.maxLength !== undefined ? `${option.maxLength}]` : '∞)'}\`\n`;
       }
     }
     return description;
