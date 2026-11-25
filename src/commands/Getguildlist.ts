@@ -81,7 +81,7 @@ export default class Getguildlist extends Command<[]> {
       }
     });
 
-    const findguild = source.client.commands.search(['findguild', undefined]);
+    const findguild = source.client.commands.search(['findguild']);
     if (findguild instanceof Command) {
       await findguild.execute(source, [result?.id]);
     }

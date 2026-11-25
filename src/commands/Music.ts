@@ -18,20 +18,14 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Command } from "../classes/Command";
-import { CommandType } from "../typings/enums";
+import { CommandGroup } from "../classes/CommandGroup";
 
-export default class Music extends Command<[]> {
+export default class Music extends CommandGroup {
   constructor() {
     super({
-      type: CommandType.SubcommandGroup, 
-      name: 'music', 
-      description: '執行音樂指令', 
+      name: 'music',
+      description: '執行音樂指令',
       aliases: ['m']
     });
-  }
-
-  public async execute(): Promise<void> {
-    throw new Error('Subcommand group is not executable.');
   }
 }

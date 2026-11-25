@@ -32,6 +32,8 @@ import { WebhookLogger } from "../classes/WebhookLogger";
 import { ArgumentParseType, CommandManagerRejectReason, CommandOptionType } from "./enums";
 import { CommandParserOptionFailWithChoicesResult, CommandParserOptionFailWithLimitResult, CommandParserOptionFailWithPureStatusResult, CommandParserOptionPassResult, PageSystemDescriptionOptions, PageSystemEmbedFieldOptions } from "./interfaces";
 
+export type CommandPath = readonly string[];
+
 export type CommandParserOptionResult =
   | CommandParserOptionPassResult
   | CommandParserOptionFailWithPureStatusResult
@@ -52,7 +54,7 @@ export type CommandManagerRejectInfo =
   | { reason: CommandManagerRejectReason.UserMissingPermission, args: [missings: (keyof PermissionFlags)[]] }
   | { reason: CommandManagerRejectReason.InCooldown, args: [time: number] }
   | { reason: CommandManagerRejectReason.InNetwork, args: [] }
-  | { reason: CommandManagerRejectReason.IllegalArgument, args: [commandName: [string, string | undefined], commandOptions: HZCommandOptionData[], result: CommandParserFailResult] };
+  | { reason: CommandManagerRejectReason.IllegalArgument, args: [commandName: CommandPath, commandOptions: HZCommandOptionData[], result: CommandParserFailResult] };
 
 export type HZCommandOptionData = (Exclude<ApplicationCommandOptionData,
   | ApplicationCommandSubCommandData

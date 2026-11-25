@@ -36,6 +36,8 @@ import { WebhookLogger } from "./WebhookLogger";
 import randomElement from "../features/utils/randomElement";
 import randomInt from "../features/utils/randomInt";
 import { HiddenCommandManager } from "./HiddenCommandManager";
+import { CommandGroup } from "./CommandGroup";
+import { Command } from "./Command";
 
 /**
  * 擴展的 client
@@ -98,14 +100,14 @@ export class HZClient extends Client {
     if (this._invitePermissions) return this._invitePermissions;
 
     const permissions = new PermissionsBitField();
-    this.commands.each(command => {
-      permissions.add(command.permissions?.bot ?? []);
-    });
-    this.commands.subcommands.each(group => {
-      group.data.each(command => {
+    const addCommandPermissions = (commands: Collection<string, Command>): void => {
+      commands.each(command => {
         permissions.add(command.permissions?.bot ?? []);
+        if (command instanceof CommandGroup) addCommandPermissions(command.children);
       });
-    });
+    };
+
+    addCommandPermissions(this.commands.commands);
     permissions.add(PermissionFlagsBits.ManageWebhooks, PermissionsBitField.StageModerator);
 
     return this._invitePermissions = permissions;

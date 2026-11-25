@@ -18,20 +18,14 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Command } from "../classes/Command";
-import { CommandType } from "../typings/enums";
+import { CommandGroup } from "../classes/CommandGroup";
 
-export default class Diep extends Command<[]> {
+export default class Diep extends CommandGroup {
   constructor() {
     super({
-      type: CommandType.SubcommandGroup, 
-      name: 'diep', 
-      description: '執行 Diep.io 的相關指令', 
+      name: 'diep',
+      description: '執行 Diep.io 的相關指令',
       aliases: ['d']
     });
-  }
-
-  public async execute(): Promise<void> {
-    throw new Error('Subcommand group is not executable.');
   }
 }

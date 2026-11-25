@@ -20,7 +20,6 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import constant from '@root/constant.json';
 import { AutocompleteData } from "../typings/types";
 import { HZClient } from "./HZClient";
 import { Interaction, InteractionType } from 'discord.js';
@@ -80,7 +79,7 @@ export class AutocompleteManager {
     if (interaction.type !== InteractionType.ApplicationCommandAutocomplete) return;
     if (!interaction.inCachedGuild()) return;
     if (interaction.user.blocked) return;
-    if (this.client.devMode && interaction.guild.id !== constant.mainGuild.id) return;
+    if (this.client.devMode && !interaction.channel?.isTestChannel()) return;
 
     let commandName = interaction.commandName;
     if (commandName === "z") {
@@ -93,8 +92,16 @@ export class AutocompleteManager {
       
       commandName = zAlias.join("_");
     }
-    else if (interaction.options.getSubcommand(false)) {
-      commandName += '_' + interaction.options.getSubcommand(false);
+    else {
+      const commandPath = [interaction.commandName];
+
+      const subcommandGroup = interaction.options.getSubcommandGroup(false);
+      const subcommand = interaction.options.getSubcommand(false);
+
+      if (subcommandGroup) commandPath.push(subcommandGroup);
+      if (subcommand) commandPath.push(subcommand);
+
+      commandName = commandPath.join("_");
     }
 
     const option = interaction.options.getFocused(true);
@@ -110,7 +117,7 @@ export class AutocompleteManager {
     // 選出符合正則表達式的選項
     const result = this.data.get(commandName)?.[option.name]?.filter(({ name, devOnly }) => {
       if (!regExp.test(name.toLowerCase())) return false;
-      if (devOnly && interaction.guild.id !== constant.devGuild.id) return false;
+      if (devOnly && !interaction.channel?.isTestChannel()) return false;
       return true;
     });
     if (!result) return interaction.respond([]);

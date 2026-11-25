@@ -23,6 +23,7 @@ import config from "@root/config";
 import constant from "@root/constant.json";
 import { HZClient } from "./HZClient";
 import { Source } from "./Source";
+import { CommandPath } from "../typings/types";
 
 /**
  * 掌管所有記錄器
@@ -126,9 +127,9 @@ ID：${guild.id}
    * @param commandName 指令名稱
    * @param args 指令參數
    */
-  public commandExecuted(source: Source, commandName: [string, string | undefined], ...args: unknown[]): void {
+  public commandExecuted(source: Source, commandPath: CommandPath, ...args: unknown[]): void {
     const description =
-      `${source.isChatInput() ? `斜線指令：\`/` : `訊息指令：\`${config.bot.prefix}`}${commandName[0]}${commandName[1] ? ` ${commandName[1]}` : ``}\`
+      `${source.isChatInput() ? `斜線指令：\`/` : `訊息指令：\`${config.bot.prefix}`}${commandPath.join(' ')}\`
 執行者：${source.user}
 參數：${args.join(' ')}
 伺服器：${source.guild.id}`;

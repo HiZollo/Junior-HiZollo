@@ -77,16 +77,22 @@ export default class CooldownManager {
   }
 
   /**
+   * 取得實際的冷卻時間
+   * @param duration 冷卻的時間，如果是 undefined 則使用 {@link CooldownManager} 預設值
+   */
+  public resolveDuration(duration?: number): number {
+    return duration ?? CooldownManager.DefaultCooldown;
+  }
+
+  /**
    * 新增一位使用者到指定指令的冷卻表中，這個操作只會對單個分支進行
    * @param options 
    */
-  public addUser({ commandName, userId, duration = CooldownManager.DefaultCooldown }: CooldownManagerAddUserOptions): void {
+  public addUser({ commandName, userId, duration }: CooldownManagerAddUserOptions): void {
+    duration = this.resolveDuration(duration);
     if (duration === 0) return;
     const list = this.getCommandList(commandName, true);
     list.set(userId, Date.now() + duration * 1000);
-    setTimeout(() => {
-      if (list.has(userId)) list.delete(userId);
-    }, duration * 1000);
   }
 
   /**
@@ -104,7 +110,8 @@ export default class CooldownManager {
   }
 
   /**
-   * 查看一位使用者對於某個指令的剩餘冷卻時間，若無冷卻則回傳 0，這個操作會對所有分支進行
+   * 查看一位使用者對於某個指令的剩餘冷卻時間，若無冷卻則回傳 0，若冷卻已經過了則會從資料中清除用戶
+   * 這個操作會對所有分支進行
    * @param options 
    * @returns 剩餘冷卻時間，單位為毫秒
    */
@@ -112,7 +119,11 @@ export default class CooldownManager {
     const now = Date.now();
     if (!this.client.shard) {
       const endTime = this._checkUser({ commandName, userId });
-      return endTime && endTime > now ? endTime - now : 0;
+      if (!endTime || endTime <= now) {
+        this.client.cooldown._removeUser({ commandName, userId });
+        return 0;
+      }
+      return endTime - now;
     }
 
     const timestamps = await this.client.shard.broadcastEval((client, { commandName, userId, now }) => {

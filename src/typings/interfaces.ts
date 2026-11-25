@@ -20,23 +20,14 @@
 
 import { ButtonBuilder, ModalBuilder } from "@discordjs/builders";
 import { VoiceConnection } from "@discordjs/voice";
-import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, Collection, EmbedBuilder, Guild, GuildMember, GuildTextBasedChannel, InteractionEditReplyOptions, Message, MessageCreateOptions, TextChannel, User, VoiceBasedChannel } from "discord.js";
+import { APIEmbedField, ApplicationCommandOptionChoiceData, ClientOptions, EmbedBuilder, Guild, GuildMember, GuildTextBasedChannel, InteractionEditReplyOptions, Message, MessageCreateOptions, TextChannel, User, VoiceBasedChannel } from "discord.js";
 import { InfoData, YouTubeStream } from "play-dl";
 import { HZClient } from "../classes/HZClient";
 import { Source } from "../classes/Source";
 import { GuildMusicManager } from "../classes/Music/Model/GuildMusicManager";
 import { MusicViewRenderer } from "../classes/Music/View/MusicViewRenderer";
 import { CommandParserOptionResultStatus, CommandType, PageSystemMode } from "./enums";
-import { ArgumentParseMethod, HZCommandOptionData } from "./types";
-import { Command } from "../classes/Command";
-
-export interface SubcommandGroup {
-  type: CommandType.SubcommandGroup;
-  name: string;
-  description: string;
-  aliases?: string[];
-  data: Collection<string, Command>;
-}
+import { ArgumentParseMethod, CommandPath, HZCommandOptionData } from "./types";
 
 export interface HZClientOptions extends ClientOptions {
   devMode?: boolean;
@@ -53,7 +44,7 @@ export interface HZNetworkEvents {
 
 export interface CommandManagerEvents {
   error: [commandName: string, error: Error];
-  executed: [source: Source, commandName: [string, string | undefined], args: unknown[]];
+  executed: [source: Source, commandName: CommandPath, args: unknown[]];
   loaded: [];
   unavailable: [source: Source];
 }
@@ -87,7 +78,6 @@ export interface CommandParserOptionFailWithLimitResult extends CommandParserOpt
 /******************* Command *******************/
 export interface CommandOptions {
   type: CommandType;
-  parent?: string;
   name: string;
   description: string;
   extraDescription?: string;

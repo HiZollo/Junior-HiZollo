@@ -28,7 +28,6 @@ export default class OsuUser extends Command<[string, number]> {
   constructor() {
     super({
       type: CommandType.Information,
-      parent: 'osu',
       name: 'user',
       description: '取得一名玩家的 osu! 資料',
       aliases: ['u'],

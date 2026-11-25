@@ -20,7 +20,7 @@
 
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandOptionType, CommandType } from "../typings/enums";
-import { HZCommandOptionData } from "../typings/types";
+import { CommandPath, HZCommandOptionData } from "../typings/types";
 
 /**
  * 掌管常數與字串的轉換
@@ -32,7 +32,9 @@ export class Translator extends null {
    * @param commandName 由群組名稱及指令名稱構成的群組指令全名
    * @returns 捷徑名稱
    */
-  static getZShortcut([groupName, commandname]: [string, string]): string | void {
+  static getZShortcut(path: CommandPath): string | void {
+    if (path.length !== 2) return;
+    const [groupName, commandname] = path;
     if (!(groupName in this.ZShortcut)) return;
     const nextLayer = this.ZShortcut[groupName as keyof typeof this.ZShortcut];
 
@@ -45,7 +47,7 @@ export class Translator extends null {
    * @param zShortcut z 指令的捷徑名稱
    * @returns 群組指令全名
    */
-  static getFullCommandName(zShortcut: string): [string, string] | void {
+  static getFullCommandName(zShortcut: string): CommandPath | void {
     for (const groupName in this.ZShortcut) {
       const nextLayer = this.ZShortcut[groupName as keyof typeof this.ZShortcut];
       for (const commandName in nextLayer) {
@@ -225,7 +227,7 @@ export class Translator extends null {
     [CommandType.Information]: '資訊', 
     [CommandType.Miscellaneous]: '雜項', 
     [CommandType.Network]: '聯絡網', 
-    [CommandType.SubcommandGroup]: '指令群', 
+    [CommandType.CommandGroup]: '指令群', 
     [CommandType.Utility]: '功能'
   });
 
@@ -241,7 +243,7 @@ export class Translator extends null {
     [CommandType.Information]: '顯示 HiZollo 的相關資訊', 
     [CommandType.Miscellaneous]: '開發者懶得分類的指令', 
     [CommandType.Network]: '查看 HiZollo 聯絡網的相關功能', 
-    [CommandType.SubcommandGroup]: '集合很多指令的指令', 
+    [CommandType.CommandGroup]: '集合很多指令的指令', 
     [CommandType.Utility]: 'HiZollo 多少還是會一些有用的功能好嗎'
   });
 

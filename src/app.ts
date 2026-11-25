@@ -103,7 +103,7 @@ client.commands.on('reject', async (source, info) => {
         const indexRange = o.repeat ? (source.isMessage() ? Infinity : 5) : 0;
         return index <= i && i <= index + indexRange ? `[${text}]` : text;
       }).join(' ');
-      description = `\`\`\`css\n/${commandName[0]}${commandName[1] ? ` ${commandName[1]}` : ''} ${description}\n\`\`\`\n`;
+      description = `\`\`\`css\n/${commandName.join(' ')} ${description}\n\`\`\`\n`;
 
       const displayName = options[index].repeat ? options[index].name.replaceAll('%i', '') : options[index].name;
       let limit: number;
@@ -171,8 +171,8 @@ client.commands.on('unavailable', async source => {
 /**/
 
 /******************* 指令執行 *******************/
-client.commands.on('executed', (source, commandName, ...args) => {
-  client.logger.commandExecuted(source, commandName, ...args);
+client.commands.on('executed', (source, commandPath, ...args) => {
+  client.logger.commandExecuted(source, commandPath, ...args);
 });
 /**/
 

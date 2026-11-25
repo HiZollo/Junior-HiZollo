@@ -26,7 +26,6 @@ export default class DiepWiki extends Command<[]> {
   constructor() {
     super({
       type: CommandType.Information, 
-      parent: 'diep', 
       name: 'wiki', 
       description: '取得 Diep.io 繁中維基的連結'
     });

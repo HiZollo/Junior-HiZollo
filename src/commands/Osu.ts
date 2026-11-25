@@ -18,20 +18,14 @@
  * along with Junior HiZollo. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Command } from "../classes/Command";
-import { CommandType } from "../typings/enums";
+import { CommandGroup } from "../classes/CommandGroup";
 
-export default class Osu extends Command<[]> {
+export default class Osu extends CommandGroup {
   constructor() {
     super({
-      type: CommandType.SubcommandGroup, 
-      name: 'osu', 
-      description: '執行 osu! 的相關指令', 
+      name: 'osu',
+      description: '執行 osu! 的相關指令',
       aliases: ['o']
     });
-  }
-
-  public async execute(): Promise<void> {
-    throw new Error('Subcommand group is not executable.');
   }
 }
