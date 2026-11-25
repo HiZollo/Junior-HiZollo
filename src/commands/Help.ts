@@ -141,23 +141,21 @@ export default class Help extends Command<[string]> {
   }
 
   public getComponentsForType(interaction: StringSelectMenuInteraction<"cached">, type: CommandType): ActionRowBuilder<ButtonBuilder | StringSelectMenuBuilder>[] {
-    const menu = new StringSelectMenuBuilder()
-      .setCustomId('help_menu_type')
-      .setPlaceholder('請選擇一個指令');
-
     const canViewDeveloper = interaction.channel?.isTestChannel() ?? false;
-    const commands = interaction.client.commands.commands
-      .filter(command => command.type === type && CommandHelpRenderer.isCommandVisible(command, canViewDeveloper))
-      .map(command => command);
 
-    commands.forEach(command => {
-      menu.addOptions({
-        label: command.name, 
-        description: command.description, 
+    const options = interaction.client.commands.commands
+      .filter(command => command.type === type && CommandHelpRenderer.isCommandVisible(command, canViewDeveloper))
+      .map(command => ({
+        label: command.name,
+        description: command.description,
         emoji: '🔹', 
         value: command.path.join("/")
-      })
-    });
+      }))
+
+    const menu = new StringSelectMenuBuilder()
+      .setCustomId('help_menu_type')
+      .setPlaceholder('請選擇一個指令')
+      .setOptions(options)
 
     return [new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(menu)];
   }
