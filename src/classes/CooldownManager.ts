@@ -110,7 +110,8 @@ export default class CooldownManager {
   }
 
   /**
-   * 查看一位使用者對於某個指令的剩餘冷卻時間，若無冷卻則回傳 0，這個操作會對所有分支進行
+   * 查看一位使用者對於某個指令的剩餘冷卻時間，若無冷卻則回傳 0，若冷卻已經過了則會從資料中清除用戶
+   * 這個操作會對所有分支進行
    * @param options 
    * @returns 剩餘冷卻時間，單位為毫秒
    */
@@ -118,7 +119,11 @@ export default class CooldownManager {
     const now = Date.now();
     if (!this.client.shard) {
       const endTime = this._checkUser({ commandName, userId });
-      return endTime && endTime > now ? endTime - now : 0;
+      if (!endTime || endTime <= now) {
+        this.client.cooldown._removeUser({ commandName, userId });
+        return 0;
+      }
+      return endTime - now;
     }
 
     const timestamps = await this.client.shard.broadcastEval((client, { commandName, userId, now }) => {
